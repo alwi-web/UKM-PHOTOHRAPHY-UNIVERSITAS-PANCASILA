@@ -5,8 +5,10 @@ namespace App\Filament\Resources\Loans\Schemas;
 use App\Enums\ItemCondition;
 use App\Enums\UserStatus;
 use App\Models\Item;
+use App\Models\Loan;
 use App\Models\User;
 use App\Policies\LoanPolicy;
+use Carbon\Carbon;
 use Closure;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Repeater;
@@ -72,11 +74,13 @@ class LoanForm
                             ->label('Dipinjam dari tanggal')
                             ->seconds(false)
                             ->minDate(fn (string $operation) => $operation === 'create' ? now()->startOfDay() : null)
+                            ->live(onBlur: true)
                             ->required(),
                         DateTimePicker::make('due_at')
                             ->label('Sampai tanggal')
                             ->seconds(false)
-                            ->afterOrEqual('borrowed_at')
+                            ->after('borrowed_at')
+                            ->live(onBlur: true)
                             ->required(),
                         DateTimePicker::make('returned_at')
                             ->label('Dikembalikan pada')
@@ -103,11 +107,11 @@ class LoanForm
                             ->schema([
                                 Select::make('item_id')
                                     ->label('Barang')
-                                    ->options(fn () => Item::orderBy('name')->get()
-                                        ->mapWithKeys(fn (Item $item) => [$item->id => "{$item->code} · {$item->name} (tersedia {$item->availableQuantity()})"]))
+                                    ->options(fn (Get $get, $livewire) => self::itemOptions(self::period($get), $livewire->record?->getKey()))
                                     ->searchable()
                                     ->live()
                                     ->disableOptionsWhenSelectedInSiblingRepeaterItems()
+                                    ->helperText(fn (Get $get, $livewire) => self::conflictHint($get, $livewire->record?->getKey()))
                                     ->required()
                                     ->columnSpan(2),
                                 TextInput::make('quantity')
@@ -118,9 +122,16 @@ class LoanForm
                                     ->required()
                                     ->rule(fn (Get $get, $livewire) => function (string $attribute, $value, Closure $fail) use ($get, $livewire) {
                                         $item = Item::find($get('item_id'));
-                                        $loanId = $livewire->record?->getKey();
-                                        if ($item && $value > $item->availableQuantity($loanId)) {
-                                            $fail("Stok {$item->name} tersedia hanya {$item->availableQuantity($loanId)} unit.");
+                                        $period = self::period($get);
+                                        if (! $item || ! $period) {
+                                            return;
+                                        }
+
+                                        $available = $item->availableQuantityBetween(...$period, exceptLoanId: $livewire->record?->getKey());
+                                        if ($value > $available) {
+                                            $fail($available === 0
+                                                ? "{$item->name} sudah habis dipesan pada tanggal tersebut."
+                                                : "{$item->name} hanya tersedia {$available} unit pada tanggal tersebut.");
                                         }
                                     }),
                                 Select::make('condition_before')
@@ -134,5 +145,65 @@ class LoanForm
                             ]),
                     ]),
             ]);
+    }
+
+    /**
+     * Rentang tanggal yang sedang diisi di form (dibaca dari dalam repeater).
+     *
+     * @return array{0: Carbon, 1: Carbon}|null
+     */
+    private static function period(Get $get): ?array
+    {
+        $from = $get('../../borrowed_at');
+        $to = $get('../../due_at');
+
+        if (blank($from) || blank($to) || Carbon::parse($to)->lte(Carbon::parse($from))) {
+            return null;
+        }
+
+        return [Carbon::parse($from), Carbon::parse($to)];
+    }
+
+    /** Daftar barang beserta jumlah tersedia, pada tanggal terpilih bila sudah diisi. */
+    private static function itemOptions(?array $period, ?int $loanId): array
+    {
+        return Item::orderBy('name')->get()->mapWithKeys(function (Item $item) use ($period, $loanId) {
+            $available = $period
+                ? $item->availableQuantityBetween(...$period, exceptLoanId: $loanId)
+                : $item->availableQuantity($loanId);
+            $label = $period ? "tersedia {$available} pada tanggal ini" : "tersedia {$available} saat ini";
+
+            return [$item->id => "{$item->code} · {$item->name} ({$label})"];
+        })->all();
+    }
+
+    /** Keterangan peminjaman lain yang bentrok dengan tanggal terpilih. */
+    private static function conflictHint(Get $get, ?int $loanId): ?string
+    {
+        $item = Item::find($get('item_id'));
+        $period = self::period($get);
+
+        if (! $item) {
+            return null;
+        }
+
+        if (! $period) {
+            return 'Isi tanggal pinjam untuk mengecek ketersediaan.';
+        }
+
+        $conflicts = $item->conflictingLoans(...$period, exceptLoanId: $loanId);
+        if ($conflicts->isEmpty()) {
+            return "Tidak bentrok. {$item->quantity} unit tersedia pada tanggal ini.";
+        }
+
+        $list = $conflicts->take(3)->map(fn (Loan $loan) => sprintf(
+            '%s–%s (%d unit, %s)',
+            $loan->borrowed_at->translatedFormat('d M H.i'),
+            $loan->due_at->translatedFormat('d M H.i'),
+            $loan->loanItems->sum('quantity'),
+            $loan->status->getLabel(),
+        ))->join('; ');
+
+        return "Sudah dipakai pada: {$list}. Sisa ".$item->availableQuantityBetween(...$period, exceptLoanId: $loanId).' unit.';
     }
 }

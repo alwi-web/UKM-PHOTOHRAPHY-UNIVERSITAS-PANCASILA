@@ -27,14 +27,14 @@ Aturan ini ada di `app/Enums/Role.php` dan `app/Policies`, dan diuji di `tests/F
 ## Fitur
 
 **Peminjaman inventaris** (`/admin/items`, `/admin/loans`)
-- Daftar barang dengan jumlah total, jumlah dipinjam, dan jumlah tersedia. Ada filter "Hanya yang tersedia".
+- Daftar barang dengan jumlah total, jumlah dipinjam, dan jumlah tersedia. Filter "Cek ketersediaan" menampilkan barang yang masih bisa dipinjam pada tanggal dari–sampai tertentu.
+- **Cek bentrok tanggal**: jumlah pinjam dihitung terhadap peminjaman lain yang tanggalnya beririsan (berstatus Diajukan atau Sedang Dipinjam). Form menampilkan jadwal yang bentrok dan sisa unit; pengajuan yang melebihi sisa ditolak. Barang yang terlambat dikembalikan dianggap tetap terpakai sampai kembali. Tanggal yang bersambung (kembali 10.00, dipinjam lagi 10.00) tidak dianggap bentrok.
 - Satu pengajuan bisa berisi beberapa barang. Peminjam bisa menambah dan menghapus barang selama pengajuan belum diproses.
 - Data peminjam (nama, NPM, fakultas/UKM) terisi otomatis dari profil dan bisa diubah.
 - Admin inventaris menyerahkan barang (mencatat kondisi sebelum), menolak, atau menerima pengembalian (mencatat kondisi sesudah). Kondisi barang di inventaris ikut diperbarui jika rusak.
 - Admin inventaris bisa mengubah tanggal pinjam, tanggal kembali, dan tanggal dikembalikan.
 - Tab peminjaman: Diajukan, Sedang Dipinjam, Terlambat, Selesai. Yang lewat batas kembali ditandai merah.
 - Riwayat peminjam per barang di halaman detail barang.
-- Jumlah pinjam divalidasi terhadap stok yang tersedia.
 
 **Galeri karya online** (`/admin/artworks`)
 - Member mengunggah foto dengan kategori, caption, segitiga exposure, link Instagram, dan link TikTok (opsional).

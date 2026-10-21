@@ -3,6 +3,9 @@
 namespace App\Models;
 
 use App\Enums\ItemCondition;
+use App\Enums\LoanStatus;
+use Carbon\CarbonInterface;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -17,6 +20,24 @@ class LoanItem extends Model
             'condition_before' => ItemCondition::class,
             'condition_after' => ItemCondition::class,
         ];
+    }
+
+    /**
+     * Baris peminjaman yang memakai barang pada rentang [from, to).
+     * Yang dihitung: pengajuan yang belum diproses dan barang yang sedang dipinjam.
+     * Barang yang terlambat dikembalikan dianggap tetap terpakai sampai benar-benar kembali.
+     */
+    public function scopeOverlapping(Builder $query, CarbonInterface $from, CarbonInterface $to, ?int $exceptLoanId = null): void
+    {
+        $query->whereHas('loan', fn (Builder $loan) => $loan
+            ->whereIn('status', [LoanStatus::Diajukan, LoanStatus::Dipinjam])
+            ->when($exceptLoanId, fn (Builder $q) => $q->whereKeyNot($exceptLoanId))
+            ->where('borrowed_at', '<', $to)
+            ->where(fn (Builder $q) => $q
+                ->where('due_at', '>', $from)
+                ->orWhere(fn (Builder $overdue) => $overdue
+                    ->where('status', LoanStatus::Dipinjam)
+                    ->where('due_at', '<', now()))));
     }
 
     public function loan(): BelongsTo

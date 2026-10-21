@@ -88,7 +88,7 @@ describe('pengajuan oleh anggota UKM lain', function () {
                 'loanItems' => [['item_id' => $item->id, 'quantity' => 2]],
             ])
             ->call('create')
-            ->assertHasFormErrors();
+            ->assertHasFormErrors(['loanItems.0.quantity']);
 
         expect(Loan::count())->toBe(0);
     });
