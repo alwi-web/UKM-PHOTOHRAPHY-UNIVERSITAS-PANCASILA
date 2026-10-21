@@ -1,0 +1,109 @@
+<?php
+
+namespace App\Filament\Resources\Artworks\Tables;
+
+use App\Enums\ArtworkStatus;
+use App\Models\Artwork;
+use App\Policies\ArtworkPolicy;
+use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\BulkAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Forms\Components\Radio;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\Toggle;
+use Filament\Notifications\Notification;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Support\Icons\Heroicon;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TernaryFilter;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Collection;
+
+class ArtworksTable
+{
+    public static function configure(Table $table): Table
+    {
+        return $table
+            ->defaultSort('created_at', 'desc')
+            ->columns([
+                ImageColumn::make('image')->label('')->disk('public')->imageHeight(64),
+                TextColumn::make('title')->label('Judul')->searchable()->sortable()->wrap()
+                    ->description(fn (Artwork $record) => str($record->caption)->limit(60)),
+                TextColumn::make('user.name')->label('Fotografer')->searchable(),
+                TextColumn::make('category.name')->label('Kategori')->badge()->color('gray'),
+                TextColumn::make('status')->badge(),
+                IconColumn::make('is_featured')->label('Di Website')->boolean(),
+                TextColumn::make('views')->label('Dilihat')->numeric()->sortable(),
+                TextColumn::make('curator.name')->label('Kurator')->placeholder('-')->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('created_at')->label('Diunggah')->since()->sortable(),
+            ])
+            ->filters([
+                SelectFilter::make('status')->options(ArtworkStatus::class),
+                SelectFilter::make('category')->label('Kategori')->relationship('category', 'name'),
+                TernaryFilter::make('is_featured')->label('Ditampilkan di website'),
+            ])
+            ->recordActions([
+                Action::make('curate')
+                    ->label('Kurasi')
+                    ->icon(Heroicon::OutlinedSparkles)
+                    ->color('primary')
+                    ->authorize('curate')
+                    ->modalHeading(fn (Artwork $record) => "Kurasi: {$record->title}")
+                    ->modalDescription(fn (Artwork $record) => "Oleh {$record->user->name}")
+                    ->fillForm(fn (Artwork $record) => [
+                        'status' => $record->status === ArtworkStatus::Pending ? ArtworkStatus::Approved : $record->status,
+                        'is_featured' => $record->is_featured,
+                        'curator_note' => $record->curator_note,
+                    ])
+                    ->schema([
+                        Radio::make('status')
+                            ->label('Hasil Kurasi')
+                            ->options([
+                                ArtworkStatus::Approved->value => 'Lolos kurasi',
+                                ArtworkStatus::Rejected->value => 'Tolak',
+                            ])
+                            ->live()
+                            ->required(),
+                        Toggle::make('is_featured')
+                            ->label('Tampilkan di galeri website')
+                            ->visible(fn (Get $get) => in_array($get('status'), [ArtworkStatus::Approved, ArtworkStatus::Approved->value], true)),
+                        Textarea::make('curator_note')->label('Catatan untuk fotografer')->rows(3),
+                    ])
+                    ->action(function (Artwork $record, array $data) {
+                        $status = $data['status'] instanceof ArtworkStatus ? $data['status'] : ArtworkStatus::from($data['status']);
+                        $record->curate(auth()->user(), $status, (bool) ($data['is_featured'] ?? false), $data['curator_note'] ?? null);
+                        Notification::make()->title('Hasil kurasi disimpan.')->success()->send();
+                    }),
+                ActionGroup::make([
+                    EditAction::make(),
+                    DeleteAction::make(),
+                ]),
+            ])
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    BulkAction::make('feature')
+                        ->label('Tampilkan di website')
+                        ->icon(Heroicon::OutlinedEye)
+                        ->visible(fn () => ArtworkPolicy::curates(auth()->user()))
+                        ->action(fn (Collection $records) => $records->each(
+                            fn (Artwork $a) => $a->curate(auth()->user(), ArtworkStatus::Approved, true, $a->curator_note)
+                        ))
+                        ->deselectRecordsAfterCompletion(),
+                    BulkAction::make('unfeature')
+                        ->label('Sembunyikan dari website')
+                        ->icon(Heroicon::OutlinedEyeSlash)
+                        ->visible(fn () => ArtworkPolicy::curates(auth()->user()))
+                        ->action(fn (Collection $records) => $records->each->update(['is_featured' => false]))
+                        ->deselectRecordsAfterCompletion(),
+                    DeleteBulkAction::make(),
+                ]),
+            ]);
+    }
+}
