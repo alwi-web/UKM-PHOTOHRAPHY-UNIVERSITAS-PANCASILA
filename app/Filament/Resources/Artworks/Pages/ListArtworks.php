@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Artworks\Pages;
 
 use App\Enums\ArtworkStatus;
+use App\Enums\Role;
 use App\Filament\Resources\Artworks\ArtworkResource;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
@@ -18,6 +19,12 @@ class ListArtworks extends ListRecords
         return [
             CreateAction::make()->label('Unggah Karya'),
         ];
+    }
+
+    /** Kurator langsung melihat antrean karya yang perlu dikurasi. */
+    public function getDefaultActiveTab(): string|int|null
+    {
+        return auth()->user()->role === Role::Kurator ? 'pending' : 'semua';
     }
 
     public function getTabs(): array

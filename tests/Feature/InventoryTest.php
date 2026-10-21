@@ -6,6 +6,7 @@ use App\Enums\Role;
 use App\Filament\Resources\Items\Pages\CreateItem;
 use App\Filament\Resources\Items\Pages\ListItems;
 use App\Filament\Resources\Loans\Pages\CreateLoan;
+use App\Filament\Resources\Loans\Pages\EditLoan;
 use App\Filament\Resources\Loans\Pages\ListLoans;
 use App\Models\Item;
 use App\Models\Loan;
@@ -15,10 +16,10 @@ use Filament\Actions\Testing\TestAction;
 use function Pest\Livewire\livewire;
 
 describe('stok barang', function () {
-    it('menghitung unit tersedia dari peminjaman aktif', function () {
+    it('menghitung unit tersedia dari barang yang sedang dipinjam', function () {
         $item = Item::factory()->create(['quantity' => 3]);
-        Loan::factory()->borrowed()->for($item)->create(['quantity' => 2]);
-        Loan::factory()->for($item)->create(['quantity' => 1]); // masih diajukan, belum mengurangi stok
+        Loan::factory()->borrowed()->withItem($item, 2)->create();
+        Loan::factory()->withItem($item, 1)->create(); // masih diajukan, belum mengurangi stok
 
         expect($item->borrowedQuantity())->toBe(2)
             ->and($item->availableQuantity())->toBe(1);
@@ -31,106 +32,180 @@ describe('stok barang', function () {
         expect($late->isOverdue())->toBeTrue()
             ->and(Loan::overdue()->pluck('id')->all())->toBe([$late->id]);
     });
+
+    it('anggota UKM lain bisa melihat barang yang tersedia', function () {
+        loginAs(Role::AnggotaLain);
+        $available = Item::factory()->create(['quantity' => 1]);
+        $habis = Item::factory()->create(['quantity' => 1]);
+        Loan::factory()->borrowed()->withItem($habis)->create();
+
+        livewire(ListItems::class)
+            ->filterTable('available')
+            ->assertCanSeeTableRecords([$available])
+            ->assertCanNotSeeTableRecords([$habis]);
+    });
 });
 
-describe('alur peminjaman', function () {
-    it('member mengajukan peminjaman atas namanya sendiri', function () {
-        $member = loginAs(Role::Member);
-        $other = User::factory()->create();
-        $item = Item::factory()->create(['quantity' => 2]);
+describe('pengajuan oleh anggota UKM lain', function () {
+    it('mengisi data diri, tanggal pinjam, dan beberapa barang sekaligus', function () {
+        $tamu = loginAs(Role::AnggotaLain, ['name' => 'Rani', 'npm' => '4123000111', 'origin_ukm' => 'UKM Musik']);
+        $kamera = Item::factory()->create(['quantity' => 2]);
+        $tripod = Item::factory()->create(['quantity' => 3]);
 
         livewire(CreateLoan::class)
+            ->assertSchemaStateSet([
+                'borrower_name' => 'Rani',
+                'borrower_npm' => '4123000111',
+                'borrower_unit' => 'UKM Musik',
+            ])
             ->fillForm([
-                'user_id' => $other->id, // diabaikan untuk member
-                'item_id' => $item->id,
-                'quantity' => 1,
-                'due_at' => now()->addDays(2),
-                'purpose' => 'Dokumentasi acara',
+                'borrowed_at' => now()->addDay(),
+                'due_at' => now()->addDays(3),
+                'purpose' => 'Video klip',
+                'loanItems' => [
+                    ['item_id' => $kamera->id, 'quantity' => 1],
+                    ['item_id' => $tripod->id, 'quantity' => 2],
+                ],
             ])
             ->call('create')
             ->assertHasNoFormErrors();
 
         $loan = Loan::sole();
-        expect($loan->user_id)->toBe($member->id)
-            ->and($loan->status)->toBe(LoanStatus::Diajukan);
+        expect($loan->user_id)->toBe($tamu->id)
+            ->and($loan->status)->toBe(LoanStatus::Diajukan)
+            ->and($loan->borrower_unit)->toBe('UKM Musik')
+            ->and($loan->loanItems->pluck('quantity', 'item_id')->all())->toBe([$kamera->id => 1, $tripod->id => 2]);
     });
 
-    it('menolak jumlah pinjam melebihi stok tersedia', function () {
-        loginAs(Role::Member);
+    it('menolak jumlah melebihi stok tersedia', function () {
+        loginAs(Role::AnggotaLain);
         $item = Item::factory()->create(['quantity' => 1]);
 
         livewire(CreateLoan::class)
             ->fillForm([
-                'item_id' => $item->id,
-                'quantity' => 2,
+                'borrowed_at' => now()->addDay(),
                 'due_at' => now()->addDays(2),
-                'purpose' => 'Hunting',
+                'loanItems' => [['item_id' => $item->id, 'quantity' => 2]],
             ])
             ->call('create')
-            ->assertHasFormErrors(['quantity']);
+            ->assertHasFormErrors();
+
+        expect(Loan::count())->toBe(0);
     });
 
-    it('member hanya melihat peminjamannya sendiri', function () {
-        $member = loginAs(Role::Member);
-        $mine = Loan::factory()->for($member)->create();
-        $others = Loan::factory()->create();
+    it('menolak tanggal kembali sebelum tanggal pinjam', function () {
+        loginAs(Role::AnggotaLain);
+        $item = Item::factory()->create();
+
+        livewire(CreateLoan::class)
+            ->fillForm([
+                'borrowed_at' => now()->addDays(3),
+                'due_at' => now()->addDay(),
+                'loanItems' => [['item_id' => $item->id, 'quantity' => 1]],
+            ])
+            ->call('create')
+            ->assertHasFormErrors(['due_at']);
+    });
+
+    it('bisa menambah dan menghapus barang selama pengajuan belum diproses', function () {
+        $tamu = loginAs(Role::AnggotaLain);
+        $kamera = Item::factory()->create();
+        $lensa = Item::factory()->create();
+        $loan = Loan::factory()->for($tamu)->withItem($kamera)->create();
+
+        livewire(EditLoan::class, ['record' => $loan->getRouteKey()])
+            ->fillForm(['loanItems' => [['item_id' => $lensa->id, 'quantity' => 1]]])
+            ->call('save')
+            ->assertHasNoFormErrors();
+
+        expect($loan->loanItems()->pluck('item_id')->all())->toBe([$lensa->id]);
+    });
+
+    it('tidak bisa mengubah pengajuan yang sudah diproses', function () {
+        $tamu = loginAs(Role::AnggotaLain);
+        $loan = Loan::factory()->borrowed()->for($tamu)->withItem()->create();
+
+        $this->get(EditLoan::getUrl(['record' => $loan]))->assertForbidden();
+    });
+
+    it('hanya melihat peminjamannya sendiri', function () {
+        $tamu = loginAs(Role::AnggotaLain);
+        $mine = Loan::factory()->for($tamu)->withItem()->create();
+        $others = Loan::factory()->withItem()->create();
 
         livewire(ListLoans::class)
             ->assertCanSeeTableRecords([$mine])
-            ->assertCanNotSeeTableRecords([$others]);
+            ->assertCanNotSeeTableRecords([$others])
+            ->assertActionHidden(TestAction::make('handOver')->table($mine));
     });
+});
 
-    it('admin inventaris menyerahkan barang dan mencatat kondisi awal', function () {
+describe('pemrosesan oleh admin inventaris', function () {
+    it('menyerahkan barang dan mencatat kondisi sebelum dipinjam', function () {
         $admin = loginAs(Role::AdminInventaris);
-        $loan = Loan::factory()->create();
+        $loan = Loan::factory()->withItem()->create();
+        $line = $loan->loanItems->first();
 
         livewire(ListLoans::class)
-            ->callAction(TestAction::make('handOver')->table($loan), data: ['condition_before' => ItemCondition::Baik->value])
+            ->callAction(TestAction::make('handOver')->table($loan), data: [
+                'conditions' => [$line->id => ItemCondition::RusakRingan->value],
+            ])
             ->assertHasNoFormErrors();
 
         $loan->refresh();
         expect($loan->status)->toBe(LoanStatus::Dipinjam)
-            ->and($loan->borrowed_at)->not->toBeNull()
-            ->and($loan->condition_before)->toBe(ItemCondition::Baik)
-            ->and($loan->handled_by)->toBe($admin->id);
+            ->and($loan->handled_by)->toBe($admin->id)
+            ->and($line->fresh()->condition_before)->toBe(ItemCondition::RusakRingan);
     });
 
-    it('pengembalian mencatat kondisi akhir dan memperbarui kondisi barang', function () {
+    it('menerima pengembalian, mencatat kondisi sesudah, dan memperbarui kondisi barang', function () {
         loginAs(Role::AdminInventaris);
-        $loan = Loan::factory()->borrowed()->create();
+        $loan = Loan::factory()->borrowed()->withItem()->create();
+        $line = $loan->loanItems->first();
 
         livewire(ListLoans::class)
             ->callAction(TestAction::make('return')->table($loan), data: [
-                'condition_after' => ItemCondition::RusakRingan->value,
-                'notes' => 'Lensa tergores',
+                'conditions' => [$line->id => ItemCondition::RusakBerat->value],
+                'notes' => 'Lensa retak',
             ]);
 
         $loan->refresh();
         expect($loan->status)->toBe(LoanStatus::Dikembalikan)
             ->and($loan->returned_at)->not->toBeNull()
-            ->and($loan->condition_after)->toBe(ItemCondition::RusakRingan)
-            ->and($loan->item->condition)->toBe(ItemCondition::RusakRingan);
+            ->and($line->fresh()->condition_after)->toBe(ItemCondition::RusakBerat)
+            ->and($line->item->fresh()->condition)->toBe(ItemCondition::RusakBerat);
     });
 
-    it('member tidak bisa memproses peminjaman', function () {
-        loginAs(Role::Member);
-        $loan = Loan::factory()->for(auth()->user())->create();
+    it('mengatur ulang tanggal pinjam dan tanggal kembali', function () {
+        loginAs(Role::AdminInventaris);
+        $loan = Loan::factory()->borrowed()->withItem()->create();
+        $newDue = now()->addWeek()->startOfMinute();
 
-        livewire(ListLoans::class)->assertActionHidden(TestAction::make('handOver')->table($loan));
+        livewire(EditLoan::class, ['record' => $loan->getRouteKey()])
+            ->fillForm(['due_at' => $newDue])
+            ->call('save')
+            ->assertHasNoFormErrors();
+
+        expect($loan->fresh()->due_at->equalTo($newDue))->toBeTrue();
+    });
+
+    it('melihat semua peminjaman beserta peminjamnya', function () {
+        loginAs(Role::AdminInventaris);
+        $loans = Loan::factory(3)->withItem()->create();
+
+        livewire(ListLoans::class)->assertCanSeeTableRecords($loans);
     });
 
     it('tidak bisa menyerahkan barang jika stok habis', function () {
         $admin = User::factory()->role(Role::AdminInventaris)->create();
         $item = Item::factory()->create(['quantity' => 1]);
-        Loan::factory()->borrowed()->for($item)->create();
-        $loan = Loan::factory()->for($item)->create();
+        Loan::factory()->borrowed()->withItem($item)->create();
+        $loan = Loan::factory()->withItem($item)->create();
 
-        expect(fn () => $loan->handOver($admin, ItemCondition::Baik))->toThrow(DomainException::class);
+        expect(fn () => $loan->handOver($admin))->toThrow(DomainException::class);
     });
-});
 
-describe('data barang', function () {
-    it('admin inventaris bisa menambah barang', function () {
+    it('menambah data barang', function () {
         loginAs(Role::AdminInventaris);
 
         livewire(CreateItem::class)
@@ -145,13 +220,5 @@ describe('data barang', function () {
             ->assertHasNoFormErrors();
 
         expect(Item::where('code', 'CAM-099')->exists())->toBeTrue();
-    });
-
-    it('member bisa melihat daftar barang tapi tidak bisa menambah', function () {
-        loginAs(Role::Member);
-        $item = Item::factory()->create();
-
-        livewire(ListItems::class)->assertCanSeeTableRecords([$item]);
-        $this->get(CreateItem::getUrl())->assertForbidden();
     });
 });

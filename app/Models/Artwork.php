@@ -14,7 +14,7 @@ class Artwork extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'category_id', 'title', 'caption', 'image', 'instagram_url', 'tiktok_url',
+        'user_id', 'category_id', 'title', 'caption', 'aperture', 'shutter_speed', 'iso', 'exposure_notes', 'image', 'instagram_url', 'tiktok_url',
         'status', 'is_featured', 'curator_note', 'curated_by', 'curated_at', 'views',
     ];
 
@@ -25,7 +25,20 @@ class Artwork extends Model
             'is_featured' => 'boolean',
             'curated_at' => 'datetime',
             'views' => 'integer',
+            'iso' => 'integer',
         ];
+    }
+
+    /** Ringkasan segitiga exposure, contoh: "f/1.8 · 1/250s · ISO 100". */
+    public function exposureSummary(): ?string
+    {
+        $parts = array_filter([
+            $this->aperture,
+            $this->shutter_speed ? rtrim($this->shutter_speed, 's').'s' : null,
+            $this->iso ? "ISO {$this->iso}" : null,
+        ]);
+
+        return $parts ? implode(' · ', $parts) : null;
     }
 
     public function user(): BelongsTo

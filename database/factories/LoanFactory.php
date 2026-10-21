@@ -16,11 +16,13 @@ class LoanFactory extends Factory
     public function definition(): array
     {
         return [
-            'item_id' => Item::factory(),
             'user_id' => User::factory(),
-            'quantity' => 1,
+            'borrower_name' => fake()->name(),
+            'borrower_npm' => fake()->numerify('41########'),
+            'borrower_unit' => 'UKM Jurnalistik',
             'purpose' => fake()->sentence(),
             'status' => LoanStatus::Diajukan,
+            'borrowed_at' => now()->addDay(),
             'due_at' => now()->addDays(3),
         ];
     }
@@ -30,7 +32,15 @@ class LoanFactory extends Factory
         return $this->state(fn () => [
             'status' => LoanStatus::Dipinjam,
             'borrowed_at' => now()->subDay(),
-            'condition_before' => 'baik',
         ]);
+    }
+
+    /** Tambahkan satu barang ke peminjaman. */
+    public function withItem(?Item $item = null, int $quantity = 1): static
+    {
+        return $this->afterCreating(fn (Loan $loan) => $loan->loanItems()->create([
+            'item_id' => ($item ?? Item::factory()->create())->id,
+            'quantity' => $quantity,
+        ]));
     }
 }

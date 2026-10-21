@@ -5,16 +5,17 @@ namespace App\Policies;
 use App\Models\Event;
 use App\Models\User;
 
+/** Acara & kegiatan (termasuk anggota event) dikelola Admin UKM. */
 class EventPolicy
 {
     public function viewAny(User $user): bool
     {
-        return true;
+        return $user->isAdminUkm();
     }
 
     public function view(User $user, Event $event): bool
     {
-        return true;
+        return $user->isAdminUkm();
     }
 
     public function create(User $user): bool
@@ -35,10 +36,5 @@ class EventPolicy
     public function deleteAny(User $user): bool
     {
         return $user->isAdminUkm();
-    }
-
-    public function join(User $user, Event $event): bool
-    {
-        return $event->canRegister($user);
     }
 }

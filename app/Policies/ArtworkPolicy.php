@@ -3,7 +3,6 @@
 namespace App\Policies;
 
 use App\Enums\ArtworkStatus;
-use App\Enums\Role;
 use App\Models\Artwork;
 use App\Models\User;
 
@@ -11,7 +10,12 @@ class ArtworkPolicy
 {
     public static function curates(User $user): bool
     {
-        return $user->hasRole(Role::Kurator, Role::AdminUkm);
+        return $user->role->canCurate();
+    }
+
+    private function ownsPending(User $user, Artwork $artwork): bool
+    {
+        return $artwork->user_id === $user->id && $artwork->status === ArtworkStatus::Pending;
     }
 
     public function viewAny(User $user): bool
@@ -29,16 +33,15 @@ class ArtworkPolicy
         return $user->role->canUploadArtwork();
     }
 
-    /** Pemilik hanya bisa mengubah karya yang belum dikurasi. */
+    /** Member hanya bisa mengubah karyanya yang belum dikurasi; kurator hanya mengkurasi. */
     public function update(User $user, Artwork $artwork): bool
     {
-        return self::curates($user)
-            || ($artwork->user_id === $user->id && $artwork->status === ArtworkStatus::Pending);
+        return $user->isAdminUkm() || $this->ownsPending($user, $artwork);
     }
 
     public function delete(User $user, Artwork $artwork): bool
     {
-        return $user->isAdminUkm() || $artwork->user_id === $user->id;
+        return $user->isAdminUkm() || $this->ownsPending($user, $artwork);
     }
 
     public function deleteAny(User $user): bool

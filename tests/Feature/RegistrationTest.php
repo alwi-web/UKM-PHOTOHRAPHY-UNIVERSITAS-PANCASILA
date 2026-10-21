@@ -12,7 +12,7 @@ function registrationData(array $overrides = []): array
 {
     return array_merge([
         'name' => 'Budi Santoso',
-        'nim' => '4122000123',
+        'npm' => '4122000123',
         'email' => 'budi@example.com',
         'phone' => '081234567890',
         'faculty' => 'Fakultas Teknik',
@@ -30,17 +30,17 @@ it('menyimpan pendaftar baru dengan status menunggu verifikasi', function () {
         ->assertRedirect(route('home').'#daftar')
         ->assertSessionHas('registered');
 
-    $user = User::where('nim', '4122000123')->firstOrFail();
+    $user = User::where('npm', '4122000123')->firstOrFail();
 
     expect($user->status)->toBe(UserStatus::Pending)
         ->and($user->role)->toBe(Role::Member);
     Storage::disk('public')->assertExists($user->photo);
 });
 
-it('menolak NIM yang sudah terdaftar', function () {
-    User::factory()->create(['nim' => '4122000123']);
+it('menolak NPM yang sudah terdaftar', function () {
+    User::factory()->create(['npm' => '4122000123']);
 
-    $this->post(route('register'), registrationData())->assertSessionHasErrors('nim');
+    $this->post(route('register'), registrationData())->assertSessionHasErrors('npm');
 });
 
 it('mewajibkan asal UKM untuk anggota UKM lain', function () {

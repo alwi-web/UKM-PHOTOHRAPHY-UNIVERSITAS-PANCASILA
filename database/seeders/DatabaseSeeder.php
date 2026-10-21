@@ -47,26 +47,45 @@ class DatabaseSeeder extends Seeder
             'code' => $i[0], 'name' => $i[1], 'category' => $i[2], 'brand' => $i[3], 'quantity' => $i[4], 'condition' => ItemCondition::Baik,
         ]));
 
-        Loan::create([
-            'item_id' => $items[0]->id, 'user_id' => $member->id, 'quantity' => 1, 'purpose' => 'Dokumentasi seminar FT',
-            'status' => LoanStatus::Dipinjam, 'borrowed_at' => now()->subDays(2), 'due_at' => now()->addDay(),
-            'condition_before' => ItemCondition::Baik, 'handled_by' => $inventaris->id,
+        $loan = fn (User $user, array $attrs, array $lines) => tap(
+            Loan::create([
+                'user_id' => $user->id,
+                'borrower_name' => $user->name,
+                'borrower_npm' => $user->npm,
+                'borrower_unit' => $user->unit(),
+                ...$attrs,
+            ]),
+            fn (Loan $l) => collect($lines)->each(fn ($line) => $l->loanItems()->create($line)),
+        );
+
+        $loan($tamu, [
+            'purpose' => 'Liputan pentas seni', 'status' => LoanStatus::Dipinjam, 'handled_by' => $inventaris->id,
+            'borrowed_at' => now()->subDays(2), 'due_at' => now()->addDay(),
+        ], [
+            ['item_id' => $items[0]->id, 'quantity' => 1, 'condition_before' => ItemCondition::Baik],
+            ['item_id' => $items[4]->id, 'quantity' => 1, 'condition_before' => ItemCondition::Baik],
         ]);
-        Loan::create([
-            'item_id' => $items[4]->id, 'user_id' => $tamu->id, 'quantity' => 1, 'purpose' => 'Liputan pensi',
-            'status' => LoanStatus::Dipinjam, 'borrowed_at' => now()->subDays(5), 'due_at' => now()->subDay(),
-            'condition_before' => ItemCondition::Baik, 'handled_by' => $inventaris->id,
+        $loan($tamu, [
+            'purpose' => 'Dokumentasi rapat kerja', 'status' => LoanStatus::Diajukan,
+            'borrowed_at' => now()->addDays(3), 'due_at' => now()->addDays(5),
+        ], [
+            ['item_id' => $items[2]->id, 'quantity' => 1],
+            ['item_id' => $items[5]->id, 'quantity' => 2],
         ]);
-        Loan::create([
-            'item_id' => $items[2]->id, 'user_id' => $members[0]->id, 'quantity' => 1, 'purpose' => 'Hunting portrait',
-            'status' => LoanStatus::Diajukan, 'due_at' => now()->addDays(4),
+        $tamu2 = User::factory()->role(Role::AnggotaLain)->create(['name' => 'Rani (UKM Musik)', 'origin_ukm' => 'UKM Musik']);
+        $loan($tamu2, [
+            'purpose' => 'Video klip band', 'status' => LoanStatus::Dipinjam, 'handled_by' => $inventaris->id,
+            'borrowed_at' => now()->subDays(6), 'due_at' => now()->subDay(),
+        ], [
+            ['item_id' => $items[1]->id, 'quantity' => 1, 'condition_before' => ItemCondition::Baik],
         ]);
-        Loan::create([
-            'item_id' => $items[5]->id, 'user_id' => $members[1]->id, 'quantity' => 1, 'purpose' => 'Kelas lighting',
-            'status' => LoanStatus::Dikembalikan, 'borrowed_at' => now()->subDays(10), 'due_at' => now()->subDays(8),
-            'returned_at' => now()->subDays(8), 'condition_before' => ItemCondition::Baik, 'condition_after' => ItemCondition::Baik,
-            'handled_by' => $inventaris->id,
+        $loan($tamu2, [
+            'purpose' => 'Foto profil anggota', 'status' => LoanStatus::Dikembalikan, 'handled_by' => $inventaris->id,
+            'borrowed_at' => now()->subDays(12), 'due_at' => now()->subDays(10), 'returned_at' => now()->subDays(10),
+        ], [
+            ['item_id' => $items[6]->id, 'quantity' => 1, 'condition_before' => ItemCondition::Baik, 'condition_after' => ItemCondition::RusakRingan],
         ]);
+        $items[6]->update(['condition' => ItemCondition::RusakRingan]);
 
         // ---- Galeri ----
         $categories = collect(['Landscape', 'Portrait', 'Human Interest', 'Street'])
@@ -78,6 +97,10 @@ class DatabaseSeeder extends Seeder
                 'category_id' => $categories->random()->id,
                 'title' => fake()->randomElement(['Senja di Danau Kampus', 'Tatapan', 'Pedagang Pagi', 'Ritme Kota', 'Kabut Puncak', 'Bayangan Halte'])." #{$i}",
                 'caption' => fake()->sentence(14),
+                'aperture' => ['f/1.8', 'f/4', 'f/8', 'f/11'][$i % 4],
+                'shutter_speed' => ['1/250', '1/60', '1/500', '2'][$i % 4],
+                'iso' => [100, 400, 200, 100][$i % 4],
+                'exposure_notes' => 'Aperture dipilih sesuai kebutuhan ruang tajam, shutter speed menyesuaikan gerak subjek, dan ISO dijaga rendah agar minim noise.',
                 'image' => "https://picsum.photos/seed/ukm-up-{$i}/800/".[600, 900, 1000][$i % 3],
                 'instagram_url' => $i % 2 ? 'https://www.instagram.com/ukmfotografi.up/' : null,
                 'status' => ArtworkStatus::Approved,

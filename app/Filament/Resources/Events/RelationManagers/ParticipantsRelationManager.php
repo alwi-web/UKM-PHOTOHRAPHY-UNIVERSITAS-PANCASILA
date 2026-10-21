@@ -49,7 +49,7 @@ class ParticipantsRelationManager extends RelationManager
             ->recordTitleAttribute('name')
             ->columns([
                 TextColumn::make('name')->label('Nama')->searchable(),
-                TextColumn::make('nim')->label('NIM')->searchable(),
+                TextColumn::make('npm')->label('NPM')->searchable(),
                 TextColumn::make('role')->label('Keanggotaan')->badge(),
                 TextColumn::make('pivot.created_at')->label('Mendaftar')->dateTime('d M Y H:i'),
                 TextColumn::make('pivot.status')
@@ -71,7 +71,7 @@ class ParticipantsRelationManager extends RelationManager
                 AttachAction::make()
                     ->label('Tambah Peserta')
                     ->preloadRecordSelect()
-                    ->recordSelectSearchColumns(['name', 'nim'])
+                    ->recordSelectSearchColumns(['name', 'npm'])
                     ->recordSelectOptionsQuery(fn (Builder $query) => $query->where('status', UserStatus::Active))
                     ->schema(fn (AttachAction $action) => [
                         $action->getRecordSelect(),

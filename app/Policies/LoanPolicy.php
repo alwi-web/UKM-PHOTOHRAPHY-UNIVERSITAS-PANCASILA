@@ -3,7 +3,6 @@
 namespace App\Policies;
 
 use App\Enums\LoanStatus;
-use App\Enums\Role;
 use App\Models\Loan;
 use App\Models\User;
 
@@ -11,9 +10,10 @@ class LoanPolicy
 {
     public static function manages(User $user): bool
     {
-        return $user->hasRole(Role::AdminInventaris, Role::AdminUkm);
+        return $user->role->canManageInventory();
     }
 
+    /** Peminjam masih bisa mengubah/membatalkan selama belum diproses. */
     private function ownsPending(User $user, Loan $loan): bool
     {
         return $loan->user_id === $user->id && $loan->status === LoanStatus::Diajukan;
@@ -21,7 +21,7 @@ class LoanPolicy
 
     public function viewAny(User $user): bool
     {
-        return true;
+        return $user->role->canBorrow();
     }
 
     public function view(User $user, Loan $loan): bool
@@ -31,7 +31,7 @@ class LoanPolicy
 
     public function create(User $user): bool
     {
-        return true;
+        return $user->role->canBorrow();
     }
 
     public function update(User $user, Loan $loan): bool
@@ -49,7 +49,7 @@ class LoanPolicy
         return self::manages($user);
     }
 
-    /** Menyetujui/menyerahkan, menolak, dan menerima pengembalian barang. */
+    /** Menyerahkan, menolak, dan menerima pengembalian barang. */
     public function process(User $user, Loan $loan): bool
     {
         return self::manages($user);

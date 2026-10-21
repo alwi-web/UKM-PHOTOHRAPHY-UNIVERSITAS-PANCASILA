@@ -2,14 +2,18 @@
 
 use App\Enums\Role;
 
-it('hanya member, kurator, dan admin UKM yang boleh mengunggah karya', function (Role $role, bool $expected) {
-    expect($role->canUploadArtwork())->toBe($expected);
+it('mengatur hak akses tiap role', function (Role $role, bool $inventory, bool $borrow, bool $upload, bool $curate) {
+    expect($role->canManageInventory())->toBe($inventory)
+        ->and($role->canBorrow())->toBe($borrow)
+        ->and($role->canUploadArtwork())->toBe($upload)
+        ->and($role->canCurate())->toBe($curate);
 })->with([
-    [Role::AdminUkm, true],
-    [Role::Kurator, true],
-    [Role::Member, true],
-    [Role::AdminInventaris, false],
-    [Role::AnggotaLain, false],
+    //                       inventaris  pinjam  unggah  kurasi
+    'Admin UKM' => [Role::AdminUkm, true, true, true, true],
+    'Admin Inventaris' => [Role::AdminInventaris, true, true, false, false],
+    'Kurator' => [Role::Kurator, false, false, false, true],
+    'Member' => [Role::Member, false, false, true, false],
+    'Anggota UKM lain' => [Role::AnggotaLain, false, true, false, false],
 ]);
 
 it('setiap role punya label bahasa Indonesia', function () {

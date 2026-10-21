@@ -35,9 +35,36 @@ enum Role: string implements HasColor, HasLabel
         };
     }
 
-    /** Role yang boleh mengunggah karya ke galeri. */
+    /*
+     * Ringkasan hak akses:
+     * - Admin UKM        : semua fitur.
+     * - Admin Inventaris : daftar barang & peminjaman.
+     * - Kurator          : mengkurasi foto untuk website.
+     * - Member UKM       : mengunggah foto & melihat hasil kurasi.
+     * - Anggota UKM lain : meminjam barang.
+     */
+
+    /** Mengelola data barang dan memproses semua peminjaman. */
+    public function canManageInventory(): bool
+    {
+        return in_array($this, [self::AdminUkm, self::AdminInventaris]);
+    }
+
+    /** Melihat barang yang tersedia dan mengajukan peminjaman. */
+    public function canBorrow(): bool
+    {
+        return in_array($this, [self::AdminUkm, self::AdminInventaris, self::AnggotaLain]);
+    }
+
+    /** Mengunggah karya ke galeri. */
     public function canUploadArtwork(): bool
     {
-        return in_array($this, [self::AdminUkm, self::Kurator, self::Member]);
+        return in_array($this, [self::AdminUkm, self::Member]);
+    }
+
+    /** Mengkurasi karya dan memilih yang tampil di website. */
+    public function canCurate(): bool
+    {
+        return in_array($this, [self::AdminUkm, self::Kurator]);
     }
 }

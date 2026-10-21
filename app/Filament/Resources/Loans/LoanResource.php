@@ -35,7 +35,7 @@ class LoanResource extends Resource
     /** Anggota biasa hanya melihat peminjamannya sendiri. */
     public static function getEloquentQuery(): Builder
     {
-        $query = parent::getEloquentQuery()->with(['item', 'user']);
+        $query = parent::getEloquentQuery()->with(['loanItems.item', 'user']);
 
         return LoanPolicy::manages(auth()->user()) ? $query : $query->whereBelongsTo(auth()->user());
     }

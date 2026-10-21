@@ -24,7 +24,7 @@ class UserForm
                     ->columns(2)
                     ->schema([
                         TextInput::make('name')->label('Nama Lengkap')->required()->maxLength(255),
-                        TextInput::make('nim')->label('NIM')->unique(ignoreRecord: true)->maxLength(20),
+                        TextInput::make('npm')->label('NPM')->unique(ignoreRecord: true)->maxLength(20),
                         TextInput::make('email')->email()->required()->unique(ignoreRecord: true),
                         TextInput::make('phone')->label('No. WhatsApp')->tel()->maxLength(20),
                         TextInput::make('faculty')->label('Fakultas')->maxLength(255),

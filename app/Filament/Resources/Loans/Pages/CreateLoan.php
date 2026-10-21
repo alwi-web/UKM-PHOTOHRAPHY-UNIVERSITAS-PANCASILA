@@ -11,6 +11,8 @@ class CreateLoan extends CreateRecord
 {
     protected static string $resource = LoanResource::class;
 
+    protected static ?string $title = 'Ajukan Peminjaman';
+
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         if (! LoanPolicy::manages(auth()->user())) {

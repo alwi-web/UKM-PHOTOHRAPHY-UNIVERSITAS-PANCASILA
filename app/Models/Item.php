@@ -22,21 +22,17 @@ class Item extends Model
         ];
     }
 
-    public function loans(): HasMany
+    public function loanItems(): HasMany
     {
-        return $this->hasMany(Loan::class);
+        return $this->hasMany(LoanItem::class);
     }
 
-    public function activeLoans(): HasMany
-    {
-        return $this->loans()->where('status', LoanStatus::Dipinjam);
-    }
-
-    /** Jumlah unit yang sedang dipinjam. */
+    /** Jumlah unit yang sedang dipinjam (sudah diserahkan, belum kembali). */
     public function borrowedQuantity(?int $exceptLoanId = null): int
     {
-        return (int) $this->activeLoans()
-            ->when($exceptLoanId, fn ($q) => $q->whereKeyNot($exceptLoanId))
+        return (int) $this->loanItems()
+            ->whereHas('loan', fn ($q) => $q->where('status', LoanStatus::Dipinjam)
+                ->when($exceptLoanId, fn ($q) => $q->whereKeyNot($exceptLoanId)))
             ->sum('quantity');
     }
 

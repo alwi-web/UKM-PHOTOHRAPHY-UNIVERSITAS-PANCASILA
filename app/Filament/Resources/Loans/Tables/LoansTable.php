@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Loans\Tables;
 use App\Enums\ItemCondition;
 use App\Enums\LoanStatus;
 use App\Models\Loan;
+use App\Models\LoanItem;
 use DomainException;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
@@ -27,24 +28,28 @@ class LoansTable
         return $table
             ->defaultSort('created_at', 'desc')
             ->columns([
-                TextColumn::make('item.name')->label('Barang')->searchable()
-                    ->description(fn (Loan $record) => $record->item->code),
-                TextColumn::make('user.name')->label('Peminjam')->searchable()
-                    ->description(fn (Loan $record) => $record->user->nim),
-                TextColumn::make('quantity')->label('Jml'),
-                TextColumn::make('borrowed_at')->label('Mulai Dipinjam')->dateTime('d M Y H:i')->sortable()->placeholder('-'),
-                TextColumn::make('due_at')->label('Batas Kembali')->dateTime('d M Y H:i')->sortable()
+                TextColumn::make('borrower_name')->label('Peminjam')->searchable(['borrower_name', 'borrower_npm', 'borrower_unit'])
+                    ->description(fn (Loan $record) => "{$record->borrower_npm} · {$record->borrower_unit}"),
+                TextColumn::make('items')
+                    ->label('Barang')
+                    ->state(fn (Loan $record) => $record->loanItems->map(fn (LoanItem $li) => "{$li->item->name} ×{$li->quantity}")->all())
+                    ->listWithLineBreaks()
+                    ->bulleted(),
+                TextColumn::make('borrowed_at')->label('Dari')->dateTime('d M Y H:i')->sortable(),
+                TextColumn::make('due_at')->label('Sampai')->dateTime('d M Y H:i')->sortable()
                     ->color(fn (Loan $record) => $record->isOverdue() ? 'danger' : null)
                     ->description(fn (Loan $record) => $record->isOverdue() ? 'Terlambat '.$record->due_at->diffForHumans(syntax: true) : null),
                 TextColumn::make('returned_at')->label('Dikembalikan')->dateTime('d M Y H:i')->sortable()->placeholder('-')
                     ->toggleable(),
-                TextColumn::make('condition_before')->label('Kondisi Awal')->badge()->placeholder('-')->toggleable(),
-                TextColumn::make('condition_after')->label('Kondisi Akhir')->badge()->placeholder('-')->toggleable(),
                 TextColumn::make('status')->badge(),
             ])
             ->filters([
                 SelectFilter::make('status')->options(LoanStatus::class),
-                SelectFilter::make('item')->label('Barang')->relationship('item', 'name')->searchable()->preload(),
+                SelectFilter::make('item')
+                    ->label('Barang')
+                    ->relationship('loanItems.item', 'name')
+                    ->searchable()
+                    ->preload(),
             ])
             ->recordActions([
                 Action::make('handOver')
@@ -52,15 +57,14 @@ class LoansTable
                     ->icon(Heroicon::OutlinedCheckCircle)
                     ->color('success')
                     ->visible(fn (Loan $record) => $record->status === LoanStatus::Diajukan && auth()->user()->can('process', $record))
-                    ->schema([
-                        Select::make('condition_before')
-                            ->label('Kondisi barang saat diserahkan')
-                            ->options(ItemCondition::class)
-                            ->default(fn (Loan $record) => $record->item->condition)
-                            ->required(),
+                    ->modalHeading('Serahkan barang ke peminjam')
+                    ->modalDescription('Catat kondisi tiap barang sebelum dipinjam.')
+                    ->fillForm(fn (Loan $record) => [
+                        'conditions' => $record->loanItems->mapWithKeys(fn (LoanItem $li) => [$li->id => $li->item->condition])->all(),
                     ])
+                    ->schema(fn (Loan $record) => self::conditionFields($record, 'Kondisi sebelum dipinjam'))
                     ->action(fn (Loan $record, array $data) => self::run(
-                        fn () => $record->handOver(auth()->user(), $data['condition_before'] instanceof ItemCondition ? $data['condition_before'] : ItemCondition::from($data['condition_before'])),
+                        fn () => $record->handOver(auth()->user(), $data['conditions'] ?? []),
                         'Barang diserahkan ke peminjam.',
                     )),
                 Action::make('reject')
@@ -80,25 +84,22 @@ class LoansTable
                     ->icon(Heroicon::OutlinedArrowUturnLeft)
                     ->color('info')
                     ->visible(fn (Loan $record) => $record->status === LoanStatus::Dipinjam && auth()->user()->can('process', $record))
-                    ->schema([
-                        Select::make('condition_after')
-                            ->label('Kondisi barang saat dikembalikan')
-                            ->options(ItemCondition::class)
-                            ->default(ItemCondition::Baik)
-                            ->required(),
-                        Textarea::make('notes')->label('Catatan kondisi'),
+                    ->modalHeading('Terima pengembalian barang')
+                    ->modalDescription('Catat kondisi tiap barang setelah dipinjam.')
+                    ->fillForm(fn (Loan $record) => [
+                        'conditions' => $record->loanItems->mapWithKeys(fn (LoanItem $li) => [$li->id => ItemCondition::Baik])->all(),
+                    ])
+                    ->schema(fn (Loan $record) => [
+                        ...self::conditionFields($record, 'Kondisi setelah dipinjam'),
+                        Textarea::make('notes')->label('Catatan'),
                     ])
                     ->action(fn (Loan $record, array $data) => self::run(
-                        fn () => $record->markReturned(
-                            auth()->user(),
-                            $data['condition_after'] instanceof ItemCondition ? $data['condition_after'] : ItemCondition::from($data['condition_after']),
-                            $data['notes'] ?? null,
-                        ),
+                        fn () => $record->markReturned(auth()->user(), $data['conditions'] ?? [], $data['notes'] ?? null),
                         'Pengembalian barang dicatat.',
                     )),
                 ActionGroup::make([
                     EditAction::make(),
-                    DeleteAction::make(),
+                    DeleteAction::make()->label(fn (Loan $record) => $record->status === LoanStatus::Diajukan ? 'Batalkan' : 'Hapus'),
                 ]),
             ])
             ->toolbarActions([
@@ -106,6 +107,16 @@ class LoansTable
                     DeleteBulkAction::make(),
                 ]),
             ]);
+    }
+
+    /** Satu pilihan kondisi untuk setiap barang dalam peminjaman. */
+    private static function conditionFields(Loan $record, string $label): array
+    {
+        return $record->loanItems->map(fn (LoanItem $li) => Select::make("conditions.{$li->id}")
+            ->label("{$label}: {$li->item->name} (×{$li->quantity})")
+            ->options(ItemCondition::class)
+            ->required()
+        )->all();
     }
 
     private static function run(callable $callback, string $success): void

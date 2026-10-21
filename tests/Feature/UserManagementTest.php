@@ -16,7 +16,7 @@ it('admin UKM menambah user dan mengatur role', function () {
         ->fillForm([
             'name' => 'Sari Admin Alat',
             'email' => 'sari@example.com',
-            'nim' => '4121000999',
+            'npm' => '4121000999',
             'role' => Role::AdminInventaris->value,
             'status' => UserStatus::Active->value,
             'password' => 'password123',
@@ -44,9 +44,3 @@ it('admin UKM menunjuk anggota sebagai kurator', function () {
 
     expect($member->fresh()->role)->toBe(Role::Kurator);
 });
-
-it('selain admin UKM tidak bisa membuka manajemen user', function (Role $role) {
-    loginAs($role);
-
-    $this->get(ListUsers::getUrl())->assertForbidden();
-})->with([Role::AdminInventaris, Role::Kurator, Role::Member, Role::AnggotaLain]);

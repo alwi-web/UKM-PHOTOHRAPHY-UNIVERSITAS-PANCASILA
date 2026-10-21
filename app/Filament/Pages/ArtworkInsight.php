@@ -6,7 +6,6 @@ use App\Filament\Widgets\ArtworksPerCategoryChart;
 use App\Filament\Widgets\ArtworkStatsOverview;
 use App\Filament\Widgets\UploadsPerMonthChart;
 use App\Models\Artwork;
-use App\Policies\ArtworkPolicy;
 use BackedEnum;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\EmbeddedTable;
@@ -36,7 +35,7 @@ class ArtworkInsight extends Page implements HasTable
 
     public static function canAccess(): bool
     {
-        return auth()->user() && ArtworkPolicy::curates(auth()->user());
+        return auth()->user()?->isAdminUkm() ?? false;
     }
 
     protected function getHeaderWidgets(): array

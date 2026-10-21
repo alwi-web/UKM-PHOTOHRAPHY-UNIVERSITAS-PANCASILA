@@ -86,6 +86,8 @@ function initGallery() {
     $("#lbTitle").textContent = d.title;
     $("#lbAuthor").textContent = `oleh ${d.author}`;
     $("#lbCaption").textContent = d.caption || "";
+    $("#lbExposure").textContent = d.exposure ? `📷 ${d.exposure}` : "";
+    $("#lbExposureNotes").textContent = d.exposureNotes || "";
     setLink($("#lbInstagram"), d.instagram);
     setLink($("#lbTiktok"), d.tiktok);
     recordView(visible[current]);

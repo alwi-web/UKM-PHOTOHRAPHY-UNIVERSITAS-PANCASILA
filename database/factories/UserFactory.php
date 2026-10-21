@@ -28,7 +28,7 @@ class UserFactory extends Factory
     {
         return [
             'name' => fake()->name(),
-            'nim' => fake()->unique()->numerify('41########'),
+            'npm' => fake()->unique()->numerify('41########'),
             'email' => fake()->unique()->safeEmail(),
             'phone' => fake()->numerify('08##########'),
             'faculty' => fake()->randomElement(config('ukm.faculties')),

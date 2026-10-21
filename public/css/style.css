@@ -1134,3 +1134,9 @@ ul {
 [hidden] {
   display: none !important;
 }
+
+.lightbox .lb-exposure {
+  color: var(--primary);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}

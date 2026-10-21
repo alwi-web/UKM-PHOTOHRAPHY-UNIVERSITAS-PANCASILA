@@ -17,7 +17,7 @@ class RegistrationController extends Controller
     {
         $data = $request->validate([
             'name' => ['required', 'string', 'min:3', 'max:255'],
-            'nim' => ['required', 'regex:/^\d{6,20}$/', 'unique:users,nim'],
+            'npm' => ['required', 'regex:/^\d{6,20}$/', 'unique:users,npm'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
             'phone' => ['required', 'regex:/^(\+62|62|0)8\d{7,12}$/'],
             'faculty' => ['required', 'string', 'max:255'],
@@ -28,8 +28,8 @@ class RegistrationController extends Controller
             'join_reason' => ['nullable', 'string', 'max:1000'],
             'password' => ['required', 'confirmed', Password::min(8)],
         ], [
-            'nim.regex' => 'NIM harus berupa 6–20 digit angka.',
-            'nim.unique' => 'NIM ini sudah terdaftar.',
+            'npm.regex' => 'NPM harus berupa 6–20 digit angka.',
+            'npm.unique' => 'NPM ini sudah terdaftar.',
             'email.unique' => 'Email ini sudah terdaftar.',
             'phone.regex' => 'Nomor WhatsApp tidak valid (contoh: 081234567890).',
             'origin_ukm.required_if' => 'Asal UKM wajib diisi untuk anggota UKM lain.',

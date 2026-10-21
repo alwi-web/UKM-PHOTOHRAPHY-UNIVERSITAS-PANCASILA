@@ -9,37 +9,36 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\DB;
 
 class Loan extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'item_id', 'user_id', 'quantity', 'purpose', 'status', 'borrowed_at', 'due_at',
-        'returned_at', 'condition_before', 'condition_after', 'condition_notes', 'handled_by',
+        'user_id', 'borrower_name', 'borrower_npm', 'borrower_unit', 'purpose', 'status',
+        'borrowed_at', 'due_at', 'returned_at', 'notes', 'handled_by',
     ];
 
     protected function casts(): array
     {
         return [
             'status' => LoanStatus::class,
-            'condition_before' => ItemCondition::class,
-            'condition_after' => ItemCondition::class,
             'borrowed_at' => 'datetime',
             'due_at' => 'datetime',
             'returned_at' => 'datetime',
-            'quantity' => 'integer',
         ];
-    }
-
-    public function item(): BelongsTo
-    {
-        return $this->belongsTo(Item::class);
     }
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function loanItems(): HasMany
+    {
+        return $this->hasMany(LoanItem::class);
     }
 
     public function handler(): BelongsTo
@@ -57,23 +56,39 @@ class Loan extends Model
         $query->where('status', LoanStatus::Dipinjam)->where('due_at', '<', now());
     }
 
-    /** Admin inventaris menyerahkan barang ke peminjam. */
-    public function handOver(User $admin, ItemCondition $conditionBefore): void
+    /** Ringkasan barang, contoh: "Canon EOS 90D (1), Tripod (2)". */
+    public function itemSummary(): string
+    {
+        return $this->loanItems->map(fn (LoanItem $li) => "{$li->item->name} ({$li->quantity})")->join(', ');
+    }
+
+    /**
+     * Admin inventaris menyerahkan barang ke peminjam.
+     *
+     * @param  array<int, ItemCondition|string>  $conditions  kondisi awal per id loan_item
+     */
+    public function handOver(User $admin, array $conditions = []): void
     {
         if ($this->status !== LoanStatus::Diajukan) {
             throw new DomainException('Hanya peminjaman berstatus "Diajukan" yang bisa diserahkan.');
         }
 
-        if ($this->quantity > $this->item->availableQuantity()) {
-            throw new DomainException('Stok barang tidak mencukupi.');
-        }
+        DB::transaction(function () use ($admin, $conditions) {
+            foreach ($this->loanItems as $loanItem) {
+                if ($loanItem->quantity > $loanItem->item->availableQuantity()) {
+                    throw new DomainException("Stok {$loanItem->item->name} tidak mencukupi.");
+                }
 
-        $this->update([
-            'status' => LoanStatus::Dipinjam,
-            'borrowed_at' => now(),
-            'condition_before' => $conditionBefore,
-            'handled_by' => $admin->id,
-        ]);
+                $loanItem->update([
+                    'condition_before' => $conditions[$loanItem->id] ?? $loanItem->item->condition,
+                ]);
+            }
+
+            $this->update([
+                'status' => LoanStatus::Dipinjam,
+                'handled_by' => $admin->id,
+            ]);
+        });
     }
 
     public function reject(User $admin, ?string $notes = null): void
@@ -84,28 +99,43 @@ class Loan extends Model
 
         $this->update([
             'status' => LoanStatus::Ditolak,
-            'condition_notes' => $notes,
+            'notes' => $notes,
             'handled_by' => $admin->id,
         ]);
     }
 
-    /** Barang dikembalikan; kondisi barang di inventaris ikut diperbarui. */
-    public function markReturned(User $admin, ItemCondition $conditionAfter, ?string $notes = null): void
+    /**
+     * Barang dikembalikan; kondisi barang di inventaris ikut diperbarui jika berubah.
+     *
+     * @param  array<int, ItemCondition|string>  $conditions  kondisi akhir per id loan_item
+     */
+    public function markReturned(User $admin, array $conditions = [], ?string $notes = null): void
     {
         if ($this->status !== LoanStatus::Dipinjam) {
             throw new DomainException('Hanya barang yang sedang dipinjam yang bisa dikembalikan.');
         }
 
-        $this->update([
-            'status' => LoanStatus::Dikembalikan,
-            'returned_at' => now(),
-            'condition_after' => $conditionAfter,
-            'condition_notes' => $notes,
-            'handled_by' => $admin->id,
-        ]);
+        DB::transaction(function () use ($admin, $conditions, $notes) {
+            foreach ($this->loanItems as $loanItem) {
+                $after = ItemCondition::from($this->conditionValue($conditions[$loanItem->id] ?? ItemCondition::Baik));
+                $loanItem->update(['condition_after' => $after]);
 
-        if ($conditionAfter !== ItemCondition::Baik) {
-            $this->item->update(['condition' => $conditionAfter]);
-        }
+                if ($after !== ItemCondition::Baik) {
+                    $loanItem->item->update(['condition' => $after]);
+                }
+            }
+
+            $this->update([
+                'status' => LoanStatus::Dikembalikan,
+                'returned_at' => now(),
+                'notes' => $notes,
+                'handled_by' => $admin->id,
+            ]);
+        });
+    }
+
+    private function conditionValue(ItemCondition|string $condition): string
+    {
+        return $condition instanceof ItemCondition ? $condition->value : $condition;
     }
 }

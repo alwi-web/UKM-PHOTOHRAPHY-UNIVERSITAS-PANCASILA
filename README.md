@@ -14,54 +14,46 @@ acara & kegiatan, manajemen anggota, dan laporan.
 
 ## Aktor & hak akses
 
-| Fitur | Admin UKM | Admin Inventaris | Kurator | Member UKM Fotografi | Anggota UKM Lain |
-|---|:-:|:-:|:-:|:-:|:-:|
-| Lihat daftar barang & stok | ✓ | ✓ | ✓ | ✓ | ✓ |
-| Kelola data barang | ✓ | ✓ | | | |
-| Ajukan peminjaman (milik sendiri) | ✓ | ✓ | ✓ | ✓ | ✓ |
-| Serahkan / tolak / terima kembali barang | ✓ | ✓ | | | |
-| Lihat semua peminjaman & riwayat per barang | ✓ | ✓ | | | |
-| Unggah karya | ✓ | | ✓ | ✓ | |
-| Kurasi & pilih karya untuk website | ✓ | | ✓ | | |
-| Kelola kategori galeri | ✓ | | ✓ | | |
-| CRUD acara, kelola peserta & kehadiran | ✓ | | | | |
-| Ikut / batal ikut acara | ✓ | ✓ | ✓ | ✓ | ✓ |
-| Manajemen user, role, verifikasi pendaftar, tunjuk kurator | ✓ | | | | |
-| Laporan daftar kegiatan (+ unduh CSV) | ✓ | | | | |
-| Laporan insight karya | ✓ | | ✓ | | |
+| Role | Yang bisa dilakukan | Menu panel |
+|---|---|---|
+| **Admin UKM** | Mengatur semuanya | Semua menu |
+| **Admin Inventaris** | Mengelola daftar barang & jumlahnya, melihat barang yang sedang dipinjam dan siapa peminjamnya, mengatur tanggal pinjam & tanggal kembali, mencatat kondisi barang sebelum & sesudah dipinjam | Daftar Barang, Peminjaman |
+| **Kurator** | Mengkurasi foto dan memilih yang tampil di website | Karya Foto (kurasi) |
+| **Member UKM Fotografi** | Mengunggah foto beserta kategori, caption, segitiga exposure (aperture, shutter speed, ISO, dan deskripsinya), link Instagram; melihat foto mana yang lulus kurasi | Karya Foto |
+| **Anggota UKM Lain** | Melihat barang yang tersedia, mengajukan peminjaman (nama lengkap, NPM, fakultas/UKM, tanggal dari–sampai), menambah & menghapus barang dalam pengajuan selama belum diproses | Daftar Barang, Peminjaman |
 
-Hak akses diatur di `app/Policies`.
+Aturan ini ada di `app/Enums/Role.php` dan `app/Policies`, dan diuji di `tests/Feature/RoleAccessTest.php`.
 
 ## Fitur
 
 **Peminjaman inventaris** (`/admin/items`, `/admin/loans`)
-- Daftar barang dengan jumlah total, jumlah dipinjam, dan jumlah tersedia.
-- Tab peminjaman: Diajukan, Sedang Dipinjam, Terlambat, Selesai.
-- Riwayat peminjam per barang, jadi bisa dilacak siapa yang meminjam.
-- Tanggal mulai dipinjam dan batas pengembalian; yang lewat batas ditandai merah.
-- Kondisi barang dicatat sebelum dipinjam dan sesudah dikembalikan. Kondisi barang di inventaris ikut diperbarui jika rusak.
+- Daftar barang dengan jumlah total, jumlah dipinjam, dan jumlah tersedia. Ada filter "Hanya yang tersedia".
+- Satu pengajuan bisa berisi beberapa barang. Peminjam bisa menambah dan menghapus barang selama pengajuan belum diproses.
+- Data peminjam (nama, NPM, fakultas/UKM) terisi otomatis dari profil dan bisa diubah.
+- Admin inventaris menyerahkan barang (mencatat kondisi sebelum), menolak, atau menerima pengembalian (mencatat kondisi sesudah). Kondisi barang di inventaris ikut diperbarui jika rusak.
+- Admin inventaris bisa mengubah tanggal pinjam, tanggal kembali, dan tanggal dikembalikan.
+- Tab peminjaman: Diajukan, Sedang Dipinjam, Terlambat, Selesai. Yang lewat batas kembali ditandai merah.
+- Riwayat peminjam per barang di halaman detail barang.
 - Jumlah pinjam divalidasi terhadap stok yang tersedia.
 
 **Galeri karya online** (`/admin/artworks`)
-- Yang boleh mengunggah: Member UKM Fotografi, Kurator, dan Admin UKM.
-- Setiap karya punya kategori, caption, link Instagram, dan link TikTok.
-- Kurasi: kurator meloloskan atau menolak karya dengan catatan, lalu memilih karya yang tampil di website.
-- Jumlah dilihat tercatat saat pengunjung membuka foto di galeri website.
+- Member mengunggah foto dengan kategori, caption, segitiga exposure, link Instagram, dan link TikTok (opsional).
+- Member melihat status kurasi dan catatan kurator untuk setiap karyanya. Karya yang sudah dikurasi tidak bisa diubah lagi.
+- Kurator meloloskan atau menolak karya, lalu memilih yang tampil di website.
+- Di website, pengunjung melihat data exposure saat membuka foto. Jumlah dilihat tercatat untuk laporan.
 
-**Acara & kegiatan** (`/admin/events`)
-- CRUD acara: nama, jenis, lokasi, waktu mulai/selesai, deskripsi, kuota, poster, status, dan buka/tutup pendaftaran.
-- Anggota event: anggota mendaftar sendiri. Admin bisa menambah atau mengeluarkan peserta dan menandai kehadiran.
+**Acara & kegiatan** (`/admin/events`, Admin UKM)
+- CRUD acara: nama, jenis, lokasi, waktu, deskripsi, kuota, poster, dan status.
+- Anggota event: tambah/keluarkan peserta dan tandai kehadiran.
 
-**Manajemen user** (`/admin/users`)
-- Admin bisa menambah user dan mengatur role.
-- Pendaftaran anggota baru dari website: nama, NIM, foto, fakultas, angkatan, WhatsApp, dan password. Pendaftar berstatus *Menunggu Verifikasi* sampai disetujui admin.
-- Admin bisa menunjuk atau mencabut kurator.
+**Manajemen user** (`/admin/users`, Admin UKM)
+- Tambah user, atur role, setujui pendaftar dari website, tunjuk atau cabut kurator.
 
-**Laporan** (`/admin/event-report`, `/admin/artwork-insight`)
-- Daftar kegiatan dengan jumlah peserta dan persentase kehadiran, bisa difilter per periode, dan bisa diunduh sebagai CSV.
-- Insight karya: total karya, tingkat lolos kurasi, total dilihat, fotografer paling produktif, grafik per kategori, unggahan per bulan, dan karya terpopuler.
+**Laporan** (Admin UKM)
+- Daftar kegiatan dengan jumlah peserta dan persentase kehadiran, bisa difilter per periode dan diunduh sebagai CSV.
+- Insight karya: total karya, tingkat lolos kurasi, total dilihat, grafik per kategori, unggahan per bulan, dan karya terpopuler.
 
-**Website publik** (`/`): profil UKM, galeri karya pilihan kurator, agenda mendatang, pengurus, formulir pendaftaran, dan kontak.
+**Website publik** (`/`): profil UKM, galeri karya pilihan kurator, agenda mendatang, pengurus, formulir pendaftaran (member atau anggota UKM lain), dan kontak.
 
 ## Instalasi
 
@@ -100,13 +92,13 @@ Foto karya di data demo memakai placeholder dari picsum.photos. Ganti dengan ung
 ./vendor/bin/pest
 ```
 
-Tes ada di `tests/Feature` (pendaftaran, halaman depan, inventaris, galeri & kurasi, acara & laporan, manajemen user) dan `tests/Unit`.
+Tes ada di `tests/Feature` (hak akses per role, pendaftaran, halaman depan, inventaris, galeri & kurasi, acara & laporan, manajemen user) dan `tests/Unit`.
 
 ## Struktur penting
 
 ```
 app/Enums/                 role & status (label Indonesia, warna badge)
-app/Models/                User, Item, Loan, Category, Artwork, Event
+app/Models/                User, Item, Loan, LoanItem, Category, Artwork, Event
 app/Policies/              hak akses per role
 app/Filament/Resources/    halaman CRUD panel admin
 app/Filament/Pages/        laporan kegiatan & insight karya

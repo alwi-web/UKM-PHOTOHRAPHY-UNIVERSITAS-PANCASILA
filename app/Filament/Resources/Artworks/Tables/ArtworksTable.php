@@ -38,9 +38,15 @@ class ArtworksTable
                     ->description(fn (Artwork $record) => str($record->caption)->limit(60)),
                 TextColumn::make('user.name')->label('Fotografer')->searchable(),
                 TextColumn::make('category.name')->label('Kategori')->badge()->color('gray'),
+                TextColumn::make('exposure')
+                    ->label('Exposure')
+                    ->state(fn (Artwork $record) => $record->exposureSummary())
+                    ->placeholder('-')
+                    ->toggleable(),
                 TextColumn::make('status')->badge(),
                 IconColumn::make('is_featured')->label('Di Website')->boolean(),
                 TextColumn::make('views')->label('Dilihat')->numeric()->sortable(),
+                TextColumn::make('curator_note')->label('Catatan Kurator')->placeholder('-')->wrap()->limit(80)->toggleable(),
                 TextColumn::make('curator.name')->label('Kurator')->placeholder('-')->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')->label('Diunggah')->since()->sortable(),
             ])

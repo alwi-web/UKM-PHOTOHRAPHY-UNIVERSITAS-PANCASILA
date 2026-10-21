@@ -55,18 +55,4 @@ class Event extends Model
     {
         $query->where('status', EventStatus::Published)->where('start_at', '>=', now()->startOfDay())->orderBy('start_at');
     }
-
-    public function isFull(): bool
-    {
-        return $this->quota !== null && $this->participants()->count() >= $this->quota;
-    }
-
-    public function canRegister(User $user): bool
-    {
-        return $this->status === EventStatus::Published
-            && $this->registration_open
-            && $this->start_at->isFuture()
-            && ! $this->isFull()
-            && ! $this->participants()->whereKey($user->id)->exists();
-    }
 }

@@ -125,6 +125,8 @@
               data-title="{{ $artwork->title }}"
               data-author="{{ $artwork->user->name }}"
               data-caption="{{ $artwork->caption }}"
+              data-exposure="{{ $artwork->exposureSummary() }}"
+              data-exposure-notes="{{ $artwork->exposure_notes }}"
               data-instagram="{{ $artwork->instagram_url }}"
               data-tiktok="{{ $artwork->tiktok_url }}"
               data-view-url="{{ route('artworks.view', $artwork) }}">
@@ -146,7 +148,7 @@
       <div class="section-head reveal">
         <p class="eyebrow">Agenda</p>
         <h2 class="section-title">Kegiatan Mendatang</h2>
-        <p class="section-sub">Ikuti berbagai program yang kami selenggarakan sepanjang tahun. Anggota bisa mendaftar lewat panel anggota.</p>
+        <p class="section-sub">Ikuti berbagai program yang kami selenggarakan sepanjang tahun.</p>
       </div>
       <div class="event-list">
         @forelse ($events as $event)
@@ -210,7 +212,7 @@
         <ul class="check-list">
           <li>Kelas fotografi dasar hingga lanjutan</li>
           <li>Hunting foto rutin setiap bulan</li>
-          <li>Unggah karya &amp; tampil di galeri website</li>
+          <li>Unggah karya &amp; tampil di galeri website setelah dikurasi</li>
           <li>Pinjam peralatan inventaris UKM</li>
           <li>Ikut pameran, lomba, dan workshop</li>
         </ul>
@@ -231,7 +233,7 @@
           <label for="role">Jenis Keanggotaan</label>
           <select id="role" name="role" required>
             <option value="member" @selected(old('role', 'member') === 'member')>Member UKM Fotografi</option>
-            <option value="anggota_lain" @selected(old('role') === 'anggota_lain')>Anggota UKM lain (kolaborasi / pinjam alat)</option>
+            <option value="anggota_lain" @selected(old('role') === 'anggota_lain')>Anggota UKM lain (pinjam peralatan)</option>
           </select>
           @error('role')<small class="error">{{ $message }}</small>@enderror
         </div>
@@ -247,10 +249,10 @@
             <input type="text" id="name" name="name" value="{{ old('name') }}" required />
             @error('name')<small class="error">{{ $message }}</small>@enderror
           </div>
-          <div class="form-group @error('nim') invalid @enderror">
-            <label for="nim">NIM</label>
-            <input type="text" id="nim" name="nim" value="{{ old('nim') }}" inputmode="numeric" required />
-            @error('nim')<small class="error">{{ $message }}</small>@enderror
+          <div class="form-group @error('npm') invalid @enderror">
+            <label for="npm">NPM</label>
+            <input type="text" id="npm" name="npm" value="{{ old('npm') }}" inputmode="numeric" required />
+            @error('npm')<small class="error">{{ $message }}</small>@enderror
           </div>
         </div>
         <div class="form-row">
@@ -361,6 +363,8 @@
         <strong id="lbTitle"></strong>
         <span id="lbAuthor"></span>
         <p id="lbCaption"></p>
+        <span class="lb-exposure" id="lbExposure"></span>
+        <p id="lbExposureNotes"></p>
         <span class="lb-links">
           <a id="lbInstagram" target="_blank" rel="noopener" hidden>Instagram</a>
           <a id="lbTiktok" target="_blank" rel="noopener" hidden>TikTok</a>

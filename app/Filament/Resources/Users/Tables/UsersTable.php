@@ -30,7 +30,7 @@ class UsersTable
                 ImageColumn::make('photo')->label('')->disk('public')->circular()
                     ->defaultImageUrl(fn (User $record) => 'https://ui-avatars.com/api/?background=f5b301&color=111&name='.urlencode($record->name)),
                 TextColumn::make('name')->label('Nama')->searchable()->sortable()
-                    ->description(fn (User $record) => $record->nim),
+                    ->description(fn (User $record) => $record->npm),
                 TextColumn::make('email')->searchable()->toggleable(),
                 TextColumn::make('faculty')->label('Fakultas')->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('role')->badge()->sortable(),

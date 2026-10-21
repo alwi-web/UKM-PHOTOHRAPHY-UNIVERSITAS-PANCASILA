@@ -10,6 +10,8 @@ class CreateArtwork extends CreateRecord
 {
     protected static string $resource = ArtworkResource::class;
 
+    protected static ?string $title = 'Unggah Karya';
+
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $data['user_id'] = auth()->id();

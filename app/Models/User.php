@@ -22,7 +22,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
 
     protected $fillable = [
         'name',
-        'nim',
+        'npm',
         'email',
         'phone',
         'faculty',
@@ -68,6 +68,12 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
     public function isAdminUkm(): bool
     {
         return $this->role === Role::AdminUkm;
+    }
+
+    /** Fakultas, atau asal UKM untuk anggota UKM lain. */
+    public function unit(): ?string
+    {
+        return $this->role === Role::AnggotaLain ? ($this->origin_ukm ?: $this->faculty) : $this->faculty;
     }
 
     public function loans(): HasMany

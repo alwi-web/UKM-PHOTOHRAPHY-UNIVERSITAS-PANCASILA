@@ -11,6 +11,7 @@ use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -21,7 +22,7 @@ class ItemsTable
     {
         return $table
             ->modifyQueryUsing(fn (Builder $query) => $query->withSum(
-                ['loans as borrowed_quantity' => fn (Builder $q) => $q->where('status', LoanStatus::Dipinjam)],
+                ['loanItems as borrowed_quantity' => fn (Builder $q) => $q->whereHas('loan', fn ($l) => $l->where('status', LoanStatus::Dipinjam))],
                 'quantity',
             ))
             ->columns([
@@ -43,6 +44,12 @@ class ItemsTable
                 SelectFilter::make('condition')->label('Kondisi')->options(ItemCondition::class),
                 SelectFilter::make('category')->label('Kategori')
                     ->options(fn () => Item::query()->distinct()->pluck('category', 'category')->filter()->all()),
+                Filter::make('available')
+                    ->label('Hanya yang tersedia')
+                    ->query(fn (Builder $query) => $query->whereRaw(
+                        'quantity > coalesce((select sum(loan_items.quantity) from loan_items join loans on loans.id = loan_items.loan_id where loan_items.item_id = items.id and loans.status = ?), 0)',
+                        [LoanStatus::Dipinjam->value],
+                    )),
             ])
             ->recordActions([
                 ViewAction::make(),
