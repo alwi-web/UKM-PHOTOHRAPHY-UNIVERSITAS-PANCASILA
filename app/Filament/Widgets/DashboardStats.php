@@ -4,6 +4,7 @@ namespace App\Filament\Widgets;
 
 use App\Enums\ArtworkStatus;
 use App\Enums\LoanStatus;
+use App\Enums\RegistrationStatus;
 use App\Enums\Role;
 use App\Enums\UserStatus;
 use App\Models\Artwork;
@@ -11,6 +12,7 @@ use App\Models\Event;
 use App\Models\Item;
 use App\Models\Loan;
 use App\Models\LoanItem;
+use App\Models\Registration;
 use App\Models\User;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
@@ -41,7 +43,7 @@ class DashboardStats extends StatsOverviewWidget
     private function members(): Stat
     {
         return Stat::make('Anggota Aktif', User::where('status', UserStatus::Active)->count())
-            ->description(User::where('status', UserStatus::Pending)->count().' pendaftar menunggu verifikasi')
+            ->description(Registration::where('status', RegistrationStatus::Baru)->count().' pendaftar kaderisasi baru')
             ->color('warning');
     }
 

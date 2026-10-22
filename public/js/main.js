@@ -165,21 +165,11 @@ function initReveal() {
 
 /* ---------- FORM PENDAFTARAN ---------- */
 function initForm() {
-  const role = $("#role");
-  const originGroup = $("#originUkmGroup");
-  if (!role) return;
+  const form = $("#registerForm");
+  if (!form) return;
 
-  // "Asal UKM" hanya untuk anggota UKM lain
-  const sync = () => {
-    const other = role.value === "anggota_lain";
-    originGroup.hidden = !other;
-    $("#origin_ukm").required = other;
-  };
-  role.addEventListener("change", sync);
-  sync();
-
-  $("#registerForm").addEventListener("submit", (e) => {
-    const btn = $("button[type=submit]", e.target);
+  form.addEventListener("submit", () => {
+    const btn = $("button[type=submit]", form);
     btn.disabled = true;
     btn.textContent = "Mengirim...";
   });

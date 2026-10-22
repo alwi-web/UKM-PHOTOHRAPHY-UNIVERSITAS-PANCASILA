@@ -204,23 +204,23 @@
     <div class="container register">
       <div class="register-info reveal">
         <p class="eyebrow">Open Recruitment</p>
-        <h2 class="section-title">Siap Bergabung?</h2>
+        <h2 class="section-title">Daftar Kaderisasi</h2>
         <p>
-          Tidak harus punya kamera mahal atau pengalaman. Cukup bawa semangat belajar — kami bantu
-          sisanya, mulai dari dasar hingga mahir.
+          Pendaftaran ini khusus untuk mahasiswa Universitas Pancasila yang <strong>belum pernah mengikuti
+          kaderisasi</strong> UKM Fotografi. Tidak harus punya kamera atau pengalaman, cukup semangat belajar.
         </p>
         <ul class="check-list">
-          <li>Kelas fotografi dasar hingga lanjutan</li>
-          <li>Hunting foto rutin setiap bulan</li>
+          <li>Isi formulir: nama, NPM, fakultas, dan nomor WhatsApp</li>
+          <li>Pengurus menghubungimu lewat WhatsApp untuk jadwal kaderisasi</li>
+          <li>Setelah lulus kaderisasi, kamu mendapat akun member</li>
           <li>Unggah karya &amp; tampil di galeri website setelah dikurasi</li>
-          <li>Pinjam peralatan inventaris UKM</li>
-          <li>Ikut pameran, lomba, dan workshop</li>
+          <li>Ikut kelas, hunting foto, pameran, dan lomba</li>
         </ul>
       </div>
 
-      <form class="register-form reveal" id="registerForm" method="POST" action="{{ route('register') }}" enctype="multipart/form-data">
+      <form class="register-form reveal" id="registerForm" method="POST" action="{{ route('register') }}">
         @csrf
-        <h3>Formulir Pendaftaran</h3>
+        <h3>Formulir Pendaftaran Kaderisasi</h3>
 
         @if (session('registered'))
           <p class="form-success">{{ session('registered') }}</p>
@@ -229,81 +229,37 @@
           <p class="form-failure">Periksa kembali isian yang ditandai merah.</p>
         @endif
 
-        <div class="form-group @error('role') invalid @enderror">
-          <label for="role">Jenis Keanggotaan</label>
-          <select id="role" name="role" required>
-            <option value="member" @selected(old('role', 'member') === 'member')>Member UKM Fotografi</option>
-            <option value="anggota_lain" @selected(old('role') === 'anggota_lain')>Anggota UKM lain (pinjam peralatan)</option>
+        <div class="form-group @error('name') invalid @enderror">
+          <label for="name">Nama Lengkap</label>
+          <input type="text" id="name" name="name" value="{{ old('name') }}" autocomplete="name" required />
+          @error('name')<small class="error">{{ $message }}</small>@enderror
+        </div>
+        <div class="form-group @error('npm') invalid @enderror">
+          <label for="npm">NPM</label>
+          <input type="text" id="npm" name="npm" value="{{ old('npm') }}" inputmode="numeric" pattern="\d{6,20}" required />
+          @error('npm')<small class="error">{{ $message }}</small>@enderror
+        </div>
+        <div class="form-group @error('faculty') invalid @enderror">
+          <label for="faculty">Fakultas</label>
+          <select id="faculty" name="faculty" required>
+            <option value="">Pilih fakultas</option>
+            @foreach (config('ukm.faculties') as $faculty)
+              <option @selected(old('faculty') === $faculty)>{{ $faculty }}</option>
+            @endforeach
           </select>
-          @error('role')<small class="error">{{ $message }}</small>@enderror
+          @error('faculty')<small class="error">{{ $message }}</small>@enderror
         </div>
-        <div class="form-group @error('origin_ukm') invalid @enderror" id="originUkmGroup" @if (old('role') !== 'anggota_lain') hidden @endif>
-          <label for="origin_ukm">Asal UKM</label>
-          <input type="text" id="origin_ukm" name="origin_ukm" value="{{ old('origin_ukm') }}" placeholder="Contoh: UKM Jurnalistik" />
-          @error('origin_ukm')<small class="error">{{ $message }}</small>@enderror
+        <div class="form-group @error('phone') invalid @enderror">
+          <label for="phone">Nomor WhatsApp</label>
+          <input type="tel" id="phone" name="phone" value="{{ old('phone') }}" placeholder="08xxxxxxxxxx" autocomplete="tel" required />
+          @error('phone')<small class="error">{{ $message }}</small>@enderror
         </div>
-
-        <div class="form-row">
-          <div class="form-group @error('name') invalid @enderror">
-            <label for="name">Nama Lengkap</label>
-            <input type="text" id="name" name="name" value="{{ old('name') }}" required />
-            @error('name')<small class="error">{{ $message }}</small>@enderror
-          </div>
-          <div class="form-group @error('npm') invalid @enderror">
-            <label for="npm">NPM</label>
-            <input type="text" id="npm" name="npm" value="{{ old('npm') }}" inputmode="numeric" required />
-            @error('npm')<small class="error">{{ $message }}</small>@enderror
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group @error('faculty') invalid @enderror">
-            <label for="faculty">Fakultas</label>
-            <select id="faculty" name="faculty" required>
-              <option value="">Pilih fakultas</option>
-              @foreach (config('ukm.faculties') as $faculty)
-                <option @selected(old('faculty') === $faculty)>{{ $faculty }}</option>
-              @endforeach
-            </select>
-            @error('faculty')<small class="error">{{ $message }}</small>@enderror
-          </div>
-          <div class="form-group @error('batch_year') invalid @enderror">
-            <label for="batch_year">Angkatan</label>
-            <input type="number" id="batch_year" name="batch_year" value="{{ old('batch_year') }}" placeholder="{{ now()->year }}" min="2000" max="{{ now()->year + 1 }}" required />
-            @error('batch_year')<small class="error">{{ $message }}</small>@enderror
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group @error('email') invalid @enderror">
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" value="{{ old('email') }}" required />
-            @error('email')<small class="error">{{ $message }}</small>@enderror
-          </div>
-          <div class="form-group @error('phone') invalid @enderror">
-            <label for="phone">No. WhatsApp</label>
-            <input type="tel" id="phone" name="phone" value="{{ old('phone') }}" placeholder="08xxxxxxxxxx" required />
-            @error('phone')<small class="error">{{ $message }}</small>@enderror
-          </div>
-        </div>
-        <div class="form-group @error('photo') invalid @enderror">
-          <label for="photo">Foto Diri (maks. 2 MB)</label>
-          <input type="file" id="photo" name="photo" accept="image/*" required />
-          @error('photo')<small class="error">{{ $message }}</small>@enderror
-        </div>
-        <div class="form-row">
-          <div class="form-group @error('password') invalid @enderror">
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password" minlength="8" required />
-            @error('password')<small class="error">{{ $message }}</small>@enderror
-          </div>
-          <div class="form-group">
-            <label for="password_confirmation">Ulangi Password</label>
-            <input type="password" id="password_confirmation" name="password_confirmation" minlength="8" required />
-          </div>
-        </div>
-        <div class="form-group @error('join_reason') invalid @enderror">
-          <label for="join_reason">Alasan Bergabung</label>
-          <textarea id="join_reason" name="join_reason" rows="3" placeholder="Ceritakan singkat alasanmu...">{{ old('join_reason') }}</textarea>
-          @error('join_reason')<small class="error">{{ $message }}</small>@enderror
+        <div class="form-group form-check @error('not_cadre_yet') invalid @enderror">
+          <label for="not_cadre_yet">
+            <input type="checkbox" id="not_cadre_yet" name="not_cadre_yet" value="1" @checked(old('not_cadre_yet')) required />
+            Saya belum pernah mengikuti kaderisasi UKM Fotografi Universitas Pancasila.
+          </label>
+          @error('not_cadre_yet')<small class="error">{{ $message }}</small>@enderror
         </div>
         <button type="submit" class="btn btn-primary btn-block">Kirim Pendaftaran</button>
       </form>

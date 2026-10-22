@@ -16,7 +16,7 @@ acara & kegiatan, manajemen anggota, dan laporan.
 
 | Role | Yang bisa dilakukan | Menu panel |
 |---|---|---|
-| **Admin UKM** | Mengatur semuanya | Semua menu |
+| **Admin UKM** | Mengatur semuanya, termasuk memproses pendaftar kaderisasi | Semua menu |
 | **Admin Inventaris** | Mengelola daftar barang & jumlahnya, melihat barang yang sedang dipinjam dan siapa peminjamnya, mengatur tanggal pinjam & tanggal kembali, mencatat kondisi barang sebelum & sesudah dipinjam | Daftar Barang, Peminjaman |
 | **Kurator** | Mengkurasi foto dan memilih yang tampil di website | Karya Foto (kurasi) |
 | **Member UKM Fotografi** | Mengunggah foto beserta kategori, caption, segitiga exposure (aperture, shutter speed, ISO, dan deskripsinya), link Instagram; melihat foto mana yang lulus kurasi | Karya Foto |
@@ -47,13 +47,19 @@ Aturan ini ada di `app/Enums/Role.php` dan `app/Policies`, dan diuji di `tests/F
 - Anggota event: tambah/keluarkan peserta dan tandai kehadiran.
 
 **Manajemen user** (`/admin/users`, Admin UKM)
-- Tambah user, atur role, setujui pendaftar dari website, tunjuk atau cabut kurator.
+- Tambah user, atur role, tunjuk atau cabut kurator.
+
+**Pendaftaran kaderisasi** (`/admin/registrations`, Admin UKM)
+- Formulir di website khusus mahasiswa yang belum pernah mengikuti kaderisasi. Isiannya: nama, NPM, fakultas, nomor WhatsApp, dan centang pernyataan belum pernah ikut kaderisasi.
+- NPM yang sudah menjadi anggota atau sudah pernah mendaftar ditolak.
+- Admin melihat pendaftar per status (Baru, Sudah Dihubungi, Diterima, Ditolak) dan bisa membuka chat WhatsApp langsung dari tabel.
+- Setelah kaderisasi, "Terima & buat akun" membuat akun Member dari data pendaftar. Admin mengisi email dan password untuk diserahkan ke anggota baru.
 
 **Laporan** (Admin UKM)
 - Daftar kegiatan dengan jumlah peserta dan persentase kehadiran, bisa difilter per periode dan diunduh sebagai CSV.
 - Insight karya: total karya, tingkat lolos kurasi, total dilihat, grafik per kategori, unggahan per bulan, dan karya terpopuler.
 
-**Website publik** (`/`): profil UKM, galeri karya pilihan kurator, agenda mendatang, pengurus, formulir pendaftaran (member atau anggota UKM lain), dan kontak.
+**Website publik** (`/`): profil UKM, galeri karya pilihan kurator, agenda mendatang, pengurus, formulir pendaftaran kaderisasi, dan kontak.
 
 ## Instalasi
 
@@ -98,7 +104,7 @@ Tes ada di `tests/Feature` (hak akses per role, pendaftaran, halaman depan, inve
 
 ```
 app/Enums/                 role & status (label Indonesia, warna badge)
-app/Models/                User, Item, Loan, LoanItem, Category, Artwork, Event
+app/Models/                User, Registration, Item, Loan, LoanItem, Category, Artwork, Event
 app/Policies/              hak akses per role
 app/Filament/Resources/    halaman CRUD panel admin
 app/Filament/Pages/        laporan kegiatan & insight karya

@@ -7,7 +7,6 @@ use App\Enums\UserStatus;
 use App\Models\User;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
-use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -18,7 +17,6 @@ use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Collection;
 
 class UsersTable
 {
@@ -42,23 +40,6 @@ class UsersTable
                 SelectFilter::make('status')->options(UserStatus::class),
             ])
             ->recordActions([
-                Action::make('approve')
-                    ->label('Setujui')
-                    ->icon(Heroicon::OutlinedCheck)
-                    ->color('success')
-                    ->requiresConfirmation()
-                    ->visible(fn (User $record) => $record->status === UserStatus::Pending)
-                    ->action(function (User $record) {
-                        $record->update(['status' => UserStatus::Active]);
-                        Notification::make()->title("{$record->name} sekarang anggota aktif.")->success()->send();
-                    }),
-                Action::make('reject')
-                    ->label('Tolak')
-                    ->icon(Heroicon::OutlinedXMark)
-                    ->color('danger')
-                    ->requiresConfirmation()
-                    ->visible(fn (User $record) => $record->status === UserStatus::Pending)
-                    ->action(fn (User $record) => $record->update(['status' => UserStatus::Rejected])),
                 ActionGroup::make([
                     Action::make('makeCurator')
                         ->label('Tunjuk sebagai Kurator')
@@ -81,12 +62,6 @@ class UsersTable
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    BulkAction::make('approveSelected')
-                        ->label('Setujui terpilih')
-                        ->icon(Heroicon::OutlinedCheck)
-                        ->requiresConfirmation()
-                        ->action(fn (Collection $records) => $records->each->update(['status' => UserStatus::Active]))
-                        ->deselectRecordsAfterCompletion(),
                     DeleteBulkAction::make(),
                 ]),
             ]);

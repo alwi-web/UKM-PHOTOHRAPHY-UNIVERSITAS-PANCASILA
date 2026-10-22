@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\Users;
 
-use App\Enums\UserStatus;
 use App\Filament\Resources\Users\Pages\CreateUser;
 use App\Filament\Resources\Users\Pages\EditUser;
 use App\Filament\Resources\Users\Pages\ListUsers;
@@ -30,17 +29,7 @@ class UserResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'name';
 
-    public static function getNavigationBadge(): ?string
-    {
-        $pending = User::where('status', UserStatus::Pending)->count();
-
-        return $pending ? (string) $pending : null;
-    }
-
-    public static function getNavigationBadgeTooltip(): ?string
-    {
-        return 'Pendaftar menunggu verifikasi';
-    }
+    protected static ?int $navigationSort = 2;
 
     public static function form(Schema $schema): Schema
     {

@@ -8,12 +8,14 @@ use App\Enums\EventType;
 use App\Enums\ItemCondition;
 use App\Enums\LoanStatus;
 use App\Enums\ParticipantStatus;
+use App\Enums\RegistrationStatus;
 use App\Enums\Role;
 use App\Models\Artwork;
 use App\Models\Category;
 use App\Models\Event;
 use App\Models\Item;
 use App\Models\Loan;
+use App\Models\Registration;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -32,7 +34,8 @@ class DatabaseSeeder extends Seeder
             'name' => 'Anggota UKM Jurnalistik', 'email' => 'tamu@ukmfoto.test', 'origin_ukm' => 'UKM Jurnalistik',
         ]);
         $members = User::factory(10)->create()->push($member);
-        User::factory(3)->pending()->create();
+        Registration::factory(4)->create();
+        Registration::factory()->create(['status' => RegistrationStatus::Dihubungi]);
 
         // ---- Inventaris ----
         $items = collect([

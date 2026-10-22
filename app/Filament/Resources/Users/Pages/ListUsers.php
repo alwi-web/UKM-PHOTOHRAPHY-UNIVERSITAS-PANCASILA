@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\Users\Pages;
 
 use App\Enums\Role;
-use App\Enums\UserStatus;
 use App\Filament\Resources\Users\UserResource;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
@@ -25,8 +24,6 @@ class ListUsers extends ListRecords
     {
         return [
             'semua' => Tab::make('Semua'),
-            'pending' => Tab::make('Pendaftar Baru')
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', UserStatus::Pending)),
             'pengurus' => Tab::make('Pengurus')
                 ->modifyQueryUsing(fn (Builder $query) => $query->whereIn('role', [Role::AdminUkm, Role::AdminInventaris, Role::Kurator])),
             'member' => Tab::make('Member')

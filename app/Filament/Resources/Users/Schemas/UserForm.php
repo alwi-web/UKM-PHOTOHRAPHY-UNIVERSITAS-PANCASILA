@@ -6,7 +6,6 @@ use App\Enums\Role;
 use App\Enums\UserStatus;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
@@ -33,7 +32,6 @@ class UserForm
                             ->label('Asal UKM')
                             ->visible(fn (Get $get) => in_array($get('role'), [Role::AnggotaLain, Role::AnggotaLain->value], true))
                             ->columnSpanFull(),
-                        Textarea::make('join_reason')->label('Alasan Bergabung')->rows(3)->columnSpanFull(),
                     ]),
                 Section::make('Akun')
                     ->columnSpan(1)

@@ -23,7 +23,6 @@ return new class extends Migration
             $table->string('photo')->nullable();
             $table->string('role', 30)->default('member')->index();
             $table->string('status', 20)->default('pending')->index();
-            $table->text('join_reason')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();

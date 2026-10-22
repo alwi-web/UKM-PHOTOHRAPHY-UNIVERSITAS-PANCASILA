@@ -27,15 +27,6 @@ it('admin UKM menambah user dan mengatur role', function () {
     expect(User::where('email', 'sari@example.com')->sole()->role)->toBe(Role::AdminInventaris);
 });
 
-it('admin UKM menyetujui pendaftar baru', function () {
-    loginAs(Role::AdminUkm);
-    $pendaftar = User::factory()->pending()->create();
-
-    livewire(ListUsers::class)->callAction(TestAction::make('approve')->table($pendaftar));
-
-    expect($pendaftar->fresh()->status)->toBe(UserStatus::Active);
-});
-
 it('admin UKM menunjuk anggota sebagai kurator', function () {
     loginAs(Role::AdminUkm);
     $member = User::factory()->create();
