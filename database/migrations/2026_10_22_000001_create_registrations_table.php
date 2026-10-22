@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /** Pendaftar kaderisasi dari website (mahasiswa yang belum pernah ikut kaderisasi). */
+    /** Pendaftar calon anggota dari website (mahasiswa yang belum pernah ikut kaderisasi). */
     public function up(): void
     {
         Schema::create('registrations', function (Blueprint $table) {

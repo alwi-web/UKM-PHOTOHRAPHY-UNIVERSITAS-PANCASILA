@@ -5,7 +5,7 @@ namespace App\Policies;
 use App\Models\Registration;
 use App\Models\User;
 
-/** Pendaftar kaderisasi dikelola Admin UKM. Pendaftaran baru masuk dari website. */
+/** Pendaftar calon anggota dikelola Admin UKM. Pendaftaran baru masuk dari website. */
 class RegistrationPolicy
 {
     public function viewAny(User $user): bool

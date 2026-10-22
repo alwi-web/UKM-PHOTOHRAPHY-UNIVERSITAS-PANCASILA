@@ -204,7 +204,7 @@
     <div class="container register">
       <div class="register-info reveal">
         <p class="eyebrow">Open Recruitment</p>
-        <h2 class="section-title">Daftar Kaderisasi</h2>
+        <h2 class="section-title">Daftar Calon Anggota</h2>
         <p>
           Pendaftaran ini khusus untuk mahasiswa Universitas Pancasila yang <strong>belum pernah mengikuti
           kaderisasi</strong> UKM Fotografi. Tidak harus punya kamera atau pengalaman, cukup semangat belajar.
@@ -220,7 +220,7 @@
 
       <form class="register-form reveal" id="registerForm" method="POST" action="{{ route('register') }}">
         @csrf
-        <h3>Formulir Pendaftaran Kaderisasi</h3>
+        <h3>Formulir Pendaftaran Calon Anggota</h3>
 
         @if (session('registered'))
           <p class="form-success">{{ session('registered') }}</p>

@@ -53,7 +53,7 @@ class Registration extends Model
         $this->update(['status' => RegistrationStatus::Ditolak, 'notes' => $notes, 'processed_by' => $admin->id]);
     }
 
-    /** Pendaftar lulus kaderisasi: dibuatkan akun Member UKM Fotografi. */
+    /** Calon anggota diterima: dibuatkan akun Member UKM Fotografi. */
     public function accept(User $admin, string $email, string $password): User
     {
         if ($this->status === RegistrationStatus::Diterima) {

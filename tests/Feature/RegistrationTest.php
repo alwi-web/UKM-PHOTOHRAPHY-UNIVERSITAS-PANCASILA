@@ -25,7 +25,8 @@ function registrationData(array $overrides = []): array
 describe('formulir di website', function () {
     it('hanya meminta nama, NPM, fakultas, dan nomor WhatsApp', function () {
         $this->get('/')
-            ->assertSee('Formulir Pendaftaran Kaderisasi')
+            ->assertSee('Formulir Pendaftaran Calon Anggota')
+            ->assertDontSee('Pendaftaran Kaderisasi')
             ->assertSee('name="name"', false)
             ->assertSee('name="npm"', false)
             ->assertSee('name="faculty"', false)
@@ -35,7 +36,7 @@ describe('formulir di website', function () {
             ->assertDontSee('name="photo"', false);
     });
 
-    it('menyimpan pendaftar kaderisasi baru', function () {
+    it('menyimpan pendaftar calon anggota baru', function () {
         $this->post(route('register'), registrationData())
             ->assertRedirect(route('home').'#daftar')
             ->assertSessionHas('registered');

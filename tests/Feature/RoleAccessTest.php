@@ -17,7 +17,7 @@ $pages = [
     'kategori' => '/admin/categories',
     'acara' => '/admin/events',
     'user' => '/admin/users',
-    'pendaftar kaderisasi' => '/admin/registrations',
+    'pendaftar calon anggota' => '/admin/registrations',
     'laporan kegiatan' => '/admin/event-report',
     'insight karya' => '/admin/artwork-insight',
 ];

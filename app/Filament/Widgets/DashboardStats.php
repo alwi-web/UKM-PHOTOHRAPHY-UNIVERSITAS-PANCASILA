@@ -43,7 +43,7 @@ class DashboardStats extends StatsOverviewWidget
     private function members(): Stat
     {
         return Stat::make('Anggota Aktif', User::where('status', UserStatus::Active)->count())
-            ->description(Registration::where('status', RegistrationStatus::Baru)->count().' pendaftar kaderisasi baru')
+            ->description(Registration::where('status', RegistrationStatus::Baru)->count().' calon anggota baru mendaftar')
             ->color('warning');
     }
 

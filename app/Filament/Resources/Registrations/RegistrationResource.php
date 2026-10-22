@@ -23,9 +23,9 @@ class RegistrationResource extends Resource
 
     protected static string|UnitEnum|null $navigationGroup = 'Manajemen User';
 
-    protected static ?string $modelLabel = 'pendaftar';
+    protected static ?string $modelLabel = 'calon anggota';
 
-    protected static ?string $pluralModelLabel = 'Pendaftar Kaderisasi';
+    protected static ?string $pluralModelLabel = 'Pendaftar Calon Anggota';
 
     protected static ?string $recordTitleAttribute = 'name';
 
@@ -40,7 +40,7 @@ class RegistrationResource extends Resource
 
     public static function getNavigationBadgeTooltip(): ?string
     {
-        return 'Pendaftar baru yang belum dihubungi';
+        return 'Calon anggota baru yang belum dihubungi';
     }
 
     public static function form(Schema $schema): Schema

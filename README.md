@@ -16,7 +16,7 @@ acara & kegiatan, manajemen anggota, dan laporan.
 
 | Role | Yang bisa dilakukan | Menu panel |
 |---|---|---|
-| **Admin UKM** | Mengatur semuanya, termasuk memproses pendaftar kaderisasi | Semua menu |
+| **Admin UKM** | Mengatur semuanya, termasuk memproses pendaftar calon anggota | Semua menu |
 | **Admin Inventaris** | Mengelola daftar barang & jumlahnya, melihat barang yang sedang dipinjam dan siapa peminjamnya, mengatur tanggal pinjam & tanggal kembali, mencatat kondisi barang sebelum & sesudah dipinjam | Daftar Barang, Peminjaman |
 | **Kurator** | Mengkurasi foto dan memilih yang tampil di website | Karya Foto (kurasi) |
 | **Member UKM Fotografi** | Mengunggah foto beserta kategori, caption, segitiga exposure (aperture, shutter speed, ISO, dan deskripsinya), link Instagram; melihat foto mana yang lulus kurasi | Karya Foto |
@@ -49,7 +49,7 @@ Aturan ini ada di `app/Enums/Role.php` dan `app/Policies`, dan diuji di `tests/F
 **Manajemen user** (`/admin/users`, Admin UKM)
 - Tambah user, atur role, tunjuk atau cabut kurator.
 
-**Pendaftaran kaderisasi** (`/admin/registrations`, Admin UKM)
+**Pendaftaran calon anggota** (`/admin/registrations`, menu Pendaftar Calon Anggota, Admin UKM)
 - Formulir di website khusus mahasiswa yang belum pernah mengikuti kaderisasi. Isiannya: nama, NPM, fakultas, nomor WhatsApp, dan centang pernyataan belum pernah ikut kaderisasi.
 - NPM yang sudah menjadi anggota atau sudah pernah mendaftar ditolak.
 - Admin melihat pendaftar per status (Baru, Sudah Dihubungi, Diterima, Ditolak) dan bisa membuka chat WhatsApp langsung dari tabel.
@@ -59,7 +59,7 @@ Aturan ini ada di `app/Enums/Role.php` dan `app/Policies`, dan diuji di `tests/F
 - Daftar kegiatan dengan jumlah peserta dan persentase kehadiran, bisa difilter per periode dan diunduh sebagai CSV.
 - Insight karya: total karya, tingkat lolos kurasi, total dilihat, grafik per kategori, unggahan per bulan, dan karya terpopuler.
 
-**Website publik** (`/`): profil UKM, galeri karya pilihan kurator, agenda mendatang, pengurus, formulir pendaftaran kaderisasi, dan kontak.
+**Website publik** (`/`): profil UKM, galeri karya pilihan kurator, agenda mendatang, pengurus, formulir pendaftaran calon anggota, dan kontak.
 
 ## Instalasi
 

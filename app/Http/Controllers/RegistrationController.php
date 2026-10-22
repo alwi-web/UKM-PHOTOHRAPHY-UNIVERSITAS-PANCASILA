@@ -7,7 +7,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
-/** Pendaftaran kaderisasi dari website, khusus mahasiswa yang belum pernah ikut kaderisasi. */
+/** Pendaftaran calon anggota dari website, khusus mahasiswa yang belum pernah ikut kaderisasi. */
 class RegistrationController extends Controller
 {
     public function store(Request $request): RedirectResponse

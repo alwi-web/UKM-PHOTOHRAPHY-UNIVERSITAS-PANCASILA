@@ -9,7 +9,7 @@ Jalankan `./vendor/bin/pest`. Cakupan:
 | File | Yang diuji |
 |---|---|
 | `tests/Feature/RoleAccessTest.php` | Setiap role hanya bisa membuka menu miliknya (55 kombinasi role × menu) |
-| `tests/Feature/RegistrationTest.php` | Formulir kaderisasi (nama, NPM, fakultas, WhatsApp), pernyataan belum ikut kaderisasi, NPM ganda, terima & buat akun, tolak |
+| `tests/Feature/RegistrationTest.php` | Formulir pendaftaran calon anggota (nama, NPM, fakultas, WhatsApp), pernyataan belum ikut kaderisasi, NPM ganda, terima & buat akun, tolak |
 | `tests/Feature/HomePageTest.php` | Website hanya menampilkan karya terkurasi & acara terpublikasi, pencatatan jumlah dilihat |
 | `tests/Feature/LoanScheduleTest.php` | Cek bentrok tanggal: rentang beririsan, bersambung, status yang diabaikan, barang terlambat, filter ketersediaan |
 | `tests/Feature/InventoryTest.php` | Stok tersedia, keterlambatan, pengajuan multi-barang, tambah/hapus barang, serah terima, pengembalian & kondisi barang, ubah tanggal |
@@ -24,11 +24,11 @@ Isi kolom **Hasil** saat pengujian manual (✓ sesuai / ✗ tidak sesuai).
 
 | No | Fitur | Skenario | Data uji | Hasil yang diharapkan | Hasil |
 |---|---|---|---|---|---|
-| B01 | Pendaftaran | Isi formulir kaderisasi dengan data valid | Nama, NPM 10 digit, fakultas, 0812-3456-7890, centang pernyataan | Muncul pesan terima kasih; pendaftar tampil di menu Pendaftar Kaderisasi berstatus "Baru" | |
+| B01 | Pendaftaran | Isi formulir pendaftaran calon anggota dengan data valid | Nama, NPM 10 digit, fakultas, 0812-3456-7890, centang pernyataan | Muncul pesan terima kasih; pendaftar tampil di menu Pendaftar Calon Anggota berstatus "Baru" | |
 | B02 | Pendaftaran | Tidak mencentang pernyataan belum ikut kaderisasi | Centang kosong | Muncul pesan pendaftaran khusus mahasiswa yang belum pernah ikut kaderisasi | |
 | B03 | Pendaftaran | NPM sudah menjadi anggota atau sudah mendaftar | NPM yang sama dikirim dua kali | Muncul pesan "NPM ini sudah terdaftar" | |
-| B04 | Pendaftar kaderisasi | Admin menghubungi pendaftar | Klik nomor WhatsApp, lalu "Sudah Dihubungi" | Chat WhatsApp terbuka; status jadi "Sudah Dihubungi" | |
-| B05 | Pendaftar kaderisasi | Admin menerima pendaftar | "Terima & buat akun", isi email & password | Akun Member terbentuk dan bisa login ke panel | |
+| B04 | Pendaftar calon anggota | Admin menghubungi pendaftar | Klik nomor WhatsApp, lalu "Sudah Dihubungi" | Chat WhatsApp terbuka; status jadi "Sudah Dihubungi" | |
+| B05 | Pendaftar calon anggota | Admin menerima pendaftar | "Terima & buat akun", isi email & password | Akun Member terbentuk dan bisa login ke panel | |
 | B06 | Manajemen user | Admin menunjuk kurator | Menu "Tunjuk sebagai Kurator" | Role berubah jadi Kurator | |
 | B07 | Inventaris | Admin inventaris menambah barang | Kode CAM-010, jumlah 2 | Barang muncul di daftar, tersedia 2 | |
 | B08 | Peminjaman | Anggota UKM lain membuka form pengajuan | Login anggota UKM lain | Nama, NPM, dan Fakultas/UKM terisi otomatis | |
@@ -64,7 +64,7 @@ mencoba skenario sesuai perannya, lalu mengisi kuesioner skala Likert 1–5
 | No | Pernyataan | 1 | 2 | 3 | 4 | 5 |
 |---|---|---|---|---|---|---|
 | U01 | Tampilan website mudah dipahami | | | | | |
-| U02 | Formulir pendaftaran kaderisasi mudah diisi (calon anggota) | | | | | |
+| U02 | Formulir pendaftaran calon anggota mudah diisi | | | | | |
 | U03 | Saya mudah menemukan barang yang tersedia untuk dipinjam (anggota UKM lain) | | | | | |
 | U04 | Proses pengajuan dan pengembalian barang jelas | | | | | |
 | U05 | Status dan riwayat peminjaman membantu melacak barang | | | | | |
