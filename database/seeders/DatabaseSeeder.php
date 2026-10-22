@@ -93,7 +93,8 @@ class DatabaseSeeder extends Seeder
 
         foreach (range(1, 12) as $i) {
             Artwork::create([
-                'user_id' => $members->random()->id,
+                // dua karya pertama milik akun demo member, supaya hasil kurasi bisa dilihat
+                'user_id' => $i <= 2 ? $member->id : $members->random()->id,
                 'category_id' => $categories->random()->id,
                 'title' => fake()->randomElement(['Senja di Danau Kampus', 'Tatapan', 'Pedagang Pagi', 'Ritme Kota', 'Kabut Puncak', 'Bayangan Halte'])." #{$i}",
                 'caption' => fake()->sentence(14),
@@ -105,6 +106,7 @@ class DatabaseSeeder extends Seeder
                 'instagram_url' => $i % 2 ? 'https://www.instagram.com/ukmfotografi.up/' : null,
                 'status' => ArtworkStatus::Approved,
                 'is_featured' => true,
+                'curator_note' => $i === 1 ? 'Komposisi rule of thirds-nya kuat, warna senja terjaga.' : null,
                 'curated_by' => $kurator->id,
                 'curated_at' => now()->subDays($i),
                 'views' => fake()->numberBetween(5, 300),
@@ -112,6 +114,14 @@ class DatabaseSeeder extends Seeder
             ]);
         }
         Artwork::factory(3)->recycle($members)->recycle($categories)->create();
+        Artwork::factory()->for($member)->recycle($categories)->create(['title' => 'Hujan di Halte Kampus']);
+        Artwork::factory()->for($member)->recycle($categories)->create([
+            'title' => 'Siluet Menara Air',
+            'status' => ArtworkStatus::Rejected,
+            'curator_note' => 'Foto under-exposed dan subjek kurang tajam. Coba shutter lebih cepat atau naikkan ISO.',
+            'curated_by' => $kurator->id,
+            'curated_at' => now()->subDay(),
+        ]);
 
         // ---- Kegiatan ----
         $events = collect([
