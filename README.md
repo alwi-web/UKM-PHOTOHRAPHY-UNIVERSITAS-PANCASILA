@@ -50,7 +50,7 @@ Aturan ini ada di `app/Enums/Role.php` dan `app/Policies`, dan diuji di `tests/F
 - Tambah user, atur role, tunjuk atau cabut kurator.
 
 **Pendaftaran calon anggota** (`/admin/registrations`, menu Pendaftar Calon Anggota, Admin UKM)
-- Formulir di website khusus mahasiswa yang belum pernah mengikuti kaderisasi. Isiannya: nama, NPM, fakultas, nomor WhatsApp, dan centang pernyataan belum pernah ikut kaderisasi.
+- Formulir di website khusus mahasiswa yang belum pernah mengikuti kaderisasi. Isiannya: nama, NPM, fakultas, nomor WhatsApp, dan centang pernyataan "Saya belum pernah mendaftar di PhotoUP".
 - NPM yang sudah menjadi anggota atau sudah pernah mendaftar ditolak.
 - Admin melihat pendaftar per status (Baru, Sudah Dihubungi, Diterima, Ditolak) dan bisa membuka chat WhatsApp langsung dari tabel.
 - Setelah kaderisasi, "Terima & buat akun" membuat akun Member dari data pendaftar. Admin mengisi email dan password untuk diserahkan ke anggota baru.

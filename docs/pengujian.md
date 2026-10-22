@@ -25,7 +25,7 @@ Isi kolom **Hasil** saat pengujian manual (✓ sesuai / ✗ tidak sesuai).
 | No | Fitur | Skenario | Data uji | Hasil yang diharapkan | Hasil |
 |---|---|---|---|---|---|
 | B01 | Pendaftaran | Isi formulir pendaftaran calon anggota dengan data valid | Nama, NPM 10 digit, fakultas, 0812-3456-7890, centang pernyataan | Muncul pesan terima kasih; pendaftar tampil di menu Pendaftar Calon Anggota berstatus "Baru" | |
-| B02 | Pendaftaran | Tidak mencentang pernyataan belum ikut kaderisasi | Centang kosong | Muncul pesan pendaftaran khusus mahasiswa yang belum pernah ikut kaderisasi | |
+| B02 | Pendaftaran | Tidak mencentang pernyataan "Saya belum pernah mendaftar di PhotoUP" | Centang kosong | Muncul pesan pendaftaran khusus mahasiswa yang belum pernah mendaftar di PhotoUP | |
 | B03 | Pendaftaran | NPM sudah menjadi anggota atau sudah mendaftar | NPM yang sama dikirim dua kali | Muncul pesan "NPM ini sudah terdaftar" | |
 | B04 | Pendaftar calon anggota | Admin menghubungi pendaftar | Klik nomor WhatsApp, lalu "Sudah Dihubungi" | Chat WhatsApp terbuka; status jadi "Sudah Dihubungi" | |
 | B05 | Pendaftar calon anggota | Admin menerima pendaftar | "Terima & buat akun", isi email & password | Akun Member terbentuk dan bisa login ke panel | |

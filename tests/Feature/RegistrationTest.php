@@ -27,6 +27,7 @@ describe('formulir di website', function () {
         $this->get('/')
             ->assertSee('Formulir Pendaftaran Calon Anggota')
             ->assertDontSee('Pendaftaran Kaderisasi')
+            ->assertSee('Saya belum pernah mendaftar di PhotoUP.')
             ->assertSee('name="name"', false)
             ->assertSee('name="npm"', false)
             ->assertSee('name="faculty"', false)
@@ -50,9 +51,9 @@ describe('formulir di website', function () {
             ->and(User::count())->toBe(0);
     });
 
-    it('wajib menyatakan belum pernah mengikuti kaderisasi', function () {
+    it('wajib menyatakan belum pernah mendaftar di PhotoUP', function () {
         $this->post(route('register'), registrationData(['not_cadre_yet' => null]))
-            ->assertSessionHasErrors(['not_cadre_yet' => 'Pendaftaran ini khusus mahasiswa yang belum pernah mengikuti kaderisasi.']);
+            ->assertSessionHasErrors(['not_cadre_yet' => 'Pendaftaran ini khusus mahasiswa yang belum pernah mendaftar di PhotoUP.']);
 
         expect(Registration::count())->toBe(0);
     });

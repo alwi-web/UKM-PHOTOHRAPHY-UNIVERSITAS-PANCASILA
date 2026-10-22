@@ -7,7 +7,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
-/** Pendaftaran calon anggota dari website, khusus mahasiswa yang belum pernah ikut kaderisasi. */
+/** Pendaftaran calon anggota dari website, khusus mahasiswa yang belum pernah mendaftar di PhotoUP. */
 class RegistrationController extends Controller
 {
     public function store(Request $request): RedirectResponse
@@ -30,7 +30,7 @@ class RegistrationController extends Controller
             'npm.regex' => 'NPM harus berupa 6–20 digit angka.',
             'npm.unique' => 'NPM ini sudah terdaftar. Hubungi pengurus jika merasa belum pernah mendaftar.',
             'phone.regex' => 'Nomor WhatsApp tidak valid (contoh: 081234567890).',
-            'not_cadre_yet.accepted' => 'Pendaftaran ini khusus mahasiswa yang belum pernah mengikuti kaderisasi.',
+            'not_cadre_yet.accepted' => 'Pendaftaran ini khusus mahasiswa yang belum pernah mendaftar di PhotoUP.',
         ]);
 
         Registration::create([

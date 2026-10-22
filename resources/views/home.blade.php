@@ -257,7 +257,7 @@
         <div class="form-group form-check @error('not_cadre_yet') invalid @enderror">
           <label for="not_cadre_yet">
             <input type="checkbox" id="not_cadre_yet" name="not_cadre_yet" value="1" @checked(old('not_cadre_yet')) required />
-            Saya belum pernah mengikuti kaderisasi UKM Fotografi Universitas Pancasila.
+            Saya belum pernah mendaftar di PhotoUP.
           </label>
           @error('not_cadre_yet')<small class="error">{{ $message }}</small>@enderror
         </div>
