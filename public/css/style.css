@@ -240,6 +240,11 @@ p {
   color: var(--muted);
 }
 
+/* ---------- Tombol bagian (khusus HP) ---------- */
+.section-toggle {
+  display: none;
+}
+
 /* ---------- Tentang ---------- */
 .about-block {
   margin-top: 36px;
@@ -801,12 +806,103 @@ p {
 
 /* ---------- Layar kecil ---------- */
 @media (max-width: 600px) {
-  .hero {
-    padding-block: 48px 40px;
+  /* halaman ringkas: tiap bagian jadi tombol daftar, isinya dibuka saat diketuk */
+  .nav a:not(.btn):not(.nav-login) {
+    display: none;
   }
 
-  .section {
-    padding-block: 48px;
+  main {
+    padding-bottom: 24px;
+  }
+
+  .section,
+  .section-muted {
+    padding: 0 16px;
+    margin-top: 10px;
+    background: var(--bg);
+  }
+
+  .section-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
+    min-height: 64px;
+    padding: 12px 16px;
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--yellow);
+    border-radius: var(--radius);
+    background: var(--bg);
+    color: var(--text);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .section-toggle span {
+    display: grid;
+  }
+
+  .section-toggle strong {
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  .section-toggle small {
+    font-size: 0.8rem;
+  }
+
+  .section-toggle svg {
+    flex-shrink: 0;
+    transition: transform 0.2s;
+  }
+
+  .section.is-open .section-toggle {
+    background: var(--yellow);
+    border-color: var(--yellow);
+  }
+
+  .section.is-open .section-toggle svg {
+    transform: rotate(90deg);
+  }
+
+  .section-body {
+    display: none;
+    width: 100%;
+    padding: 20px 2px 8px;
+  }
+
+  .section.is-open .section-body {
+    display: block;
+  }
+
+  /* judul sudah tampil di tombol */
+  .section-body > h2 {
+    display: none;
+  }
+
+  .section-body > h2 + p {
+    margin-top: 0;
+  }
+
+  .hero {
+    padding-block: 28px 24px;
+  }
+
+  .hero h1 {
+    font-size: 2rem;
+  }
+
+  .lead {
+    font-size: 1rem;
+    margin-bottom: 18px;
+  }
+
+  .actions .btn {
+    flex: 1 1 0;
+    padding: 10px 12px;
+    text-align: center;
   }
 
   .form {

@@ -85,6 +85,32 @@ function initGallery() {
   });
 }
 
+/* ---------- BAGIAN HALAMAN (HP: daftar tombol buka-tutup) ---------- */
+function initSections() {
+  const sections = $$(".section").filter((s) => $(".section-toggle", s));
+
+  const setOpen = (section, open) => {
+    section.classList.toggle("is-open", open);
+    $(".section-toggle", section).setAttribute("aria-expanded", String(open));
+  };
+
+  sections.forEach((section) => {
+    setOpen(section, section.classList.contains("is-open"));
+    $(".section-toggle", section).addEventListener("click", () => {
+      setOpen(section, !section.classList.contains("is-open"));
+    });
+  });
+
+  // link ke suatu bagian (menu, tombol hero, #alamat di URL) ikut membuka bagian itu
+  const openFromHash = (hash) => {
+    const target = hash && sections.find((s) => `#${s.id}` === hash);
+    if (target) setOpen(target, true);
+  };
+
+  $$('a[href^="#"]').forEach((a) => a.addEventListener("click", () => openFromHash(a.getAttribute("href"))));
+  openFromHash(location.hash);
+}
+
 /* ---------- FORM PENDAFTARAN ---------- */
 function initForm() {
   const form = $("#registerForm");
@@ -98,6 +124,7 @@ function initForm() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  initSections();
   initGallery();
   initForm();
 });

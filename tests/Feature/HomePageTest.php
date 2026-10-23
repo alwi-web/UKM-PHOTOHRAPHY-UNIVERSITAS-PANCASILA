@@ -50,3 +50,20 @@ it('menampilkan sejarah dan bagan struktur organisasi di bagian Tentang Kami', f
             'Divisi Humas Internal dan Eksternal',
         ]);
 });
+
+it('di HP setiap bagian punya tombol buka-tutup', function () {
+    $this->get('/')
+        ->assertSee('aria-controls="tentang-body"', false)
+        ->assertSee('aria-controls="galeri-body"', false)
+        ->assertSee('aria-controls="kegiatan-body"', false)
+        ->assertSee('aria-controls="daftar-body"', false)
+        ->assertSee('aria-controls="kontak-body"', false);
+});
+
+it('bagian pendaftaran langsung terbuka saat formulir gagal dikirim', function () {
+    $this->post(route('register'), [])->assertSessionHasErrors();
+
+    $this->followingRedirects()
+        ->post(route('register'), [])
+        ->assertSee('id="daftar" class="section is-open"', false);
+});

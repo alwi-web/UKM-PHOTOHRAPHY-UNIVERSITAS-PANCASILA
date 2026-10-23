@@ -25,7 +25,7 @@
         <a href="#galeri">Galeri</a>
         <a href="#kegiatan">Kegiatan</a>
         <a href="#kontak">Kontak</a>
-        <a href="{{ url('/admin') }}">Masuk</a>
+        <a href="{{ url('/admin') }}" class="nav-login">Masuk</a>
         <a href="#daftar" class="btn btn-sm">Daftar</a>
       </nav>
     </div>
@@ -47,7 +47,12 @@
     </section>
 
     <section class="section" id="tentang">
-      <div class="container narrow">
+      {{-- di HP: tiap bagian tampil sebagai tombol, isinya dibuka saat diketuk --}}
+      <button type="button" class="section-toggle" aria-expanded="false" aria-controls="tentang-body">
+        <span><strong>Tentang Kami</strong><small>Sejarah, visi &amp; misi, struktur organisasi</small></span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg>
+      </button>
+      <div id="tentang-body" class="section-body container narrow">
         <h2>Tentang Kami</h2>
         @if ($profile->about)
           <p>{{ $profile->about }}</p>
@@ -145,7 +150,12 @@
     </section>
 
     <section class="section section-muted" id="galeri">
-      <div class="container">
+      {{-- di HP: tiap bagian tampil sebagai tombol, isinya dibuka saat diketuk --}}
+      <button type="button" class="section-toggle" aria-expanded="false" aria-controls="galeri-body">
+        <span><strong>Karya Anggota</strong><small>Galeri foto pilihan kurator</small></span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg>
+      </button>
+      <div id="galeri-body" class="section-body container">
         <h2>Karya Anggota</h2>
         <p class="muted">Karya pilihan kurator. Klik foto untuk melihat detail dan pengaturan kamera.</p>
 
@@ -184,7 +194,12 @@
     </section>
 
     <section class="section" id="kegiatan">
-      <div class="container narrow">
+      {{-- di HP: tiap bagian tampil sebagai tombol, isinya dibuka saat diketuk --}}
+      <button type="button" class="section-toggle" aria-expanded="false" aria-controls="kegiatan-body">
+        <span><strong>Kegiatan</strong><small>Agenda kegiatan mendatang</small></span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg>
+      </button>
+      <div id="kegiatan-body" class="section-body container narrow">
         <h2>Kegiatan Mendatang</h2>
         @forelse ($events as $event)
           <article class="event">
@@ -204,8 +219,13 @@
       </div>
     </section>
 
-    <section class="section" id="daftar">
-      <div class="container narrow">
+    <section id="daftar" @class(['section', 'is-open' => session('registered') || $errors->any()])>
+      {{-- di HP: tiap bagian tampil sebagai tombol, isinya dibuka saat diketuk --}}
+      <button type="button" class="section-toggle" aria-expanded="false" aria-controls="daftar-body">
+        <span><strong>Daftar Calon Anggota</strong><small>Formulir pendaftaran anggota baru</small></span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg>
+      </button>
+      <div id="daftar-body" class="section-body container narrow">
         <h2>Daftar Calon Anggota</h2>
         <p class="muted">
           Khusus mahasiswa Universitas Pancasila yang belum pernah mengikuti kaderisasi UKM Fotografi.
@@ -261,7 +281,12 @@
     </section>
 
     <section class="section section-muted" id="kontak">
-      <div class="container narrow">
+      {{-- di HP: tiap bagian tampil sebagai tombol, isinya dibuka saat diketuk --}}
+      <button type="button" class="section-toggle" aria-expanded="false" aria-controls="kontak-body">
+        <span><strong>Kontak</strong><small>Alamat, email, dan media sosial</small></span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg>
+      </button>
+      <div id="kontak-body" class="section-body container narrow">
         <h2>Kontak</h2>
         <ul class="contact">
           @if ($profile->address)
