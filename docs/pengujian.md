@@ -31,7 +31,7 @@ Isi kolom **Hasil** saat pengujian manual (✓ sesuai / ✗ tidak sesuai).
 | B04 | Pendaftar calon anggota | Admin menghubungi pendaftar | Klik nomor WhatsApp, lalu "Sudah Dihubungi" | Chat WhatsApp terbuka; status jadi "Sudah Dihubungi" | |
 | B05 | Pendaftar calon anggota | Admin menerima pendaftar | "Terima & buat akun", isi email & password | Akun Member terbentuk dan bisa login ke panel | |
 | B06 | Manajemen user | Admin menunjuk kurator | Menu "Tunjuk sebagai Kurator" | Role berubah jadi Kurator | |
-| B07 | Profil UKM | Admin UKM mengubah sejarah dan struktur organisasi | Isi sejarah 2 paragraf, pilih akun Ketua Umum, pilih 3 akun anggota Divisi Hunting | Setelah Simpan, bagan di Tentang Kami menampilkan foto, nama, dan NPM dari akun-akun tersebut | |
+| B07 | Profil UKM | Admin UKM mengubah sejarah dan struktur organisasi | Isi sejarah 2 paragraf, pilih akun Ketua Umum, pilih 3 akun anggota Divisi Hunting | Setelah Simpan, bagan Struktur BPH di bagian Profil menampilkan foto, nama, dan NPM dari akun-akun tersebut | |
 | B08 | Profil UKM | Role selain Admin UKM membuka /admin/profil-ukm | Login admin inventaris | Menu tidak tampil dan akses ditolak (403) | |
 | B09 | Inventaris | Admin inventaris menambah barang | Kode CAM-010, jumlah 2 | Barang muncul di daftar, tersedia 2 | |
 | B10 | Peminjaman | Anggota UKM lain membuka form pengajuan | Login anggota UKM lain | Nama, NPM, dan Fakultas/UKM terisi otomatis | |

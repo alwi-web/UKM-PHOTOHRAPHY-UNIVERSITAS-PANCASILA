@@ -638,62 +638,27 @@ p {
   background: var(--yellow-soft);
 }
 
-/* ---------- Tentang (bento) ---------- */
-.bento {
-  display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 16px;
-}
-
+/* ---------- Profil ---------- */
 .card-history {
-  grid-column: span 6;
-}
-
-.card-vision {
-  grid-column: span 3;
-  background: linear-gradient(160deg, var(--yellow-soft), #fff 70%);
-}
-
-.card-vision .card-icon {
-  background: var(--yellow);
-}
-
-.vision {
-  font-size: 1.2rem;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  line-height: 1.5;
-}
-
-.card-mission {
-  grid-column: span 3;
-  background: linear-gradient(160deg, var(--lilac-soft), #fff 70%);
-}
-
-.card-mission .card-icon {
-  background: #fff;
-}
-
-.missions {
-  list-style: none;
   display: grid;
-  gap: 10px;
-  margin: 0;
-  padding: 0;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: 32px;
+  align-items: center;
 }
 
-.missions li {
-  display: flex;
-  gap: 10px;
+.history-art {
+  display: grid;
+  place-items: center;
+  min-height: 260px;
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.6), transparent 55%),
+    linear-gradient(135deg, var(--yellow-soft), #ffe48a);
 }
 
-.missions .icon {
-  width: 20px;
-  height: 20px;
-  margin-top: 3px;
-  padding: 3px;
-  border-radius: 50%;
-  background: var(--yellow);
+.history-art img {
+  width: 140px;
+  height: 140px;
 }
 
 .card-chart {
@@ -1427,9 +1392,18 @@ p {
     min-height: 0;
   }
 
-  .card-vision,
-  .card-mission {
-    grid-column: span 6;
+  .card-history {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .history-art {
+    min-height: 160px;
+  }
+
+  .history-art img {
+    width: 96px;
+    height: 96px;
   }
 
   .join {
@@ -1575,7 +1549,7 @@ p {
     margin-top: 10px;
   }
 
-  #tentang {
+  #profil {
     margin-top: 20px;
   }
 

@@ -22,7 +22,7 @@
         <span>PHOTO <b>UP</b></span>
       </a>
       <nav class="nav" aria-label="Menu utama">
-        <a href="#tentang">Tentang</a>
+        <a href="#profil">Profil</a>
         <a href="#galeri">Galeri</a>
         <a href="#kegiatan">Kegiatan</a>
         <a href="#kontak">Kontak</a>
@@ -77,7 +77,7 @@
               <div><dd>{{ $stats['events'] }}</dd><dt>Agenda mendatang</dt></div>
               <div><dd>{{ $stats['members'] }}</dd><dt>Anggota aktif</dt></div>
             </dl>
-            <a href="#tentang" class="phone-btn" aria-label="Kenalan dengan kami"><x-glyph name="chevron-right" :size="20" /></a>
+            <a href="#profil" class="phone-btn" aria-label="Kenalan dengan kami"><x-glyph name="chevron-right" :size="20" /></a>
           </div>
         </div>
       </div>
@@ -96,59 +96,43 @@
       </div>
     </section>
 
-    {{-- ================= TENTANG ================= --}}
-    <section class="section" id="tentang">
+    {{-- ================= PROFIL ================= --}}
+    <section class="section" id="profil">
       {{-- di HP: tiap bagian tampil sebagai tombol, isinya dibuka saat diketuk --}}
-      <button type="button" class="section-toggle" aria-expanded="false" aria-controls="tentang-body">
+      <button type="button" class="section-toggle" aria-expanded="false" aria-controls="profil-body">
         <span class="toggle-icon"><x-glyph name="users" /></span>
-        <span class="toggle-text"><strong>Tentang Kami</strong><small>Sejarah, visi &amp; misi, struktur organisasi</small></span>
+        <span class="toggle-text"><strong>Profil</strong><small>Sejarah dan struktur BPH PhotoUP</small></span>
         <x-glyph name="chevron-right" class="toggle-chevron" />
       </button>
-      <div id="tentang-body" class="section-body container">
+      <div id="profil-body" class="section-body container">
         <div class="section-head reveal">
-          <span class="eyebrow"><x-glyph name="users" :size="14" /> Tentang Kami</span>
-          <h2>Kenalan dulu dengan {{ $profile->name }}</h2>
+          <span class="eyebrow"><x-glyph name="users" :size="14" /> Profil</span>
+          <h2>Profil {{ $profile->name }}</h2>
           @if ($profile->about)
             <p>{{ $profile->about }}</p>
           @endif
         </div>
 
-        <div class="bento">
-          @if ($profile->historyParagraphs())
-            <article class="card card-history reveal">
+        @if ($profile->historyParagraphs())
+          {{-- sejarah: panel logo di kiri, cerita di kanan --}}
+          <article class="card card-history reveal">
+            <div class="history-art" aria-hidden="true">
+              <img src="{{ asset('images/photoup-logo.svg') }}" alt="" width="140" height="140" />
+            </div>
+            <div class="history-text">
               <span class="card-icon"><x-glyph name="history" /></span>
               <h3>Sejarah {{ $profile->name }}</h3>
               @foreach ($profile->historyParagraphs() as $paragraph)
                 <p>{{ $paragraph }}</p>
               @endforeach
-            </article>
-          @endif
-
-          @if ($profile->vision)
-            <article class="card card-vision reveal">
-              <span class="card-icon"><x-glyph name="eye" /></span>
-              <h3>Visi</h3>
-              <p class="vision">{{ $profile->vision }}</p>
-            </article>
-          @endif
-
-          @if ($profile->missions)
-            <article class="card card-mission reveal">
-              <span class="card-icon"><x-glyph name="target" /></span>
-              <h3>Misi</h3>
-              <ol class="missions">
-                @foreach ($profile->missions as $mission)
-                  <li><x-glyph name="check" :size="16" /><span>{{ $mission }}</span></li>
-                @endforeach
-              </ol>
-            </article>
-          @endif
-        </div>
+            </div>
+          </article>
+        @endif
 
         @if ($profile->core_members || $profile->divisions)
           <div class="card card-chart reveal">
-            <h3>Struktur Organisasi</h3>
-            <p class="card-sub">Pengurus dan anggota divisi {{ $profile->name }}.</p>
+            <h3>Struktur BPH PhotoUP</h3>
+            <p class="card-sub">Badan Pengurus Harian dan anggota divisi {{ $profile->name }}.</p>
             <div class="chart">
               @php($levels = $profile->chartLevels())
               @foreach ($levels as $level => $nodes)

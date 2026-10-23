@@ -37,11 +37,11 @@ it('tidak mencatat view untuk karya yang belum tampil', function () {
     $this->post(route('artworks.view', $artwork))->assertNotFound();
 });
 
-it('menampilkan sejarah dan bagan struktur organisasi di bagian Tentang Kami', function () {
+it('menampilkan sejarah dan bagan struktur BPH di bagian Profil', function () {
     $this->get('/')
         ->assertOk()
-        ->assertSee('Sejarah PhotoUP 94')
-        ->assertSeeInOrder(['Struktur Organisasi', 'Ketua Umum', 'Wakil Ketua', 'Sekretaris', 'Bendahara'])
+        ->assertSee('href="#profil"', false)
+        ->assertSeeInOrder(['Profil PhotoUP 94', 'Sejarah PhotoUP 94', 'Struktur BPH PhotoUP', 'Ketua Umum', 'Wakil Ketua', 'Sekretaris', 'Bendahara'])
         ->assertSeeInOrder([
             'Divisi Penelitian dan Pengembangan',
             'Divisi Hunting',
@@ -53,7 +53,7 @@ it('menampilkan sejarah dan bagan struktur organisasi di bagian Tentang Kami', f
 
 it('di HP setiap bagian punya tombol buka-tutup', function () {
     $this->get('/')
-        ->assertSee('aria-controls="tentang-body"', false)
+        ->assertSee('aria-controls="profil-body"', false)
         ->assertSee('aria-controls="galeri-body"', false)
         ->assertSee('aria-controls="kegiatan-body"', false)
         ->assertSee('aria-controls="daftar-body"', false)

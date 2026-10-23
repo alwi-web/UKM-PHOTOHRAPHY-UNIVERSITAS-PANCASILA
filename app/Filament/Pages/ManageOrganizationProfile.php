@@ -71,7 +71,7 @@ class ManageOrganizationProfile extends Page
                                     ->maxLength(200),
                                 Textarea::make('about')
                                     ->label('Deskripsi Singkat')
-                                    ->helperText('Paragraf pembuka bagian "Tentang Kami".')
+                                    ->helperText('Paragraf pembuka bagian "Profil".')
                                     ->rows(3)
                                     ->maxLength(1000),
                                 Section::make('Kontak')
@@ -170,7 +170,7 @@ class ManageOrganizationProfile extends Page
                         Action::make('preview')
                             ->label('Lihat di website')
                             ->color('gray')
-                            ->url(route('home').'#tentang', shouldOpenInNewTab: true),
+                            ->url(route('home').'#profil', shouldOpenInNewTab: true),
                     ]),
                 ]),
         ]);
