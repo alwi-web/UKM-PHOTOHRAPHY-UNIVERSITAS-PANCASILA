@@ -12,6 +12,7 @@ acara & kegiatan, manajemen anggota, dan laporan.
 | Metode | Waterfall |
 | Pengujian | Blackbox + UAT + Pest (lihat [`docs/pengujian.md`](docs/pengujian.md)) |
 | Basis data | MySQL 8, rancangan tabel di [`docs/erd.md`](docs/erd.md) (gambar: `docs/erd.png`, `docs/erd.pdf`) |
+| Pemodelan | UML: use case, activity, sequence, class di [`docs/uml.md`](docs/uml.md) (gambar: `docs/uml/`, `docs/uml.pdf`) |
 
 ## Aktor & hak akses
 
