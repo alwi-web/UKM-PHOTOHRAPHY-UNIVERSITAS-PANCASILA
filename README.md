@@ -11,6 +11,7 @@ acara & kegiatan, manajemen anggota, dan laporan.
 | Testing | Pest 4 |
 | Metode | Waterfall |
 | Pengujian | Blackbox + UAT + Pest (lihat [`docs/pengujian.md`](docs/pengujian.md)) |
+| Basis data | MySQL 8, rancangan tabel di [`docs/erd.md`](docs/erd.md) (gambar: `docs/erd.png`, `docs/erd.pdf`) |
 
 ## Aktor & hak akses
 
