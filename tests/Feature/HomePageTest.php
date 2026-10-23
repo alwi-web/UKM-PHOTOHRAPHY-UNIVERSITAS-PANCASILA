@@ -67,3 +67,11 @@ it('bagian pendaftaran langsung terbuka saat formulir gagal dikirim', function (
         ->post(route('register'), [])
         ->assertSee('id="daftar" class="section is-open"', false);
 });
+
+it('menampilkan angka ringkas karya, agenda, dan anggota aktif', function () {
+    Artwork::factory()->published()->count(2)->create();
+
+    $this->get('/')
+        ->assertOk()
+        ->assertSeeInOrder(['2', 'Karya terkurasi', 'Agenda mendatang', 'Anggota aktif']);
+});

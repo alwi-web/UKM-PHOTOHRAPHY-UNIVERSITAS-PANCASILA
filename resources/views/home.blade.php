@@ -4,94 +4,175 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="csrf-token" content="{{ csrf_token() }}" />
-  <title>UKM Fotografi Universitas Pancasila</title>
+  <title>{{ $profile->name }} — UKM Fotografi Universitas Pancasila</title>
   <meta name="description" content="UKM Fotografi Universitas Pancasila — wadah mahasiswa untuk belajar, berkarya, dan berbagi cerita lewat lensa." />
   <link rel="icon" href="{{ asset('images/logo.svg') }}" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="{{ asset('css/style.css') }}" />
+  <script>document.documentElement.classList.add('js')</script>
 </head>
 <body>
 
   <header class="topbar">
-    <div class="container topbar-inner">
+    <div class="topbar-inner">
       <a href="#beranda" class="brand">
-        <img src="{{ asset('images/logo.svg') }}" alt="" width="32" height="32" />
-        <span>UKM Fotografi UP</span>
+        <img src="{{ asset('images/logo.svg') }}" alt="" width="34" height="34" />
+        <span>UKM Fotografi <b>UP</b></span>
       </a>
       <nav class="nav" aria-label="Menu utama">
         <a href="#tentang">Tentang</a>
         <a href="#galeri">Galeri</a>
         <a href="#kegiatan">Kegiatan</a>
         <a href="#kontak">Kontak</a>
-        <a href="{{ url('/admin') }}" class="nav-login">Masuk</a>
-        <a href="#daftar" class="btn btn-sm">Daftar</a>
       </nav>
+      <div class="nav-actions">
+        <a href="{{ url('/admin') }}" class="nav-login"><x-glyph name="login" :size="16" /> Masuk</a>
+        <a href="#daftar" class="btn btn-sm">Daftar</a>
+      </div>
     </div>
   </header>
 
   <main>
+    {{-- ================= HERO ================= --}}
     <section class="hero" id="beranda">
-      <div class="container">
-        <p class="label">Unit Kegiatan Mahasiswa · Universitas Pancasila</p>
-        <h1>{{ $profile->name }}</h1>
-        @if ($profile->tagline)
-          <p class="lead">{{ $profile->tagline }}</p>
-        @endif
-        <div class="actions">
-          <a href="#daftar" class="btn">Daftar Calon Anggota</a>
+      <div class="hero-grid-bg" aria-hidden="true"></div>
+      <div class="container hero-inner">
+        <a href="#daftar" class="badge reveal">
+          <span class="badge-dot" aria-hidden="true"><span class="pulse"></span></span>
+          Pendaftaran calon anggota dibuka
+          <x-glyph name="arrow-right" :size="14" />
+        </a>
+        @php
+          // kata terakhir nama UKM diberi stabilo kuning, mis. "PhotoUP [94]"
+          $nameHead = str_contains($profile->name, ' ') ? \Illuminate\Support\Str::beforeLast($profile->name, ' ') : '';
+        @endphp
+        <h1 class="reveal">
+          @if ($nameHead !== '')
+            {{ $nameHead }} <span class="mark">{{ \Illuminate\Support\Str::afterLast($profile->name, ' ') }}</span>
+          @else
+            <span class="mark">{{ $profile->name }}</span>
+          @endif
+        </h1>
+        <p class="lead reveal">
+          @if ($profile->tagline)
+            {{ $profile->tagline }}
+          @else
+            Belajar, berkarya, dan bercerita lewat lensa.
+          @endif
+        </p>
+        <div class="actions reveal">
+          <a href="#daftar" class="btn">Daftar Calon Anggota <x-glyph name="arrow-right" :size="18" /></a>
           <a href="#galeri" class="btn btn-ghost">Lihat Karya</a>
+        </div>
+        <dl class="stats reveal">
+          <div><dd>{{ $stats['artworks'] }}</dd><dt>Karya terkurasi</dt></div>
+          <div><dd>{{ $stats['events'] }}</dd><dt>Agenda mendatang</dt></div>
+          <div><dd>{{ $stats['members'] }}</dd><dt>Anggota aktif</dt></div>
+        </dl>
+
+        {{-- pratinjau ala "screenshot produk": karya terbaru pilihan kurator + kartu widget melayang --}}
+        <div class="showcase reveal" aria-hidden="true">
+          <div class="showcase-frame">
+            <div class="frame-bar"><i></i><i></i><i></i><span>photoup94 / galeri</span></div>
+            <div class="frame-grid">
+              @forelse ($artworks->take(5) as $artwork)
+                <img src="{{ $artwork->imageUrl() }}" alt="" />
+              @empty
+                @foreach (range(1, 5) as $n)
+                  <span class="frame-empty"><x-glyph name="camera" :size="28" /></span>
+                @endforeach
+              @endforelse
+            </div>
+          </div>
+
+          <div class="widget widget-left">
+            <span class="widget-icon"><x-glyph name="sparkles" :size="16" /></span>
+            <span><small>Pilihan kurator</small><strong>{{ $artworks->first()?->title ?? 'Karya terbaru' }}</strong></span>
+          </div>
+          @if ($artworks->first()?->exposureSummary())
+            <div class="widget widget-right">
+              <span class="widget-icon widget-icon-alt"><x-glyph name="camera" :size="16" /></span>
+              <span><small>Segitiga exposure</small><strong>{{ $artworks->first()->exposureSummary() }}</strong></span>
+            </div>
+          @endif
+          @if ($next = $events->first())
+            <div class="widget widget-bottom">
+              <span class="widget-icon"><x-glyph name="calendar" :size="16" /></span>
+              <span><small>Agenda terdekat · {{ $next->start_at->translatedFormat('d M') }}</small><strong>{{ $next->title }}</strong></span>
+            </div>
+          @endif
+        </div>
+      </div>
+
+      @php
+        $tags = $categories->isNotEmpty() ? $categories->pluck('name') : ['Hunting', 'Pameran', 'Street', 'Portrait', 'Landscape', 'Workshop'];
+      @endphp
+      <div class="marquee" aria-hidden="true">
+        <div class="marquee-track">
+          @foreach (range(1, 4) as $loopIndex)
+            @foreach ($tags as $tag)
+              <span>{{ $tag }}</span>
+            @endforeach
+          @endforeach
         </div>
       </div>
     </section>
 
+    {{-- ================= TENTANG ================= --}}
     <section class="section" id="tentang">
       {{-- di HP: tiap bagian tampil sebagai tombol, isinya dibuka saat diketuk --}}
       <button type="button" class="section-toggle" aria-expanded="false" aria-controls="tentang-body">
-        <span><strong>Tentang Kami</strong><small>Sejarah, visi &amp; misi, struktur organisasi</small></span>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg>
+        <span class="toggle-icon"><x-glyph name="users" /></span>
+        <span class="toggle-text"><strong>Tentang Kami</strong><small>Sejarah, visi &amp; misi, struktur organisasi</small></span>
+        <x-glyph name="chevron-right" class="toggle-chevron" />
       </button>
-      <div id="tentang-body" class="section-body container narrow">
-        <h2>Tentang Kami</h2>
-        @if ($profile->about)
-          <p>{{ $profile->about }}</p>
-        @endif
+      <div id="tentang-body" class="section-body container">
+        <div class="section-head reveal">
+          <span class="eyebrow"><x-glyph name="users" :size="14" /> Tentang Kami</span>
+          <h2>Kenalan dulu dengan {{ $profile->name }}</h2>
+          @if ($profile->about)
+            <p>{{ $profile->about }}</p>
+          @endif
+        </div>
 
-        @if ($profile->historyParagraphs())
-          <div class="about-block">
-            <h3>Sejarah {{ $profile->name }}</h3>
-            @foreach ($profile->historyParagraphs() as $paragraph)
-              <p>{{ $paragraph }}</p>
-            @endforeach
-          </div>
-        @endif
+        <div class="bento">
+          @if ($profile->historyParagraphs())
+            <article class="card card-history reveal">
+              <span class="card-icon"><x-glyph name="history" /></span>
+              <h3>Sejarah {{ $profile->name }}</h3>
+              @foreach ($profile->historyParagraphs() as $paragraph)
+                <p>{{ $paragraph }}</p>
+              @endforeach
+            </article>
+          @endif
 
-        @if ($profile->vision || $profile->missions)
-          <div class="about-block">
-            <h3>Visi &amp; Misi</h3>
-            <dl class="vm">
-              @if ($profile->vision)
-                <dt>Visi</dt>
-                <dd>{{ $profile->vision }}</dd>
-              @endif
-              @if ($profile->missions)
-                <dt>Misi</dt>
-                <dd>
-                  <ol class="missions">
-                    @foreach ($profile->missions as $mission)
-                      <li>{{ $mission }}</li>
-                    @endforeach
-                  </ol>
-                </dd>
-              @endif
-            </dl>
-          </div>
-        @endif
+          @if ($profile->vision)
+            <article class="card card-vision reveal">
+              <span class="card-icon"><x-glyph name="eye" /></span>
+              <h3>Visi</h3>
+              <p class="vision">{{ $profile->vision }}</p>
+            </article>
+          @endif
+
+          @if ($profile->missions)
+            <article class="card card-mission reveal">
+              <span class="card-icon"><x-glyph name="target" /></span>
+              <h3>Misi</h3>
+              <ol class="missions">
+                @foreach ($profile->missions as $mission)
+                  <li><x-glyph name="check" :size="16" /><span>{{ $mission }}</span></li>
+                @endforeach
+              </ol>
+            </article>
+          @endif
+        </div>
 
         @if ($profile->core_members || $profile->divisions)
-          <div class="about-block">
+          <div class="card card-chart reveal">
             <h3>Struktur Organisasi</h3>
+            <p class="card-sub">Pengurus dan anggota divisi {{ $profile->name }}.</p>
             <div class="chart">
               @php($levels = $profile->chartLevels())
               @foreach ($levels as $level => $nodes)
@@ -149,15 +230,19 @@
       </div>
     </section>
 
-    <section class="section section-muted" id="galeri">
-      {{-- di HP: tiap bagian tampil sebagai tombol, isinya dibuka saat diketuk --}}
+    {{-- ================= GALERI ================= --}}
+    <section class="section" id="galeri">
       <button type="button" class="section-toggle" aria-expanded="false" aria-controls="galeri-body">
-        <span><strong>Karya Anggota</strong><small>Galeri foto pilihan kurator</small></span>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg>
+        <span class="toggle-icon"><x-glyph name="image" /></span>
+        <span class="toggle-text"><strong>Karya Anggota</strong><small>Galeri foto pilihan kurator</small></span>
+        <x-glyph name="chevron-right" class="toggle-chevron" />
       </button>
       <div id="galeri-body" class="section-body container">
-        <h2>Karya Anggota</h2>
-        <p class="muted">Karya pilihan kurator. Klik foto untuk melihat detail dan pengaturan kamera.</p>
+        <div class="section-head reveal">
+          <span class="eyebrow"><x-glyph name="image" :size="14" /> Galeri</span>
+          <h2>Karya Anggota</h2>
+          <p>Karya pilihan kurator. Klik foto untuk melihat cerita dan pengaturan kameranya.</p>
+        </div>
 
         @if ($artworks->isEmpty())
           <p class="empty">Belum ada karya yang ditampilkan.</p>
@@ -184,7 +269,7 @@
                 <img src="{{ $artwork->imageUrl() }}" alt="{{ $artwork->title }}" loading="lazy" />
                 <figcaption>
                   <strong>{{ $artwork->title }}</strong>
-                  <span>{{ $artwork->user->name }}</span>
+                  <span>{{ $artwork->user->name }}@if ($artwork->category) · {{ $artwork->category->name }}@endif</span>
                 </figcaption>
               </figure>
             @endforeach
@@ -193,116 +278,146 @@
       </div>
     </section>
 
+    {{-- ================= KEGIATAN ================= --}}
     <section class="section" id="kegiatan">
-      {{-- di HP: tiap bagian tampil sebagai tombol, isinya dibuka saat diketuk --}}
       <button type="button" class="section-toggle" aria-expanded="false" aria-controls="kegiatan-body">
-        <span><strong>Kegiatan</strong><small>Agenda kegiatan mendatang</small></span>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg>
+        <span class="toggle-icon"><x-glyph name="calendar" /></span>
+        <span class="toggle-text"><strong>Kegiatan</strong><small>Agenda kegiatan mendatang</small></span>
+        <x-glyph name="chevron-right" class="toggle-chevron" />
       </button>
-      <div id="kegiatan-body" class="section-body container narrow">
-        <h2>Kegiatan Mendatang</h2>
-        @forelse ($events as $event)
-          <article class="event">
-            <time datetime="{{ $event->start_at->toDateString() }}">
-              {{ $event->start_at->translatedFormat('d M Y') }}
-            </time>
-            <div>
-              <h3>{{ $event->title }}</h3>
-              <p class="muted">
-                {{ $event->type->getLabel() }} · {{ $event->location }} · {{ $event->start_at->format('H.i') }}@if ($event->end_at)–{{ $event->end_at->format('H.i') }}@endif
-              </p>
-            </div>
-          </article>
-        @empty
+      <div id="kegiatan-body" class="section-body container">
+        <div class="section-head reveal">
+          <span class="eyebrow"><x-glyph name="calendar" :size="14" /> Agenda</span>
+          <h2>Kegiatan Mendatang</h2>
+          <p>Hunting bareng, workshop, sampai pameran. Catat tanggalnya!</p>
+        </div>
+        @if ($events->isEmpty())
           <p class="empty">Belum ada kegiatan terjadwal.</p>
-        @endforelse
+        @else
+          <div class="events">
+            @foreach ($events as $event)
+              <article class="event reveal">
+                <time class="event-date" datetime="{{ $event->start_at->toDateString() }}">
+                  <b>{{ $event->start_at->translatedFormat('d') }}</b>
+                  <span>{{ $event->start_at->translatedFormat('M Y') }}</span>
+                </time>
+                <div class="event-body">
+                  <span class="tag">{{ $event->type->getLabel() }}</span>
+                  <h3>{{ $event->title }}</h3>
+                  <ul class="event-meta">
+                    <li><x-glyph name="map-pin" :size="15" /> {{ $event->location }}</li>
+                    <li><x-glyph name="clock" :size="15" /> {{ $event->start_at->format('H.i') }}@if ($event->end_at)–{{ $event->end_at->format('H.i') }}@endif</li>
+                  </ul>
+                </div>
+              </article>
+            @endforeach
+          </div>
+        @endif
       </div>
     </section>
 
+    {{-- ================= DAFTAR ================= --}}
     <section id="daftar" @class(['section', 'is-open' => session('registered') || $errors->any()])>
-      {{-- di HP: tiap bagian tampil sebagai tombol, isinya dibuka saat diketuk --}}
       <button type="button" class="section-toggle" aria-expanded="false" aria-controls="daftar-body">
-        <span><strong>Daftar Calon Anggota</strong><small>Formulir pendaftaran anggota baru</small></span>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg>
+        <span class="toggle-icon"><x-glyph name="user-plus" /></span>
+        <span class="toggle-text"><strong>Daftar Calon Anggota</strong><small>Formulir pendaftaran anggota baru</small></span>
+        <x-glyph name="chevron-right" class="toggle-chevron" />
       </button>
-      <div id="daftar-body" class="section-body container narrow">
-        <h2>Daftar Calon Anggota</h2>
-        <p class="muted">
-          Khusus mahasiswa Universitas Pancasila yang belum pernah mengikuti kaderisasi UKM Fotografi.
-          Pengurus akan menghubungimu lewat WhatsApp untuk info selanjutnya.
-        </p>
+      <div id="daftar-body" class="section-body container">
+        <div class="join">
+          <div class="join-info">
+            <span class="eyebrow eyebrow-dark"><x-glyph name="user-plus" :size="14" /> Gabung</span>
+            <h2>Daftar Calon Anggota</h2>
+            <p>
+              Khusus mahasiswa Universitas Pancasila yang belum pernah mengikuti kaderisasi UKM Fotografi.
+              Tidak perlu punya kamera mahal — yang penting mau belajar.
+            </p>
+            <ol class="steps">
+              <li><b>1</b><span><strong>Isi formulir</strong>Nama, NPM, fakultas, dan nomor WhatsApp.</span></li>
+              <li><b>2</b><span><strong>Dihubungi pengurus</strong>Info selanjutnya dikirim lewat WhatsApp.</span></li>
+              <li><b>3</b><span><strong>Ikut kaderisasi</strong>Mulai belajar dan berkarya bareng PhotoUP.</span></li>
+            </ol>
+          </div>
 
-        <form class="form" id="registerForm" method="POST" action="{{ route('register') }}">
-          @csrf
-          <h3>Formulir Pendaftaran Calon Anggota</h3>
+          <form class="form" id="registerForm" method="POST" action="{{ route('register') }}">
+            @csrf
+            <h3>Formulir Pendaftaran Calon Anggota</h3>
 
-          @if (session('registered'))
-            <p class="notice notice-success">{{ session('registered') }}</p>
-          @endif
-          @if ($errors->any())
-            <p class="notice notice-error">Periksa kembali isian yang ditandai merah.</p>
-          @endif
+            @if (session('registered'))
+              <p class="notice notice-success">{{ session('registered') }}</p>
+            @endif
+            @if ($errors->any())
+              <p class="notice notice-error">Periksa kembali isian yang ditandai merah.</p>
+            @endif
 
-          <div class="field @error('name') invalid @enderror">
-            <label for="name">Nama Lengkap</label>
-            <input type="text" id="name" name="name" value="{{ old('name') }}" autocomplete="name" required />
-            @error('name')<small class="error">{{ $message }}</small>@enderror
-          </div>
-          <div class="field @error('npm') invalid @enderror">
-            <label for="npm">NPM</label>
-            <input type="text" id="npm" name="npm" value="{{ old('npm') }}" inputmode="numeric" pattern="\d{6,20}" required />
-            @error('npm')<small class="error">{{ $message }}</small>@enderror
-          </div>
-          <div class="field @error('faculty') invalid @enderror">
-            <label for="faculty">Fakultas</label>
-            <select id="faculty" name="faculty" required>
-              <option value="">Pilih fakultas</option>
-              @foreach (config('ukm.faculties') as $faculty)
-                <option @selected(old('faculty') === $faculty)>{{ $faculty }}</option>
-              @endforeach
-            </select>
-            @error('faculty')<small class="error">{{ $message }}</small>@enderror
-          </div>
-          <div class="field @error('phone') invalid @enderror">
-            <label for="phone">Nomor WhatsApp</label>
-            <input type="tel" id="phone" name="phone" value="{{ old('phone') }}" placeholder="08xxxxxxxxxx" autocomplete="tel" required />
-            @error('phone')<small class="error">{{ $message }}</small>@enderror
-          </div>
-          <div class="field field-check @error('not_cadre_yet') invalid @enderror">
-            <label for="not_cadre_yet">
-              <input type="checkbox" id="not_cadre_yet" name="not_cadre_yet" value="1" @checked(old('not_cadre_yet')) required />
-              Saya belum pernah mendaftar di PhotoUP.
-            </label>
-            @error('not_cadre_yet')<small class="error">{{ $message }}</small>@enderror
-          </div>
-          <button type="submit" class="btn btn-block">Kirim Pendaftaran</button>
-        </form>
+            <div class="field @error('name') invalid @enderror">
+              <label for="name">Nama Lengkap</label>
+              <input type="text" id="name" name="name" value="{{ old('name') }}" autocomplete="name" placeholder="Nama sesuai KTM" required />
+              @error('name')<small class="error">{{ $message }}</small>@enderror
+            </div>
+            <div class="field-row">
+              <div class="field @error('npm') invalid @enderror">
+                <label for="npm">NPM</label>
+                <input type="text" id="npm" name="npm" value="{{ old('npm') }}" inputmode="numeric" pattern="\d{6,20}" placeholder="Contoh: 4522210001" required />
+                @error('npm')<small class="error">{{ $message }}</small>@enderror
+              </div>
+              <div class="field @error('faculty') invalid @enderror">
+                <label for="faculty">Fakultas</label>
+                <select id="faculty" name="faculty" required>
+                  <option value="">Pilih fakultas</option>
+                  @foreach (config('ukm.faculties') as $faculty)
+                    <option @selected(old('faculty') === $faculty)>{{ $faculty }}</option>
+                  @endforeach
+                </select>
+                @error('faculty')<small class="error">{{ $message }}</small>@enderror
+              </div>
+            </div>
+            <div class="field @error('phone') invalid @enderror">
+              <label for="phone">Nomor WhatsApp</label>
+              <input type="tel" id="phone" name="phone" value="{{ old('phone') }}" placeholder="08xxxxxxxxxx" autocomplete="tel" required />
+              @error('phone')<small class="error">{{ $message }}</small>@enderror
+            </div>
+            <div class="field field-check @error('not_cadre_yet') invalid @enderror">
+              <label for="not_cadre_yet">
+                <input type="checkbox" id="not_cadre_yet" name="not_cadre_yet" value="1" @checked(old('not_cadre_yet')) required />
+                Saya belum pernah mendaftar di PhotoUP.
+              </label>
+              @error('not_cadre_yet')<small class="error">{{ $message }}</small>@enderror
+            </div>
+            <button type="submit" class="btn btn-block">Kirim Pendaftaran <x-glyph name="arrow-right" :size="18" /></button>
+          </form>
+        </div>
       </div>
     </section>
 
-    <section class="section section-muted" id="kontak">
-      {{-- di HP: tiap bagian tampil sebagai tombol, isinya dibuka saat diketuk --}}
+    {{-- ================= KONTAK ================= --}}
+    <section class="section" id="kontak">
       <button type="button" class="section-toggle" aria-expanded="false" aria-controls="kontak-body">
-        <span><strong>Kontak</strong><small>Alamat, email, dan media sosial</small></span>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg>
+        <span class="toggle-icon"><x-glyph name="mail" /></span>
+        <span class="toggle-text"><strong>Kontak</strong><small>Alamat, email, dan media sosial</small></span>
+        <x-glyph name="chevron-right" class="toggle-chevron" />
       </button>
-      <div id="kontak-body" class="section-body container narrow">
-        <h2>Kontak</h2>
+      <div id="kontak-body" class="section-body container">
+        <div class="section-head reveal">
+          <span class="eyebrow"><x-glyph name="mail" :size="14" /> Kontak</span>
+          <h2>Ngobrol bareng kami</h2>
+          <p>Ada pertanyaan soal pendaftaran, kerja sama, atau liputan? Hubungi kami.</p>
+        </div>
         <ul class="contact">
           @if ($profile->address)
-            <li><span>Alamat</span>{{ $profile->address }}</li>
+            <li class="reveal"><span class="card-icon"><x-glyph name="map-pin" /></span><span><small>Alamat</small>{{ $profile->address }}</span></li>
           @endif
           @if ($profile->email)
-            <li><span>Email</span><a href="mailto:{{ $profile->email }}">{{ $profile->email }}</a></li>
+            <li class="reveal"><span class="card-icon"><x-glyph name="mail" /></span><span><small>Email</small><a href="mailto:{{ $profile->email }}">{{ $profile->email }}</a></span></li>
           @endif
           @if ($profile->instagram)
-            <li><span>Instagram</span><a href="https://instagram.com/{{ ltrim($profile->instagram, '@') }}" target="_blank" rel="noopener">{{ '@'.ltrim($profile->instagram, '@') }}</a></li>
+            <li class="reveal"><span class="card-icon"><x-glyph name="instagram" /></span><span><small>Instagram</small><a href="https://instagram.com/{{ ltrim($profile->instagram, '@') }}" target="_blank" rel="noopener">{{ '@'.ltrim($profile->instagram, '@') }}</a></span></li>
           @endif
           @if ($profile->tiktok)
-            <li><span>TikTok</span><a href="https://www.tiktok.com/@{{ ltrim($profile->tiktok, '@') }}" target="_blank" rel="noopener">{{ '@'.ltrim($profile->tiktok, '@') }}</a></li>
+            <li class="reveal"><span class="card-icon"><x-glyph name="music" /></span><span><small>TikTok</small><a href="https://www.tiktok.com/@{{ ltrim($profile->tiktok, '@') }}" target="_blank" rel="noopener">{{ '@'.ltrim($profile->tiktok, '@') }}</a></span></li>
           @endif
           @if ($profile->phone)
-            <li><span>Telepon</span>{{ $profile->phone }}</li>
+            <li class="reveal"><span class="card-icon"><x-glyph name="phone" /></span><span><small>Telepon</small>{{ $profile->phone }}</span></li>
           @endif
         </ul>
       </div>
@@ -310,8 +425,12 @@
   </main>
 
   <footer class="footer">
-    <div class="container">
-      &copy; {{ now()->year }} UKM Fotografi Universitas Pancasila
+    <div class="container footer-inner">
+      <a href="#beranda" class="brand">
+        <img src="{{ asset('images/logo.svg') }}" alt="" width="28" height="28" />
+        <span>{{ $profile->name }}</span>
+      </a>
+      <p>&copy; {{ now()->year }} UKM Fotografi Universitas Pancasila</p>
     </div>
   </footer>
 

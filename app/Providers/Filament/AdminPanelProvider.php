@@ -35,6 +35,7 @@ class AdminPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Amber,
             ])
+            ->font('Plus Jakarta Sans')
             ->navigationGroups(['Inventaris', 'Galeri', 'Kegiatan', 'Manajemen User', 'Laporan'])
             ->sidebarCollapsibleOnDesktop()
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')

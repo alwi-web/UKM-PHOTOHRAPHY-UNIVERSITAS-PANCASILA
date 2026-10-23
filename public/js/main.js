@@ -111,6 +111,45 @@ function initSections() {
   openFromHash(location.hash);
 }
 
+/* ---------- HEADER: bayangan saat di-scroll + menu aktif ---------- */
+function initTopbar() {
+  const topbar = $(".topbar");
+  const onScroll = () => topbar.classList.toggle("scrolled", window.scrollY > 8);
+  onScroll();
+  window.addEventListener("scroll", onScroll, { passive: true });
+
+  const links = $$(".nav a");
+  if (!("IntersectionObserver" in window) || !links.length) return;
+  const spy = new IntersectionObserver(
+    (entries) => entries.forEach((e) => {
+      if (e.isIntersecting) links.forEach((a) => a.classList.toggle("active", a.getAttribute("href") === `#${e.target.id}`));
+    }),
+    { rootMargin: "-45% 0px -50% 0px" }
+  );
+  links.forEach((a) => {
+    const target = $(a.getAttribute("href"));
+    if (target) spy.observe(target);
+  });
+}
+
+/* ---------- ANIMASI MUNCUL SAAT DI-SCROLL ---------- */
+function initReveal() {
+  const items = $$(".reveal");
+  if (!("IntersectionObserver" in window)) {
+    items.forEach((el) => el.classList.add("in"));
+    return;
+  }
+  const io = new IntersectionObserver(
+    (entries) => entries.forEach((e) => {
+      if (!e.isIntersecting) return;
+      e.target.classList.add("in");
+      io.unobserve(e.target);
+    }),
+    { threshold: 0.12 }
+  );
+  items.forEach((el) => io.observe(el));
+}
+
 /* ---------- FORM PENDAFTARAN ---------- */
 function initForm() {
   const form = $("#registerForm");
@@ -125,6 +164,8 @@ function initForm() {
 
 document.addEventListener("DOMContentLoaded", () => {
   initSections();
+  initTopbar();
+  initReveal();
   initGallery();
   initForm();
 });
