@@ -27,13 +27,13 @@
 
       <div class="field @error('name') invalid @enderror">
         <label for="name">Nama Lengkap</label>
-        <input type="text" id="name" name="name" value="{{ old('name') }}" autocomplete="name" placeholder="Nama sesuai KTM" required autofocus />
+        <input type="text" id="name" name="name" value="{{ old('name') }}" autocomplete="name" required autofocus />
         @error('name')<small class="error">{{ $message }}</small>@enderror
       </div>
       <div class="field-row">
         <div class="field @error('npm') invalid @enderror">
           <label for="npm">NPM</label>
-          <input type="text" id="npm" name="npm" value="{{ old('npm') }}" inputmode="numeric" pattern="\d{6,20}" placeholder="Contoh: 4522210001" required />
+          <input type="text" id="npm" name="npm" value="{{ old('npm') }}" inputmode="numeric" pattern="\d{6,20}" required />
           @error('npm')<small class="error">{{ $message }}</small>@enderror
         </div>
         <div class="field @error('faculty') invalid @enderror">
@@ -49,7 +49,7 @@
       </div>
       <div class="field @error('phone') invalid @enderror">
         <label for="phone">Nomor WhatsApp</label>
-        <input type="tel" id="phone" name="phone" value="{{ old('phone') }}" placeholder="08xxxxxxxxxx" autocomplete="tel" required />
+        <input type="tel" id="phone" name="phone" value="{{ old('phone') }}" autocomplete="tel" required />
         @error('phone')<small class="error">{{ $message }}</small>@enderror
       </div>
       <div class="field field-check @error('not_cadre_yet') invalid @enderror">

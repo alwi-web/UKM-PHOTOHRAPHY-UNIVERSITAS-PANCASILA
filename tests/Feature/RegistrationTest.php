@@ -61,6 +61,11 @@ describe('halaman daftar terpisah', function () {
             ->assertSessionHasErrors('faculty');
     });
 
+    it('formulir daftar dan login tidak memakai teks contoh di dalam isian', function () {
+        $this->get('/daftar')->assertDontSee('placeholder=', false);
+        $this->get('/login')->assertDontSee('placeholder=', false);
+    });
+
     it('menyimpan pendaftar calon anggota baru', function () {
         $this->post(route('register'), registrationData())
             ->assertRedirect(route('register.show'))

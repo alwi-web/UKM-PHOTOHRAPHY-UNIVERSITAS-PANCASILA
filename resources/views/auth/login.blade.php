@@ -18,13 +18,13 @@
 
     <div class="field @error('email') invalid @enderror">
       <label for="email">Email</label>
-      <input type="email" id="email" name="email" value="{{ old('email') }}" autocomplete="username" placeholder="nama@email.com" required autofocus />
+      <input type="email" id="email" name="email" value="{{ old('email') }}" autocomplete="username" required autofocus />
     </div>
 
     <div class="field @error('password') invalid @enderror">
       <label for="password">Password</label>
       <div class="password-wrap">
-        <input type="password" id="password" name="password" autocomplete="current-password" placeholder="••••••••" required />
+        <input type="password" id="password" name="password" autocomplete="current-password" required />
         <button type="button" class="password-toggle" id="passwordToggle" aria-label="Tampilkan password" aria-pressed="false">
           <x-glyph name="eye" :size="18" class="show-icon" />
           <x-glyph name="eye-off" :size="18" class="hide-icon" />
