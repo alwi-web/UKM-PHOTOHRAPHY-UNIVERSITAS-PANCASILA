@@ -241,11 +241,53 @@ p {
 }
 
 /* ---------- Tentang ---------- */
+.about-block {
+  margin-top: 36px;
+}
+
+.about-block h3 {
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+}
+
+.about-block p + p {
+  margin-top: 10px;
+}
+
 .vm {
   display: grid;
   grid-template-columns: max-content 1fr;
   gap: 8px 24px;
-  margin: 24px 0 0;
+  margin: 0;
+}
+
+.org-label {
+  margin-top: 16px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.org {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr));
+  gap: 8px;
+}
+
+.org-core {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.org li {
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--yellow);
+  border-radius: 6px;
+  font-weight: 500;
 }
 
 .vm dt {
@@ -350,25 +392,6 @@ p {
 
 .event p {
   font-size: 0.9rem;
-}
-
-/* ---------- Pengurus ---------- */
-.people {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 16px;
-}
-
-.people li {
-  display: grid;
-}
-
-.people span {
-  font-size: 0.9rem;
-  color: var(--muted);
 }
 
 /* ---------- Formulir ---------- */
@@ -621,6 +644,10 @@ p {
   .gallery {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
+  }
+
+  .org-core {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .event,

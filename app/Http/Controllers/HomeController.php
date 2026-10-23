@@ -3,12 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Enums\ArtworkStatus;
-use App\Enums\Role;
-use App\Enums\UserStatus;
 use App\Models\Artwork;
 use App\Models\Category;
 use App\Models\Event;
-use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\View\View;
 
@@ -22,11 +19,6 @@ class HomeController extends Controller
             'artworks' => $artworks,
             'categories' => Category::whereIn('id', $artworks->pluck('category_id')->unique())->orderBy('name')->get(),
             'events' => Event::upcoming()->take(6)->get(),
-            'board' => User::where('status', UserStatus::Active)
-                ->whereIn('role', [Role::AdminUkm, Role::AdminInventaris, Role::Kurator])
-                ->orderByRaw("case role when 'admin_ukm' then 1 when 'admin_inventaris' then 2 else 3 end")
-                ->take(8)
-                ->get(),
         ]);
     }
 

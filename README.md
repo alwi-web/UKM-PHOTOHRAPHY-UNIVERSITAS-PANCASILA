@@ -59,7 +59,7 @@ Aturan ini ada di `app/Enums/Role.php` dan `app/Policies`, dan diuji di `tests/F
 - Daftar kegiatan dengan jumlah peserta dan persentase kehadiran, bisa difilter per periode dan diunduh sebagai CSV.
 - Insight karya: total karya, tingkat lolos kurasi, total dilihat, grafik per kategori, unggahan per bulan, dan karya terpopuler.
 
-**Website publik** (`/`): profil UKM, galeri karya pilihan kurator, agenda mendatang, pengurus, formulir pendaftaran calon anggota, dan kontak.
+**Website publik** (`/`): profil UKM (sejarah PhotoUP 94, visi & misi, struktur organisasi), galeri karya pilihan kurator, agenda mendatang, pengurus, formulir pendaftaran calon anggota, dan kontak.
 
 ## Instalasi
 
@@ -91,6 +91,11 @@ Buka http://localhost:8000 untuk website dan http://localhost:8000/admin untuk p
 | Anggota UKM Lain | tamu@ukmfoto.test |
 
 Foto karya di data demo memakai placeholder dari picsum.photos. Ganti dengan unggahan asli lewat panel.
+
+### Mengubah isi bagian "Tentang Kami"
+
+Teks sejarah, nama organisasi, serta daftar jabatan pengurus inti dan divisi ada di `config/ukm.php`
+(`name`, `history`, `structure`). Setiap elemen `history` ditampilkan sebagai satu paragraf.
 
 ## Pengujian otomatis
 

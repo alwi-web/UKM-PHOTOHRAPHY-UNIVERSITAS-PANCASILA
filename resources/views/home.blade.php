@@ -53,12 +53,39 @@
           UKM Fotografi adalah wadah minat dan bakat mahasiswa di bidang fotografi. Kami belajar bersama
           lewat kelas, hunting foto, pameran, dan kolaborasi dengan komunitas kreatif lain.
         </p>
-        <dl class="vm">
-          <dt>Visi</dt>
-          <dd>Menjadi komunitas fotografi mahasiswa yang unggul, kreatif, dan berkarakter Pancasila.</dd>
-          <dt>Misi</dt>
-          <dd>Mengembangkan keterampilan fotografi anggota, menghasilkan karya yang bermanfaat bagi kampus dan masyarakat, serta membangun jejaring dengan komunitas kreatif lain.</dd>
-        </dl>
+
+        <div class="about-block">
+          <h3>Sejarah {{ config('ukm.name') }}</h3>
+          @foreach (config('ukm.history') as $paragraph)
+            <p>{{ $paragraph }}</p>
+          @endforeach
+        </div>
+
+        <div class="about-block">
+          <h3>Visi &amp; Misi</h3>
+          <dl class="vm">
+            <dt>Visi</dt>
+            <dd>Menjadi komunitas fotografi mahasiswa yang unggul, kreatif, dan berkarakter Pancasila.</dd>
+            <dt>Misi</dt>
+            <dd>Mengembangkan keterampilan fotografi anggota, menghasilkan karya yang bermanfaat bagi kampus dan masyarakat, serta membangun jejaring dengan komunitas kreatif lain.</dd>
+          </dl>
+        </div>
+
+        <div class="about-block">
+          <h3>Struktur Organisasi</h3>
+          <p class="org-label">Pengurus Inti</p>
+          <ul class="org org-core">
+            @foreach (config('ukm.structure.core') as $position)
+              <li>{{ $position }}</li>
+            @endforeach
+          </ul>
+          <p class="org-label">Divisi</p>
+          <ul class="org">
+            @foreach (config('ukm.structure.divisions') as $division)
+              <li>Divisi {{ $division }}</li>
+            @endforeach
+          </ul>
+        </div>
       </div>
     </section>
 
@@ -121,19 +148,6 @@
         @endforelse
       </div>
     </section>
-
-    @if ($board->isNotEmpty())
-      <section class="section section-muted" id="pengurus">
-        <div class="container narrow">
-          <h2>Pengurus</h2>
-          <ul class="people">
-            @foreach ($board as $person)
-              <li><strong>{{ $person->name }}</strong><span>{{ $person->role->getLabel() }}</span></li>
-            @endforeach
-          </ul>
-        </div>
-      </section>
-    @endif
 
     <section class="section" id="daftar">
       <div class="container narrow">

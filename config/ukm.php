@@ -12,6 +12,27 @@ return [
         'Sekolah Pascasarjana',
     ],
 
+    /*
+     * Ditampilkan di bagian "Tentang Kami" pada halaman depan.
+     * Setiap elemen 'history' adalah satu paragraf.
+     */
+    'name' => 'PhotoUP 94',
+
+    'history' => [
+        'PhotoUP 94 adalah Unit Kegiatan Mahasiswa fotografi di Universitas Pancasila.',
+    ],
+
+    'structure' => [
+        'core' => ['Ketua', 'Wakil Ketua', 'Sekretaris', 'Bendahara'],
+        'divisions' => [
+            'Penelitian dan Pengembangan',
+            'Hunting',
+            'Pameran',
+            'Inventaris',
+            'Humas Internal dan Eksternal',
+        ],
+    ],
+
     'contact' => [
         'address' => env('UKM_ADDRESS', 'Sekretariat UKM, Universitas Pancasila, Jl. Srengseng Sawah, Jagakarsa, Jakarta Selatan 12640'),
         'email' => env('UKM_EMAIL', 'ukmfotografi@univpancasila.ac.id'),
