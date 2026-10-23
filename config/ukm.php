@@ -28,10 +28,10 @@ return [
             'Membangun jejaring dengan komunitas kreatif lain.',
         ],
         'core_members' => [
-            ['position' => 'Ketua Umum', 'name' => null, 'photo' => null],
-            ['position' => 'Wakil Ketua', 'name' => null, 'photo' => null],
-            ['position' => 'Sekretaris', 'name' => null, 'photo' => null],
-            ['position' => 'Bendahara', 'name' => null, 'photo' => null],
+            ['position' => 'Ketua Umum', 'name' => null, 'npm' => null, 'photo' => null],
+            ['position' => 'Wakil Ketua', 'name' => null, 'npm' => null, 'photo' => null],
+            ['position' => 'Sekretaris', 'name' => null, 'npm' => null, 'photo' => null],
+            ['position' => 'Bendahara', 'name' => null, 'npm' => null, 'photo' => null],
         ],
         'divisions' => [
             ['name' => 'Penelitian dan Pengembangan', 'description' => null, 'members' => []],

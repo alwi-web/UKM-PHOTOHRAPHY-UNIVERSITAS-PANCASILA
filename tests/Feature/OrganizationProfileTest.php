@@ -168,3 +168,34 @@ it('tiap divisi bisa berisi lebih dari satu anggota tanpa koordinator', function
 
     $this->get('/')->assertDontSee('Koordinator');
 });
+
+it('wakil ketua dan sekretaris bisa diisi foto, nama, dan NPM yang tampil di bagan', function () {
+    loginAs(Role::AdminUkm);
+
+    livewire(ManageOrganizationProfile::class)
+        ->fillForm([
+            'core_members' => [
+                ['position' => 'Ketua Umum', 'name' => 'Rizky Pratama', 'npm' => '4122000001', 'photo' => null],
+                ['position' => 'Wakil Ketua', 'name' => 'Putri Ramadhani', 'npm' => '4122000002', 'photo' => null],
+                ['position' => 'Sekretaris', 'name' => 'Dewi Lestari', 'npm' => '4122000003', 'photo' => null],
+                ['position' => 'Bendahara', 'name' => 'Rangga Saputra', 'npm' => '4122000004', 'photo' => null],
+            ],
+        ])
+        ->call('save')
+        ->assertHasNoFormErrors();
+
+    $this->get('/')
+        ->assertSeeInOrder(['Wakil Ketua', 'Putri Ramadhani', '4122000002'])
+        ->assertSeeInOrder(['Sekretaris', 'Dewi Lestari', '4122000003']);
+});
+
+it('NPM pengurus inti wajib berupa angka bila diisi', function () {
+    loginAs(Role::AdminUkm);
+
+    livewire(ManageOrganizationProfile::class)
+        ->fillForm([
+            'core_members' => [['position' => 'Wakil Ketua', 'name' => 'Putri', 'npm' => '41-ABC', 'photo' => null]],
+        ])
+        ->call('save')
+        ->assertHasFormErrors(['core_members.0.npm' => 'NPM harus berupa 6–20 digit angka.']);
+});

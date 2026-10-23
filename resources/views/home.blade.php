@@ -104,11 +104,19 @@
                   @foreach ($nodes as $node)
                     <div class="chart-cell">
                       <div class="node">
-                        @if ($node['photo'])
-                          <img src="{{ $node['photo'] }}" alt="Foto {{ $node['name'] ?? $node['title'] }}" class="node-photo" width="56" height="56" loading="lazy" />
-                        @endif
                         <strong>{{ $node['title'] }}</strong>
-                        @if ($node['name'])<small>{{ $node['name'] }}</small>@endif
+                        @if ($node['name'] || $node['photo'])
+                          {{-- pengurus inti: foto berbingkai, lalu nama dan NPM --}}
+                          <div class="node-person">
+                            @if ($node['photo'])
+                              <img src="{{ $node['photo'] }}" alt="Foto {{ $node['name'] ?? $node['title'] }}" class="member-photo" width="64" height="64" loading="lazy" />
+                            @else
+                              <span class="member-photo member-initial" aria-hidden="true">{{ mb_substr($node['name'], 0, 1) }}</span>
+                            @endif
+                            @if ($node['name'])<span class="person-name">{{ $node['name'] }}</span>@endif
+                            @if ($node['npm'])<small>{{ $node['npm'] }}</small>@endif
+                          </div>
+                        @endif
                         @if ($node['note'])<small class="node-note">{{ $node['note'] }}</small>@endif
                         @if ($node['members'])
                           <ul class="node-members">

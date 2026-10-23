@@ -115,8 +115,7 @@ class ManageOrganizationProfile extends Page
                                     ->label('Pengurus Inti')
                                     ->helperText('Urutan menentukan posisi di bagan website: pertama paling atas (Ketua Umum), kedua tepat di bawahnya, sisanya berjajar. Seret untuk mengubah urutan.')
                                     ->schema([
-                                        TextInput::make('position')->label('Jabatan')->required()->maxLength(100),
-                                        TextInput::make('name')->label('Nama')->maxLength(100),
+                                        TextInput::make('position')->label('Jabatan')->required()->maxLength(100)->columnSpanFull(),
                                         FileUpload::make('photo')
                                             ->label('Foto')
                                             ->image()
@@ -124,6 +123,12 @@ class ManageOrganizationProfile extends Page
                                             ->disk('public')
                                             ->directory('organization')
                                             ->maxSize(2048),
+                                        TextInput::make('name')->label('Nama')->maxLength(100),
+                                        TextInput::make('npm')
+                                            ->label('NPM')
+                                            ->regex('/^\d{6,20}$/')
+                                            ->validationMessages(['regex' => 'NPM harus berupa 6–20 digit angka.'])
+                                            ->maxLength(20),
                                     ])
                                     ->columns(3)
                                     ->itemLabel(fn (array $state) => $state['position'] ?? null)

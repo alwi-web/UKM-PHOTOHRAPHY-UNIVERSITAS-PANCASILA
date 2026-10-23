@@ -99,7 +99,8 @@ Profil (nama, slogan, deskripsi, kontak), sejarah, visi & misi, dan struktur org
 Isi awalnya diambil dari `profile_defaults` di `config/ukm.php` saat profil pertama kali dibuka.
 
 Struktur organisasi tampil sebagai bagan: pengurus inti pertama (Ketua Umum) di paling atas, kedua di
-bawahnya, sisanya bercabang, lalu semua divisi di baris terbawah. Setiap divisi berisi daftar anggota
+bawahnya, sisanya bercabang, lalu semua divisi di baris terbawah. Setiap pengurus inti punya foto, nama,
+dan NPM. Setiap divisi berisi daftar anggota
 (foto, nama, NPM) yang tampil di website: foto berbingkai, lalu nama dan NPM di bawahnya.
 
 ## Pengujian otomatis
