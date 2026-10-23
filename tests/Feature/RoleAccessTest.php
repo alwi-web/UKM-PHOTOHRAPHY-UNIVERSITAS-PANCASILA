@@ -5,7 +5,7 @@ use App\Enums\Role;
 /*
  * Matriks akses menu panel per role.
  * Admin UKM: semua. Admin Inventaris: barang & peminjaman. Kurator: kurasi karya.
- * Member: unggah karya. Anggota UKM lain: pinjam barang.
+ * Member: unggah karya & pinjam barang. Anggota UKM lain: pinjam barang.
  */
 $pages = [
     'barang' => '/admin/items',
@@ -27,7 +27,7 @@ $allowed = [
     Role::AdminUkm->value => array_keys($pages),
     Role::AdminInventaris->value => ['barang', 'tambah barang', 'peminjaman', 'ajukan peminjaman'],
     Role::Kurator->value => ['karya'],
-    Role::Member->value => ['karya', 'unggah karya'],
+    Role::Member->value => ['barang', 'peminjaman', 'ajukan peminjaman', 'karya', 'unggah karya'],
     Role::AnggotaLain->value => ['barang', 'peminjaman', 'ajukan peminjaman'],
 ];
 

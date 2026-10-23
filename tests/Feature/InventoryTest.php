@@ -77,6 +77,38 @@ describe('pengajuan oleh anggota UKM lain', function () {
             ->and($loan->loanItems->pluck('quantity', 'item_id')->all())->toBe([$kamera->id => 1, $tripod->id => 2]);
     });
 
+    it('member UKM juga bisa mengajukan peminjaman dengan data dirinya', function () {
+        $member = loginAs(Role::Member, ['name' => 'Dimas', 'npm' => '4122000222', 'faculty' => 'Fakultas Teknik']);
+        $lensa = Item::factory()->create(['quantity' => 1]);
+
+        livewire(CreateLoan::class)
+            ->assertSchemaStateSet([
+                'borrower_name' => 'Dimas',
+                'borrower_npm' => '4122000222',
+                'borrower_unit' => 'Fakultas Teknik',
+            ])
+            ->fillForm([
+                'borrowed_at' => now()->addDay(),
+                'due_at' => now()->addDays(2),
+                'loanItems' => [['item_id' => $lensa->id, 'quantity' => 1]],
+            ])
+            ->call('create')
+            ->assertHasNoFormErrors();
+
+        expect(Loan::sole()->user_id)->toBe($member->id);
+    });
+
+    it('member hanya melihat peminjaman miliknya dan tidak bisa memprosesnya', function () {
+        $member = loginAs(Role::Member);
+        $milikku = Loan::factory()->create(['user_id' => $member->id]);
+        $orangLain = Loan::factory()->create();
+
+        livewire(ListLoans::class)
+            ->assertCanSeeTableRecords([$milikku])
+            ->assertCanNotSeeTableRecords([$orangLain])
+            ->assertActionHidden(TestAction::make('handOver')->table($milikku));
+    });
+
     it('menolak jumlah melebihi stok tersedia', function () {
         loginAs(Role::AnggotaLain);
         $item = Item::factory()->create(['quantity' => 1]);

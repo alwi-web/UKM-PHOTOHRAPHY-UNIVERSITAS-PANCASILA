@@ -35,7 +35,7 @@ class DashboardStats extends StatsOverviewWidget
             ],
             Role::AdminInventaris => $this->inventory(),
             Role::Kurator => [$this->curation()],
-            Role::Member => $this->myArtworks($user),
+            Role::Member => [...$this->myArtworks($user), ...$this->myLoans($user)],
             Role::AnggotaLain => $this->myLoans($user),
         };
     }

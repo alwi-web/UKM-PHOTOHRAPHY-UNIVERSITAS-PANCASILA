@@ -12,7 +12,7 @@ it('mengatur hak akses tiap role', function (Role $role, bool $inventory, bool $
     'Admin UKM' => [Role::AdminUkm, true, true, true, true],
     'Admin Inventaris' => [Role::AdminInventaris, true, true, false, false],
     'Kurator' => [Role::Kurator, false, false, false, true],
-    'Member' => [Role::Member, false, false, true, false],
+    'Member' => [Role::Member, false, true, true, false],
     'Anggota UKM lain' => [Role::AnggotaLain, false, true, false, false],
 ]);
 

@@ -40,7 +40,7 @@ enum Role: string implements HasColor, HasLabel
      * - Admin UKM        : semua fitur.
      * - Admin Inventaris : daftar barang & peminjaman.
      * - Kurator          : mengkurasi foto untuk website.
-     * - Member UKM       : mengunggah foto & melihat hasil kurasi.
+     * - Member UKM       : mengunggah foto, melihat hasil kurasi, & meminjam barang.
      * - Anggota UKM lain : meminjam barang.
      */
 
@@ -53,7 +53,7 @@ enum Role: string implements HasColor, HasLabel
     /** Melihat barang yang tersedia dan mengajukan peminjaman. */
     public function canBorrow(): bool
     {
-        return in_array($this, [self::AdminUkm, self::AdminInventaris, self::AnggotaLain]);
+        return in_array($this, [self::AdminUkm, self::AdminInventaris, self::Member, self::AnggotaLain]);
     }
 
     /** Mengunggah karya ke galeri. */

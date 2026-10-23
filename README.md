@@ -19,7 +19,7 @@ acara & kegiatan, manajemen anggota, dan laporan.
 | **Admin UKM** | Mengatur semuanya, termasuk memproses pendaftar calon anggota serta mengubah profil, sejarah, visi & misi, dan struktur organisasi | Semua menu |
 | **Admin Inventaris** | Mengelola daftar barang & jumlahnya, melihat barang yang sedang dipinjam dan siapa peminjamnya, mengatur tanggal pinjam & tanggal kembali, mencatat kondisi barang sebelum & sesudah dipinjam | Daftar Barang, Peminjaman |
 | **Kurator** | Mengkurasi foto dan memilih yang tampil di website | Karya Foto (kurasi) |
-| **Member UKM Fotografi** | Mengunggah foto beserta kategori, caption, segitiga exposure (aperture, shutter speed, ISO, dan deskripsinya), link Instagram; melihat foto mana yang lulus kurasi | Karya Foto |
+| **Member UKM Fotografi** | Mengunggah foto beserta kategori, caption, segitiga exposure (aperture, shutter speed, ISO, dan deskripsinya), link Instagram; melihat foto mana yang lulus kurasi; meminjam barang seperti anggota UKM lain (data diri terisi dari akun) | Karya Foto, Daftar Barang, Peminjaman |
 | **Anggota UKM Lain** | Melihat barang yang tersedia, mengajukan peminjaman (nama lengkap, NPM, fakultas/UKM, tanggal dari–sampai), menambah & menghapus barang dalam pengajuan selama belum diproses | Daftar Barang, Peminjaman |
 
 Aturan ini ada di `app/Enums/Role.php` dan `app/Policies`, dan diuji di `tests/Feature/RoleAccessTest.php`.

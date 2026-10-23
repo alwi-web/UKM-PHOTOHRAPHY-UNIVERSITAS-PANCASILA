@@ -12,7 +12,7 @@ Jalankan `./vendor/bin/pest`. Cakupan:
 | `tests/Feature/RegistrationTest.php` | Formulir pendaftaran calon anggota (nama, NPM, fakultas, WhatsApp), pernyataan belum ikut kaderisasi, NPM ganda, terima & buat akun, tolak |
 | `tests/Feature/HomePageTest.php` | Website hanya menampilkan karya terkurasi & acara terpublikasi, pencatatan jumlah dilihat |
 | `tests/Feature/LoanScheduleTest.php` | Cek bentrok tanggal: rentang beririsan, bersambung, status yang diabaikan, barang terlambat, filter ketersediaan |
-| `tests/Feature/InventoryTest.php` | Stok tersedia, keterlambatan, pengajuan multi-barang, tambah/hapus barang, serah terima, pengembalian & kondisi barang, ubah tanggal |
+| `tests/Feature/InventoryTest.php` | Stok tersedia, keterlambatan, pengajuan multi-barang (anggota UKM lain & member UKM), tambah/hapus barang, serah terima, pengembalian & kondisi barang, ubah tanggal |
 | `tests/Feature/GalleryTest.php` | Unggah karya dengan segitiga exposure, hasil kurasi untuk member, kurasi, kurator tidak bisa mengunggah/mengubah |
 | `tests/Feature/EventTest.php` | CRUD acara, daftar peserta, kuota, kehadiran, laporan kegiatan |
 | `tests/Feature/OrganizationProfileTest.php` | Admin UKM mengubah profil, sejarah, visi & misi; memilih pengurus hanya dari akun Member UKM (foto, nama, NPM diambil dari akun); akun nonaktif/terhapus/bukan member tidak tampil; role lain ditolak |
@@ -51,7 +51,7 @@ Isi kolom **Hasil** saat pengujian manual (✓ sesuai / ✗ tidak sesuai).
 | B24 | Galeri | Member membuka tab "Lolos Kurasi" | Login member | Hanya karya miliknya yang lolos kurasi | |
 | B25 | Kurasi | Kurator meloloskan & menampilkan karya | Lolos + tampilkan di website | Karya muncul di galeri website beserta data exposure | |
 | B26 | Kurasi | Kurator mencoba mengunggah atau mengubah karya | Login kurator | Tidak ada tombol unggah/ubah (403) | |
-| B27 | Hak akses | Setiap role membuka menu yang bukan miliknya | Mis. member membuka /admin/loans | Akses ditolak (403) | |
+| B27 | Hak akses | Setiap role membuka menu yang bukan miliknya | Mis. member membuka /admin/users | Akses ditolak (403) | |
 | B28 | Acara | Admin UKM membuat acara | Kuota 20, status Dipublikasikan | Acara tampil di agenda website | |
 | B29 | Acara | Admin menandai hadir | Pilih peserta → "Tandai Hadir" | Status kehadiran "Hadir" | |
 | B30 | Laporan | Filter laporan kegiatan per periode | Dari–sampai bulan ini | Hanya kegiatan pada periode itu | |
@@ -62,6 +62,7 @@ Isi kolom **Hasil** saat pengujian manual (✓ sesuai / ✗ tidak sesuai).
 | B35 | Login | Login akun yang belum aktif | Akun berstatus menunggu | Pesan "Akun kamu belum aktif. Hubungi Admin UKM." | |
 | B36 | Login | Membuka panel tanpa login | Buka `/admin` | Diarahkan ke halaman `/login` | |
 | B37 | Login | Keluar dari panel | Menu akun → Keluar | Kembali ke halaman `/login` | |
+| B38 | Peminjaman | Member UKM mengajukan peminjaman | Login member, pilih barang & tanggal | Data diri terisi dari akun, pengajuan berstatus "Diajukan" dan hanya terlihat oleh member tersebut & admin | |
 
 ## 3. UAT (User Acceptance Test)
 
