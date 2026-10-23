@@ -15,7 +15,7 @@ Jalankan `./vendor/bin/pest`. Cakupan:
 | `tests/Feature/InventoryTest.php` | Stok tersedia, keterlambatan, pengajuan multi-barang, tambah/hapus barang, serah terima, pengembalian & kondisi barang, ubah tanggal |
 | `tests/Feature/GalleryTest.php` | Unggah karya dengan segitiga exposure, hasil kurasi untuk member, kurasi, kurator tidak bisa mengunggah/mengubah |
 | `tests/Feature/EventTest.php` | CRUD acara, daftar peserta, kuota, kehadiran, laporan kegiatan |
-| `tests/Feature/OrganizationProfileTest.php` | Admin UKM mengubah profil, sejarah, visi & misi; memilih pengurus dari akun anggota (foto, nama, NPM diambil dari akun); akun nonaktif/terhapus tidak tampil; role lain ditolak |
+| `tests/Feature/OrganizationProfileTest.php` | Admin UKM mengubah profil, sejarah, visi & misi; memilih pengurus hanya dari akun Member UKM (foto, nama, NPM diambil dari akun); akun nonaktif/terhapus/bukan member tidak tampil; role lain ditolak |
 | `tests/Feature/UserManagementTest.php` | Tambah user, atur role, tunjuk kurator |
 | `tests/Unit/EnumTest.php` | Matriks kemampuan tiap role |
 

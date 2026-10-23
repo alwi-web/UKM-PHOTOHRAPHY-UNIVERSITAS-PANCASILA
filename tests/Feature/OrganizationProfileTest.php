@@ -103,17 +103,26 @@ it('akun yang nonaktif atau sudah dihapus tidak tampil di bagan', function () {
         ->and(array_column(last($levels)[0]['members'], 'name'))->toBe(['Akun Aktif']);
 });
 
-it('pilihan pengurus hanya berisi anggota PhotoUP yang aktif', function () {
+it('pilihan pengurus hanya berisi Member UKM yang aktif', function () {
     $member = User::factory()->create(['name' => 'Member Aktif']);
-    $kurator = User::factory()->role(Role::Kurator)->create(['name' => 'Kurator Aktif']);
-    $tamu = User::factory()->role(Role::AnggotaLain)->create(['name' => 'Anggota UKM Lain']);
+    $others = collect([Role::AdminUkm, Role::AdminInventaris, Role::Kurator, Role::AnggotaLain])
+        ->map(fn (Role $role) => User::factory()->role($role)->create());
     $pending = User::factory()->pending()->create(['name' => 'Belum Aktif']);
 
-    $options = OrganizationProfile::memberOptions();
+    expect(array_keys(OrganizationProfile::memberOptions()))->toBe([$member->id])
+        ->and($pending->id)->not->toBeIn(array_keys(OrganizationProfile::memberOptions()));
+});
 
-    expect($options)->toHaveKeys([$member->id, $kurator->id])
-        ->not->toHaveKey($tamu->id)
-        ->not->toHaveKey($pending->id);
+it('akun yang role-nya bukan Member lagi tidak tampil di bagan', function () {
+    $user = User::factory()->create(['name' => 'Dulu Member']);
+    OrganizationProfile::current()->update([
+        'core_members' => [['position' => 'Ketua Umum', 'user_id' => $user->id]],
+        'divisions' => [],
+    ]);
+
+    $user->update(['role' => Role::Kurator]);
+
+    expect(OrganizationProfile::sole()->chartLevels()[0][0]['person'])->toBeNull();
 });
 
 it('menyusun bagan dengan Ketua Umum paling atas dan divisi di baris terbawah', function () {

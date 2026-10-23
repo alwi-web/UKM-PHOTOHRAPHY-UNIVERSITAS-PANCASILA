@@ -112,8 +112,8 @@ class ManageOrganizationProfile extends Page
                         Tab::make('Struktur Organisasi')
                             ->icon(Heroicon::OutlinedUserGroup)
                             ->schema([
-                                Callout::make('Data diambil dari akun anggota')
-                                    ->description('Pilih orang dari daftar akun anggota PhotoUP yang aktif. Foto, nama, dan NPM yang tampil di website diambil dari akun tersebut, jadi ubah datanya lewat menu Anggota & User.')
+                                Callout::make('Data diambil dari akun Member UKM')
+                                    ->description('Yang bisa dipilih hanya akun Member UKM Fotografi yang aktif. Foto, nama, dan NPM yang tampil di website diambil dari akun tersebut, jadi ubah datanya lewat menu Anggota & User.')
                                     ->info(),
                                 Repeater::make('core_members')
                                     ->label('Pengurus Inti')

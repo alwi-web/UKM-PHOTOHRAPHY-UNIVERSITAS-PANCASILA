@@ -100,9 +100,9 @@ Isi awalnya diambil dari `profile_defaults` di `config/ukm.php` saat profil pert
 
 Struktur organisasi tampil sebagai bagan: pengurus inti pertama (Ketua Umum) di paling atas, kedua di
 bawahnya, sisanya bercabang, lalu semua divisi di baris terbawah. Admin UKM **memilih orangnya dari akun
-anggota PhotoUP yang aktif** (Member, Kurator, Admin Inventaris, Admin UKM); foto, nama, dan NPM di bagan
-diambil dari akun tersebut, sehingga perubahan data di menu Anggota & User langsung terbawa. Akun yang
-dinonaktifkan atau dihapus otomatis hilang dari bagan.
+Member UKM Fotografi yang aktif**; foto, nama, dan NPM di bagan diambil dari akun tersebut, sehingga
+perubahan data di menu Anggota & User langsung terbawa. Akun yang dinonaktifkan, dihapus, atau role-nya
+bukan Member lagi otomatis hilang dari bagan.
 
 ## Pengujian otomatis
 

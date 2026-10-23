@@ -150,16 +150,15 @@ class DatabaseSeeder extends Seeder
         ]));
 
         // ---- Struktur organisasi (dipilih dari akun anggota) ----
+        // hanya akun Member UKM yang bisa dicantumkan di struktur
         $profile = OrganizationProfile::current();
-        $pool = $members->values();
+        $pool = $members->values()->merge(User::factory(4)->create())->values();
         $profile->update([
             'core_members' => collect($profile->core_members)
-                ->map(fn (array $m, int $i) => [...$m, 'user_id' => [$admin->id, $pool[0]->id, $pool[1]->id, $pool[2]->id][$i] ?? null])
+                ->map(fn (array $m, int $i) => [...$m, 'user_id' => $pool[$i]->id ?? null])
                 ->all(),
             'divisions' => collect($profile->divisions)
-                ->map(fn (array $d, int $i) => [...$d, 'member_ids' => $i < 4
-                    ? $pool->slice(3 + $i * 2, 2)->pluck('id')->values()->all()
-                    : [$inventaris->id, $kurator->id]])
+                ->map(fn (array $d, int $i) => [...$d, 'member_ids' => $pool->slice(4 + $i * 2, 2)->pluck('id')->values()->all()])
                 ->all(),
         ]);
     }

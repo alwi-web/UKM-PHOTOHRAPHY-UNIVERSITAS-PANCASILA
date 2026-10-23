@@ -42,15 +42,12 @@ class OrganizationProfile extends Model
         return array_values(array_filter(array_map('trim', preg_split('/\R{2,}/', (string) $this->history))));
     }
 
-    /**
-     * Akun yang bisa dipilih Admin UKM untuk struktur organisasi:
-     * anggota PhotoUP yang aktif (bukan anggota UKM lain).
-     */
+    /** Akun yang bisa dipilih Admin UKM untuk struktur organisasi: Member UKM Fotografi yang aktif. */
     public static function eligibleMembers(): Builder
     {
         return User::query()
             ->where('status', UserStatus::Active)
-            ->whereIn('role', collect(Role::cases())->filter->isPhotoUpMember()->map->value->all())
+            ->where('role', Role::Member)
             ->orderBy('name');
     }
 
@@ -65,8 +62,8 @@ class OrganizationProfile extends Model
     /**
      * Tingkat-tingkat bagan struktur organisasi, dari atas ke bawah:
      * pengurus inti pertama (Ketua Umum), pengurus inti kedua, sisa pengurus inti berjajar,
-     * lalu semua divisi di baris paling bawah. Foto, nama, dan NPM diambil dari akun anggota;
-     * akun yang sudah tidak aktif atau dihapus tidak ditampilkan.
+     * lalu semua divisi di baris paling bawah. Foto, nama, dan NPM diambil dari akun member;
+     * akun yang sudah tidak aktif, dihapus, atau bukan member lagi tidak ditampilkan.
      *
      * @return array<int, array<int, array{title: string, person: ?array{name: string, npm: ?string, photo: ?string}, note: ?string, members: array<int, array{name: string, npm: ?string, photo: ?string}>}>>
      */
