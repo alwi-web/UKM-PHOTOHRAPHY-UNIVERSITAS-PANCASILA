@@ -74,7 +74,7 @@
       {{-- di HP: tiap bagian tampil sebagai tombol, isinya dibuka saat diketuk --}}
       <button type="button" class="section-toggle" aria-expanded="false" aria-controls="profil-body">
         <span class="toggle-icon"><x-glyph name="users" /></span>
-        <span class="toggle-text"><strong>Profil</strong><small>Sejarah, visi &amp; misi, struktur BPH PhotoUP</small></span>
+        <span class="toggle-text"><strong>Profil</strong><small>Sejarah, visi misi, struktur BPH</small></span>
         <x-glyph name="chevron-right" class="toggle-chevron" />
       </button>
       <div id="profil-body" class="section-body container">
@@ -359,7 +359,7 @@
             <li class="reveal"><span class="card-icon"><x-glyph name="map-pin" /></span><span><small>Alamat</small>{{ $profile->address }}</span></li>
           @endif
           @if ($profile->email)
-            <li class="reveal"><span class="card-icon"><x-glyph name="mail" /></span><span><small>Email</small><a href="mailto:{{ $profile->email }}">{{ $profile->email }}</a></span></li>
+            <li class="reveal"><span class="card-icon"><x-glyph name="mail" /></span><span><small>Email</small><a href="mailto:{{ $profile->email }}">{!! str_replace('@', '@<wbr>', e($profile->email)) !!}</a></span></li>
           @endif
           @if ($profile->instagram)
             <li class="reveal"><span class="card-icon"><x-glyph name="instagram" /></span><span><small>Instagram</small><a href="https://instagram.com/{{ ltrim($profile->instagram, '@') }}" target="_blank" rel="noopener">{{ '@'.ltrim($profile->instagram, '@') }}</a></span></li>

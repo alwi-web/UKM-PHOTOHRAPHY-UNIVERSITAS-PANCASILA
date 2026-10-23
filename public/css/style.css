@@ -173,6 +173,11 @@ p {
   box-shadow: var(--shadow-lg);
 }
 
+.brand img {
+  width: 40px;
+  height: 40px;
+}
+
 .brand {
   display: flex;
   align-items: center;
@@ -256,8 +261,7 @@ p {
   grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
   align-items: center;
   gap: 48px;
-  min-height: min(640px, 82vh);
-  padding-block: 40px 64px;
+  padding-block: 56px 8px;
 }
 
 .hero-copy {
@@ -337,7 +341,7 @@ p {
   position: relative;
   display: grid;
   place-items: center;
-  min-height: 520px;
+  min-height: 460px;
 }
 
 .blobs {
@@ -368,7 +372,7 @@ p {
   display: flex;
   flex-direction: column;
   width: 270px;
-  min-height: 470px;
+  min-height: 390px;
   padding: 44px 26px 26px;
   border: 1px solid var(--line-strong);
   border-radius: 40px;
@@ -391,10 +395,11 @@ p {
 
 .phone-text {
   margin: 18px 0 20px;
-  font-size: 1.95rem;
+  font-size: 1.8rem;
   font-weight: 700;
-  line-height: 1.3;
+  line-height: 1.35;
   letter-spacing: -0.025em;
+  text-wrap: balance;
 }
 
 .phone-btn {
@@ -415,7 +420,7 @@ p {
 
 /* ---------- Section ---------- */
 .section {
-  padding-top: 96px;
+  padding-top: 88px;
 }
 
 .section-head {
@@ -699,8 +704,17 @@ p {
   border-top: 1px dashed var(--line-strong);
 }
 
+/* baris divisi: judul dua baris agar garis putus-putus & foto sejajar antar kotak */
+.chart-row:not(.chart-pair) .node > strong {
+  display: grid;
+  align-items: center;
+  min-height: calc(2 * 1.3em);
+}
+
 .node-members li {
   display: grid;
+  grid-template-rows: auto minmax(calc(2 * 1.3em), auto) auto;
+  align-content: start;
   justify-items: center;
   gap: 2px;
   min-width: 0;
@@ -708,6 +722,7 @@ p {
 }
 
 .node-members strong {
+  align-self: start;
   font-size: 0.78rem;
   font-weight: 600;
   line-height: 1.3;
@@ -992,6 +1007,9 @@ p {
 }
 
 .form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   padding: 32px;
   border-radius: 22px;
   background: var(--surface);
@@ -1002,6 +1020,10 @@ p {
   font-size: 1.2rem;
   font-weight: 700;
   margin-bottom: 22px;
+}
+
+.form .field-check {
+  margin-bottom: 20px;
 }
 
 .field {
@@ -1286,18 +1308,59 @@ p {
 
 /* ---------- Tablet ---------- */
 @media (max-width: 900px) {
-  .nav {
-    display: none;
-  }
-
   .hero-split {
     grid-template-columns: 1fr;
-    gap: 24px;
+    gap: 16px;
+    padding-block: 32px 8px;
+  }
+
+  .hero-copy {
+    align-items: center;
+    text-align: center;
+  }
+
+  .lead {
+    margin-inline: auto;
+  }
+
+  /* mockup jadi kartu ringkas tanpa bingkai tinggi */
+  .hero-phone {
     min-height: 0;
+    padding: 24px 0 48px;
+  }
+
+  .blob-1 { width: 160px; height: 180px; left: 8%; top: 4%; }
+  .blob-2 { display: none; }
+  .blob-3 { width: 170px; height: 180px; right: 8%; top: 10%; }
+  .blob-4 { width: 140px; height: 140px; right: 16%; bottom: -2%; }
+  .blob-5 { width: 64px; height: 64px; right: 12%; top: 0; }
+
+  .phone {
+    align-items: center;
+    width: min(100%, 360px);
+    min-height: 0;
+    padding: 40px 24px 20px;
+    border-radius: 30px;
+  }
+
+  .phone-text {
+    margin: 0 0 16px;
+    font-size: 1.3rem;
+    text-align: center;
+  }
+
+  .phone-btn {
+    margin: 0;
   }
 
   .join {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .nav {
+    display: none;
   }
 }
 
@@ -1326,12 +1389,7 @@ p {
   }
 
   .hero-split {
-    padding-block: 24px 28px;
-  }
-
-  .hero-copy {
-    align-items: center;
-    text-align: center;
+    padding-block: 20px 0;
   }
 
   .hello {
@@ -1359,33 +1417,21 @@ p {
     font-size: 0.92rem;
   }
 
-  /* HP: mockup jadi kartu ringkas tanpa bingkai tinggi */
   .hero-phone {
-    min-height: 0;
-    padding: 16px 0;
+    padding: 16px 0 36px;
   }
 
-  .blob-1 { width: 140px; height: 160px; left: -4%; top: 4%; }
-  .blob-2 { display: none; }
-  .blob-3 { width: 150px; height: 160px; right: -4%; top: 10%; }
+  .blob-1 { width: 140px; height: 160px; left: -4%; }
+  .blob-3 { width: 150px; height: 160px; right: -4%; }
   .blob-4 { width: 130px; height: 130px; right: 6%; bottom: -4%; }
-  .blob-5 { width: 60px; height: 60px; right: 2%; top: 0; }
+  .blob-5 { width: 60px; height: 60px; right: 2%; }
 
   .phone {
-    width: min(100%, 320px);
-    min-height: 0;
     padding: 36px 18px 18px;
-    border-radius: 30px;
   }
 
   .phone-text {
-    margin-top: 0;
     font-size: 1.2rem;
-    text-align: center;
-  }
-
-  .phone-btn {
-    margin-top: 14px;
   }
 
   main {
