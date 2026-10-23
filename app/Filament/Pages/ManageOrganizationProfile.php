@@ -138,7 +138,7 @@ class ManageOrganizationProfile extends Page
                                         Textarea::make('description')->label('Deskripsi')->rows(2)->maxLength(500),
                                         Repeater::make('members')
                                             ->label('Anggota Divisi')
-                                            ->helperText('Foto dan nama tampil di website. NPM hanya terlihat di panel admin.')
+                                            ->helperText('Foto, nama, dan NPM tampil di website di bawah kotak divisi.')
                                             ->schema([
                                                 FileUpload::make('photo')
                                                     ->label('Foto')

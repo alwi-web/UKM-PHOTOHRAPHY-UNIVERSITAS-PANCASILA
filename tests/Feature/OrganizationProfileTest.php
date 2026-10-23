@@ -78,8 +78,7 @@ it('perubahan profil langsung tampil di halaman depan', function () {
         ->assertSeeInOrder(['Sejarah PhotoUP 94', 'Paragraf pertama sejarah.', 'Paragraf kedua sejarah.'])
         ->assertSeeInOrder(['Visi baru PhotoUP.', 'Misi satu.', 'Misi dua.'])
         ->assertSeeInOrder(['Struktur Organisasi', 'Ketua', 'Rizky Pratama'])
-        ->assertSeeInOrder(['Divisi Hunting', 'Dimas', 'Intan'])
-        ->assertDontSee('4123000111')
+        ->assertSeeInOrder(['Divisi Hunting', 'Dimas', '4123000111', 'Intan', '4123000222'])
         ->assertDontSee('Wakil Ketua');
 });
 
@@ -165,7 +164,7 @@ it('tiap divisi bisa berisi lebih dari satu anggota tanpa koordinator', function
 
     expect($divisionRow[0]['title'])->toBe('Divisi Inventaris')
         ->and(array_column($divisionRow[0]['members'], 'name'))->toBe(['Andi', 'Bela', 'Caca'])
-        ->and($divisionRow[0]['members'][0])->not->toHaveKey('npm');
+        ->and($divisionRow[0]['members'][0]['npm'])->toBe('4123000333');
 
     $this->get('/')->assertDontSee('Koordinator');
 });

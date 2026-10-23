@@ -105,7 +105,7 @@
                     <div class="chart-cell">
                       <div class="node">
                         @if ($node['photo'])
-                          <img src="{{ $node['photo'] }}" alt="" class="node-photo" width="44" height="44" loading="lazy" />
+                          <img src="{{ $node['photo'] }}" alt="Foto {{ $node['name'] ?? $node['title'] }}" class="node-photo" width="56" height="56" loading="lazy" />
                         @endif
                         <strong>{{ $node['title'] }}</strong>
                         @if ($node['name'])<small>{{ $node['name'] }}</small>@endif
@@ -115,11 +115,12 @@
                             @foreach ($node['members'] as $member)
                               <li>
                                 @if ($member['photo'])
-                                  <img src="{{ $member['photo'] }}" alt="" width="28" height="28" loading="lazy" />
+                                  <img src="{{ $member['photo'] }}" alt="Foto {{ $member['name'] }}" class="member-photo" width="64" height="64" loading="lazy" />
                                 @else
-                                  <span class="member-initial" aria-hidden="true">{{ mb_substr($member['name'], 0, 1) }}</span>
+                                  <span class="member-photo member-initial" aria-hidden="true">{{ mb_substr($member['name'], 0, 1) }}</span>
                                 @endif
-                                <span>{{ $member['name'] }}</span>
+                                <strong>{{ $member['name'] }}</strong>
+                                @if ($member['npm'])<small>{{ $member['npm'] }}</small>@endif
                               </li>
                             @endforeach
                           </ul>

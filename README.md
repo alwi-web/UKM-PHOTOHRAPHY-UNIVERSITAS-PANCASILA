@@ -100,7 +100,7 @@ Isi awalnya diambil dari `profile_defaults` di `config/ukm.php` saat profil pert
 
 Struktur organisasi tampil sebagai bagan: pengurus inti pertama (Ketua Umum) di paling atas, kedua di
 bawahnya, sisanya bercabang, lalu semua divisi di baris terbawah. Setiap divisi berisi daftar anggota
-(foto, nama, NPM). Foto dan nama tampil di website, sedangkan NPM hanya terlihat di panel admin.
+(foto, nama, NPM) yang tampil di website: foto berbingkai, lalu nama dan NPM di bawahnya.
 
 ## Pengujian otomatis
 
