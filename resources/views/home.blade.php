@@ -6,7 +6,7 @@
   <meta name="csrf-token" content="{{ csrf_token() }}" />
   <title>{{ $profile->name }} — UKM Fotografi Universitas Pancasila</title>
   <meta name="description" content="UKM Fotografi Universitas Pancasila — wadah mahasiswa untuk belajar, berkarya, dan berbagi cerita lewat lensa." />
-  <link rel="icon" href="{{ asset('images/logo.svg') }}" type="image/svg+xml" />
+  <link rel="icon" href="{{ asset('images/photoup-logo.svg') }}" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet" />
@@ -18,8 +18,8 @@
   <header class="topbar">
     <div class="topbar-inner">
       <a href="#beranda" class="brand">
-        <img src="{{ asset('images/logo.svg') }}" alt="" width="34" height="34" />
-        <span>UKM Fotografi <b>UP</b></span>
+        <img src="{{ asset('images/photoup-logo.svg') }}" alt="" width="36" height="36" />
+        <span>PHOTO <b>UP</b></span>
       </a>
       <nav class="nav" aria-label="Menu utama">
         <a href="#tentang">Tentang</a>
@@ -38,71 +38,47 @@
     {{-- ================= HERO ================= --}}
     <section class="hero" id="beranda">
       <div class="hero-grid-bg" aria-hidden="true"></div>
-      <div class="container hero-inner">
-        <a href="#daftar" class="badge reveal">
-          <span class="badge-dot" aria-hidden="true"><span class="pulse"></span></span>
-          Pendaftaran calon anggota dibuka
-          <x-glyph name="arrow-right" :size="14" />
-        </a>
-        @php
-          // kata terakhir nama UKM diberi stabilo kuning, mis. "PhotoUP [94]"
-          $nameHead = str_contains($profile->name, ' ') ? \Illuminate\Support\Str::beforeLast($profile->name, ' ') : '';
-        @endphp
-        <h1 class="reveal">
-          @if ($nameHead !== '')
-            {{ $nameHead }} <span class="mark">{{ \Illuminate\Support\Str::afterLast($profile->name, ' ') }}</span>
-          @else
-            <span class="mark">{{ $profile->name }}</span>
-          @endif
-        </h1>
-        <p class="lead reveal">
+      <div class="container hero-split">
+        <div class="hero-copy">
+          <span class="hero-logo reveal">
+            <img src="{{ asset('images/photoup-logo.svg') }}" alt="Logo PhotoUP" width="72" height="72" />
+          </span>
+          <p class="hello reveal"><span class="wave" aria-hidden="true">👋</span> Hai!</p>
+          <h1 class="reveal">Selamat Datang <span>di UKM <span class="mark">PHOTO UP</span> KMUP</span></h1>
           @if ($profile->tagline)
-            {{ $profile->tagline }}
-          @else
-            Belajar, berkarya, dan bercerita lewat lensa.
+            <p class="lead reveal">{{ $profile->tagline }}</p>
           @endif
-        </p>
-        <div class="actions reveal">
-          <a href="#daftar" class="btn">Daftar Calon Anggota <x-glyph name="arrow-right" :size="18" /></a>
-          <a href="#galeri" class="btn btn-ghost">Lihat Karya</a>
+          <div class="actions reveal">
+            <a href="#daftar" class="btn">Daftar Calon Anggota <x-glyph name="arrow-right" :size="18" /></a>
+            <a href="#galeri" class="btn btn-ghost">Lihat Karya</a>
+          </div>
+          <a href="#daftar" class="badge reveal">
+            <span class="badge-dot" aria-hidden="true"><span class="pulse"></span></span>
+            Pendaftaran calon anggota dibuka
+            <x-glyph name="arrow-right" :size="14" />
+          </a>
         </div>
-        <dl class="stats reveal">
-          <div><dd>{{ $stats['artworks'] }}</dd><dt>Karya terkurasi</dt></div>
-          <div><dd>{{ $stats['events'] }}</dd><dt>Agenda mendatang</dt></div>
-          <div><dd>{{ $stats['members'] }}</dd><dt>Anggota aktif</dt></div>
-        </dl>
 
-        {{-- pratinjau ala "screenshot produk": karya terbaru pilihan kurator + kartu widget melayang --}}
-        <div class="showcase reveal" aria-hidden="true">
-          <div class="showcase-frame">
-            <div class="frame-bar"><i></i><i></i><i></i><span>photoup94 / galeri</span></div>
-            <div class="frame-grid">
-              @forelse ($artworks->take(5) as $artwork)
-                <img src="{{ $artwork->imageUrl() }}" alt="" />
-              @empty
-                @foreach (range(1, 5) as $n)
-                  <span class="frame-empty"><x-glyph name="camera" :size="28" /></span>
-                @endforeach
-              @endforelse
-            </div>
+        {{-- mockup HP di atas bentuk-bentuk warna --}}
+        <div class="hero-phone reveal">
+          <div class="blobs" aria-hidden="true">
+            <span class="blob blob-1"></span>
+            <span class="blob blob-2"></span>
+            <span class="blob blob-3"></span>
+            <span class="blob blob-4"></span>
+            <span class="blob blob-5"></span>
           </div>
-
-          <div class="widget widget-left">
-            <span class="widget-icon"><x-glyph name="sparkles" :size="16" /></span>
-            <span><small>Pilihan kurator</small><strong>{{ $artworks->first()?->title ?? 'Karya terbaru' }}</strong></span>
+          <div class="phone">
+            <span class="phone-notch" aria-hidden="true"></span>
+            <img src="{{ asset('images/photoup-logo.svg') }}" alt="" class="phone-logo" width="44" height="44" />
+            <p class="phone-text">Yuk berkenalan dengan kami, belajar fotografi dan organisasi bersama!</p>
+            <dl class="stats">
+              <div><dd>{{ $stats['artworks'] }}</dd><dt>Karya terkurasi</dt></div>
+              <div><dd>{{ $stats['events'] }}</dd><dt>Agenda mendatang</dt></div>
+              <div><dd>{{ $stats['members'] }}</dd><dt>Anggota aktif</dt></div>
+            </dl>
+            <a href="#tentang" class="phone-btn" aria-label="Kenalan dengan kami"><x-glyph name="chevron-right" :size="20" /></a>
           </div>
-          @if ($artworks->first()?->exposureSummary())
-            <div class="widget widget-right">
-              <span class="widget-icon widget-icon-alt"><x-glyph name="camera" :size="16" /></span>
-              <span><small>Segitiga exposure</small><strong>{{ $artworks->first()->exposureSummary() }}</strong></span>
-            </div>
-          @endif
-          @if ($next = $events->first())
-            <div class="widget widget-bottom">
-              <span class="widget-icon"><x-glyph name="calendar" :size="16" /></span>
-              <span><small>Agenda terdekat · {{ $next->start_at->translatedFormat('d M') }}</small><strong>{{ $next->title }}</strong></span>
-            </div>
-          @endif
         </div>
       </div>
 
@@ -427,7 +403,7 @@
   <footer class="footer">
     <div class="container footer-inner">
       <a href="#beranda" class="brand">
-        <img src="{{ asset('images/logo.svg') }}" alt="" width="28" height="28" />
+        <img src="{{ asset('images/photoup-logo.svg') }}" alt="" width="28" height="28" />
         <span>{{ $profile->name }}</span>
       </a>
       <p>&copy; {{ now()->year }} UKM Fotografi Universitas Pancasila</p>

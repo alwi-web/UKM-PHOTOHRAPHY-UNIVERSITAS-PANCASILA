@@ -29,9 +29,9 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->profile(isSimple: false)
             ->brandName('UKM Fotografi UP')
-            ->brandLogo(asset('images/logo.svg'))
+            ->brandLogo(asset('images/photoup-logo.svg'))
             ->brandLogoHeight('2.5rem')
-            ->favicon(asset('images/logo.svg'))
+            ->favicon(asset('images/photoup-logo.svg'))
             ->colors([
                 'primary' => Color::Amber,
             ])
