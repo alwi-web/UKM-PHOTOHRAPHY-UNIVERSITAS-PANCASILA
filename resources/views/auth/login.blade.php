@@ -25,20 +25,6 @@
 
   <main class="auth-main">
     <div class="auth-card">
-      {{-- panel kuning: siapa saja yang bisa masuk --}}
-      <aside class="auth-side">
-        <span class="eyebrow eyebrow-dark"><x-glyph name="lock" :size="14" /> Panel Anggota</span>
-        <h1>Masuk ke panel PhotoUP</h1>
-        <p>Satu pintu untuk pengurus, anggota, kurator, dan anggota UKM lain.</p>
-        <ul class="auth-roles">
-          <li><b>Admin UKM</b><span>Kelola semua data UKM</span></li>
-          <li><b>Admin Inventaris</b><span>Barang &amp; peminjaman</span></li>
-          <li><b>Member UKM</b><span>Unggah karya foto</span></li>
-          <li><b>Kurator</b><span>Kurasi karya untuk website</span></li>
-          <li><b>Anggota UKM lain</b><span>Pinjam peralatan</span></li>
-        </ul>
-      </aside>
-
       <form class="auth-form" method="POST" action="{{ route('login.store') }}" novalidate>
         @csrf
         <h2>Login</h2>

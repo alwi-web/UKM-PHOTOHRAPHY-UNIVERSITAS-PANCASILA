@@ -7,7 +7,8 @@ use App\Models\User;
 it('menampilkan halaman login terpisah', function () {
     $this->get('/login')
         ->assertOk()
-        ->assertSee('Masuk ke panel PhotoUP')
+        ->assertSee('Masukkan email dan password akunmu.')
+        ->assertDontSee('Masuk ke panel PhotoUP')
         ->assertSee('Kembali ke website');
 });
 
