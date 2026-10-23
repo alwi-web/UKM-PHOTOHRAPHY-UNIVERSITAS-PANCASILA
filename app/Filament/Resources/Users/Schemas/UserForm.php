@@ -26,7 +26,9 @@ class UserForm
                         TextInput::make('npm')->label('NPM')->unique(ignoreRecord: true)->maxLength(20),
                         TextInput::make('email')->email()->required()->unique(ignoreRecord: true),
                         TextInput::make('phone')->label('No. WhatsApp')->tel()->maxLength(20),
-                        TextInput::make('faculty')->label('Fakultas')->maxLength(255),
+                        Select::make('faculty')
+                            ->label('Fakultas')
+                            ->options(array_combine(config('ukm.faculties'), config('ukm.faculties'))),
                         TextInput::make('batch_year')->label('Angkatan')->integer()->minValue(2000)->maxValue(2100),
                         TextInput::make('origin_ukm')
                             ->label('Asal UKM')

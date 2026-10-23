@@ -39,6 +39,28 @@ describe('halaman daftar terpisah', function () {
             ->assertDontSee('name="photo"', false);
     });
 
+    it('menampilkan pilihan tujuh fakultas Universitas Pancasila', function () {
+        $this->get('/daftar')->assertSeeInOrder([
+            'Fakultas Ekonomi &amp; Bisnis',
+            'Fakultas Farmasi',
+            'Fakultas Hukum',
+            'Fakultas Teknik',
+            'Fakultas Pariwisata',
+            'Fakultas Psikologi',
+            'Fakultas Ilmu Komunikasi',
+        ], false);
+
+        expect(config('ukm.faculties'))->toHaveCount(7);
+    });
+
+    it('menerima fakultas dengan tanda & dan menolak fakultas yang tidak ada di daftar', function () {
+        $this->post(route('register'), registrationData(['faculty' => 'Fakultas Ekonomi & Bisnis']))
+            ->assertSessionHasNoErrors();
+
+        $this->post(route('register'), registrationData(['npm' => '4122000999', 'faculty' => 'Fakultas Teknologi Industri']))
+            ->assertSessionHasErrors('faculty');
+    });
+
     it('menyimpan pendaftar calon anggota baru', function () {
         $this->post(route('register'), registrationData())
             ->assertRedirect(route('register.show'))

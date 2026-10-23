@@ -2,14 +2,13 @@
 
 return [
     'faculties' => [
-        'Fakultas Teknik',
-        'Fakultas Ekonomi dan Bisnis',
-        'Fakultas Hukum',
-        'Fakultas Psikologi',
+        'Fakultas Ekonomi & Bisnis',
         'Fakultas Farmasi',
-        'Fakultas Teknologi Industri',
+        'Fakultas Hukum',
+        'Fakultas Teknik',
+        'Fakultas Pariwisata',
+        'Fakultas Psikologi',
         'Fakultas Ilmu Komunikasi',
-        'Sekolah Pascasarjana',
     ],
 
     /*
