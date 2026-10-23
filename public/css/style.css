@@ -406,12 +406,13 @@ p {
   height: 44px;
 }
 
+/* teks ajakan memenuhi layar HP sampai tombol di bawahnya */
 .phone-text {
-  margin-top: 18px;
-  font-size: 1.15rem;
-  font-weight: 600;
-  line-height: 1.5;
-  letter-spacing: -0.01em;
+  margin: 18px 0 20px;
+  font-size: 1.95rem;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.025em;
 }
 
 .phone-btn {
@@ -1448,7 +1449,7 @@ p {
 
   .phone-text {
     margin-top: 0;
-    font-size: 1rem;
+    font-size: 1.2rem;
     text-align: center;
   }
 
