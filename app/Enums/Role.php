@@ -62,6 +62,12 @@ enum Role: string implements HasColor, HasLabel
         return in_array($this, [self::AdminUkm, self::Member]);
     }
 
+    /** Anggota internal PhotoUP (bukan anggota UKM lain); bisa dicantumkan di struktur organisasi. */
+    public function isPhotoUpMember(): bool
+    {
+        return $this !== self::AnggotaLain;
+    }
+
     /** Mengkurasi karya dan memilih yang tampil di website. */
     public function canCurate(): bool
     {

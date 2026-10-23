@@ -17,8 +17,8 @@ return new class extends Migration
             $table->longText('history')->nullable();
             $table->text('vision')->nullable();
             $table->json('missions')->nullable();
-            $table->json('core_members')->nullable()->comment('[{position, name, npm, photo}]');
-            $table->json('divisions')->nullable()->comment('[{name, description, members: [{name, npm, photo}]}]');
+            $table->json('core_members')->nullable()->comment('[{position, user_id}]');
+            $table->json('divisions')->nullable()->comment('[{name, description, member_ids: []}]');
             $table->string('address')->nullable();
             $table->string('email')->nullable();
             $table->string('instagram')->nullable();

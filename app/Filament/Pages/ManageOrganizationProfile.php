@@ -5,13 +5,14 @@ namespace App\Filament\Pages;
 use App\Models\OrganizationProfile;
 use BackedEnum;
 use Filament\Actions\Action;
-use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Actions;
+use Filament\Schemas\Components\Callout;
 use Filament\Schemas\Components\EmbeddedSchema;
 use Filament\Schemas\Components\Form;
 use Filament\Schemas\Components\Section;
@@ -111,26 +112,21 @@ class ManageOrganizationProfile extends Page
                         Tab::make('Struktur Organisasi')
                             ->icon(Heroicon::OutlinedUserGroup)
                             ->schema([
+                                Callout::make('Data diambil dari akun anggota')
+                                    ->description('Pilih orang dari daftar akun anggota PhotoUP yang aktif. Foto, nama, dan NPM yang tampil di website diambil dari akun tersebut, jadi ubah datanya lewat menu Anggota & User.')
+                                    ->info(),
                                 Repeater::make('core_members')
                                     ->label('Pengurus Inti')
                                     ->helperText('Urutan menentukan posisi di bagan website: pertama paling atas (Ketua Umum), kedua tepat di bawahnya, sisanya berjajar. Seret untuk mengubah urutan.')
                                     ->schema([
-                                        TextInput::make('position')->label('Jabatan')->required()->maxLength(100)->columnSpanFull(),
-                                        FileUpload::make('photo')
-                                            ->label('Foto')
-                                            ->image()
-                                            ->avatar()
-                                            ->disk('public')
-                                            ->directory('organization')
-                                            ->maxSize(2048),
-                                        TextInput::make('name')->label('Nama')->maxLength(100),
-                                        TextInput::make('npm')
-                                            ->label('NPM')
-                                            ->regex('/^\d{6,20}$/')
-                                            ->validationMessages(['regex' => 'NPM harus berupa 6–20 digit angka.'])
-                                            ->maxLength(20),
+                                        TextInput::make('position')->label('Jabatan')->required()->maxLength(100),
+                                        Select::make('user_id')
+                                            ->label('Pengurus')
+                                            ->options(fn () => OrganizationProfile::memberOptions())
+                                            ->searchable()
+                                            ->placeholder('Belum dipilih'),
                                     ])
-                                    ->columns(3)
+                                    ->columns(2)
                                     ->itemLabel(fn (array $state) => $state['position'] ?? null)
                                     ->addActionLabel('Tambah jabatan')
                                     ->reorderable()
@@ -141,34 +137,15 @@ class ManageOrganizationProfile extends Page
                                     ->schema([
                                         TextInput::make('name')->label('Nama Divisi')->required()->maxLength(100),
                                         Textarea::make('description')->label('Deskripsi')->rows(2)->maxLength(500),
-                                        Repeater::make('members')
+                                        Select::make('member_ids')
                                             ->label('Anggota Divisi')
-                                            ->helperText('Foto, nama, dan NPM tampil di website di bawah kotak divisi.')
-                                            ->schema([
-                                                FileUpload::make('photo')
-                                                    ->label('Foto')
-                                                    ->image()
-                                                    ->avatar()
-                                                    ->disk('public')
-                                                    ->directory('organization')
-                                                    ->maxSize(2048),
-                                                TextInput::make('name')->label('Nama')->required()->maxLength(100),
-                                                TextInput::make('npm')
-                                                    ->label('NPM')
-                                                    ->required()
-                                                    ->regex('/^\d{6,20}$/')
-                                                    ->validationMessages(['regex' => 'NPM harus berupa 6–20 digit angka.'])
-                                                    ->maxLength(20),
-                                            ])
-                                            ->columns(3)
-                                            ->defaultItems(0)
-                                            ->itemLabel(fn (array $state) => $state['name'] ?? null)
-                                            ->addActionLabel('Tambah anggota')
-                                            ->reorderable()
-                                            ->collapsible(),
+                                            ->helperText('Bisa memilih lebih dari satu anggota.')
+                                            ->options(fn () => OrganizationProfile::memberOptions())
+                                            ->multiple()
+                                            ->searchable(),
                                     ])
                                     ->itemLabel(fn (array $state) => isset($state['name'])
-                                        ? 'Divisi '.$state['name'].' ('.count($state['members'] ?? []).' anggota)'
+                                        ? 'Divisi '.$state['name'].' ('.count($state['member_ids'] ?? []).' anggota)'
                                         : null)
                                     ->addActionLabel('Tambah divisi')
                                     ->reorderable()

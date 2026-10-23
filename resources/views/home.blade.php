@@ -105,16 +105,16 @@
                     <div class="chart-cell">
                       <div class="node">
                         <strong>{{ $node['title'] }}</strong>
-                        @if ($node['name'] || $node['photo'])
-                          {{-- pengurus inti: foto berbingkai, lalu nama dan NPM --}}
+                        @if ($person = $node['person'])
+                          {{-- pengurus inti: foto berbingkai, lalu nama dan NPM (dari akun anggota) --}}
                           <div class="node-person">
-                            @if ($node['photo'])
-                              <img src="{{ $node['photo'] }}" alt="Foto {{ $node['name'] ?? $node['title'] }}" class="member-photo" width="64" height="64" loading="lazy" />
+                            @if ($person['photo'])
+                              <img src="{{ $person['photo'] }}" alt="Foto {{ $person['name'] }}" class="member-photo" width="64" height="64" loading="lazy" />
                             @else
-                              <span class="member-photo member-initial" aria-hidden="true">{{ mb_substr($node['name'], 0, 1) }}</span>
+                              <span class="member-photo member-initial" aria-hidden="true">{{ mb_substr($person['name'], 0, 1) }}</span>
                             @endif
-                            @if ($node['name'])<span class="person-name">{{ $node['name'] }}</span>@endif
-                            @if ($node['npm'])<small>{{ $node['npm'] }}</small>@endif
+                            <span class="person-name">{{ $person['name'] }}</span>
+                            @if ($person['npm'])<small>{{ $person['npm'] }}</small>@endif
                           </div>
                         @endif
                         @if ($node['note'])<small class="node-note">{{ $node['note'] }}</small>@endif

@@ -15,6 +15,7 @@ use App\Models\Category;
 use App\Models\Event;
 use App\Models\Item;
 use App\Models\Loan;
+use App\Models\OrganizationProfile;
 use App\Models\Registration;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -147,5 +148,19 @@ class DatabaseSeeder extends Seeder
         $members->take(8)->each(fn ($m, $i) => $past->participants()->attach($m->id, [
             'status' => $i < 6 ? ParticipantStatus::Hadir : ParticipantStatus::TidakHadir,
         ]));
+
+        // ---- Struktur organisasi (dipilih dari akun anggota) ----
+        $profile = OrganizationProfile::current();
+        $pool = $members->values();
+        $profile->update([
+            'core_members' => collect($profile->core_members)
+                ->map(fn (array $m, int $i) => [...$m, 'user_id' => [$admin->id, $pool[0]->id, $pool[1]->id, $pool[2]->id][$i] ?? null])
+                ->all(),
+            'divisions' => collect($profile->divisions)
+                ->map(fn (array $d, int $i) => [...$d, 'member_ids' => $i < 4
+                    ? $pool->slice(3 + $i * 2, 2)->pluck('id')->values()->all()
+                    : [$inventaris->id, $kurator->id]])
+                ->all(),
+        ]);
     }
 }

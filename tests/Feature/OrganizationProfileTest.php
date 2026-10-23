@@ -1,8 +1,12 @@
 <?php
 
 use App\Enums\Role;
+use App\Enums\UserStatus;
 use App\Filament\Pages\ManageOrganizationProfile;
 use App\Models\OrganizationProfile;
+use App\Models\User;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 use function Pest\Livewire\livewire;
 
@@ -17,8 +21,10 @@ it('membuat profil dari isi awal saat pertama kali dibuka', function () {
     expect(OrganizationProfile::count())->toBe(1);
 });
 
-it('admin UKM mengubah sejarah, visi misi, dan struktur organisasi', function () {
+it('admin UKM mengubah sejarah, visi misi, dan memilih pengurus dari akun anggota', function () {
     $admin = loginAs(Role::AdminUkm);
+    $ketua = User::factory()->create(['name' => 'Rizky Pratama', 'npm' => '4122000001']);
+    [$dimas, $intan] = User::factory(2)->create();
 
     livewire(ManageOrganizationProfile::class)
         ->fillForm([
@@ -28,18 +34,11 @@ it('admin UKM mengubah sejarah, visi misi, dan struktur organisasi', function ()
             // repeater "simple" menyimpan state internal sebagai item {mission: ...}
             'missions' => [['mission' => 'Mengadakan kelas rutin.'], ['mission' => 'Mengadakan pameran tahunan.']],
             'core_members' => [
-                ['position' => 'Ketua', 'name' => 'Rizky Pratama', 'photo' => null],
-                ['position' => 'Bendahara', 'name' => 'Sari', 'photo' => null],
+                ['position' => 'Ketua Umum', 'user_id' => $ketua->id],
+                ['position' => 'Wakil Ketua', 'user_id' => null],
             ],
             'divisions' => [
-                [
-                    'name' => 'Hunting',
-                    'description' => 'Hunting foto setiap bulan.',
-                    'members' => [
-                        ['name' => 'Dimas', 'npm' => '4123000111', 'photo' => null],
-                        ['name' => 'Intan', 'npm' => '4123000222', 'photo' => null],
-                    ],
-                ],
+                ['name' => 'Hunting', 'description' => 'Hunting foto setiap bulan.', 'member_ids' => [$dimas->id, $intan->id]],
             ],
         ])
         ->call('save')
@@ -52,50 +51,70 @@ it('admin UKM mengubah sejarah, visi misi, dan struktur organisasi', function ()
         'Sejak itu rutin mengadakan pameran tahunan.',
     ])
         ->and($profile->missions)->toBe(['Mengadakan kelas rutin.', 'Mengadakan pameran tahunan.'])
-        ->and($profile->core_members[0]['name'])->toBe('Rizky Pratama')
-        ->and(collect($profile->divisions[0]['members'])->pluck('npm', 'name')->all())->toBe(['Dimas' => '4123000111', 'Intan' => '4123000222'])
+        ->and($profile->core_members[0]['user_id'])->toBe($ketua->id)
+        ->and(array_map('intval', $profile->divisions[0]['member_ids']))->toBe([$dimas->id, $intan->id])
         ->and($profile->updated_by)->toBe($admin->id);
 });
 
-it('perubahan profil langsung tampil di halaman depan', function () {
+it('foto, nama, dan NPM di bagan diambil dari akun anggota', function () {
+    Storage::fake('public');
+    $wakil = User::factory()->create([
+        'name' => 'Putri Ramadhani',
+        'npm' => '4122000002',
+        'photo' => UploadedFile::fake()->image('putri.jpg')->store('users', 'public'),
+    ]);
+    $dimas = User::factory()->create(['name' => 'Dimas', 'npm' => '4123000111']);
+    $intan = User::factory()->create(['name' => 'Intan', 'npm' => '4123000222']);
+
     OrganizationProfile::current()->update([
-        'history' => "Paragraf pertama sejarah.\n\nParagraf kedua sejarah.",
-        'vision' => 'Visi baru PhotoUP.',
-        'missions' => ['Misi satu.', 'Misi dua.'],
-        'core_members' => [['position' => 'Ketua', 'name' => 'Rizky Pratama', 'photo' => null]],
-        'divisions' => [[
-            'name' => 'Hunting',
-            'description' => null,
-            'members' => [
-                ['name' => 'Dimas', 'npm' => '4123000111', 'photo' => null],
-                ['name' => 'Intan', 'npm' => '4123000222', 'photo' => null],
-            ],
-        ]],
+        'core_members' => [
+            ['position' => 'Ketua Umum', 'user_id' => null],
+            ['position' => 'Wakil Ketua', 'user_id' => $wakil->id],
+        ],
+        'divisions' => [['name' => 'Hunting', 'description' => null, 'member_ids' => [$dimas->id, $intan->id]]],
     ]);
 
     $this->get('/')
         ->assertOk()
-        ->assertSeeInOrder(['Sejarah PhotoUP 94', 'Paragraf pertama sejarah.', 'Paragraf kedua sejarah.'])
-        ->assertSeeInOrder(['Visi baru PhotoUP.', 'Misi satu.', 'Misi dua.'])
-        ->assertSeeInOrder(['Struktur Organisasi', 'Ketua', 'Rizky Pratama'])
-        ->assertSeeInOrder(['Divisi Hunting', 'Dimas', '4123000111', 'Intan', '4123000222'])
-        ->assertDontSee('Wakil Ketua');
+        ->assertSeeInOrder(['Ketua Umum', 'Wakil Ketua', 'Putri Ramadhani', '4122000002'])
+        ->assertSee(Storage::disk('public')->url($wakil->photo))
+        ->assertSeeInOrder(['Divisi Hunting', 'Dimas', '4123000111', 'Intan', '4123000222']);
+
+    // perubahan di akun anggota langsung terbawa ke bagan
+    $wakil->update(['name' => 'Putri R.', 'npm' => '4122000099']);
+
+    $this->get('/')->assertSeeInOrder(['Wakil Ketua', 'Putri R.', '4122000099']);
 });
 
-it('sejarah dan visi wajib diisi', function () {
-    loginAs(Role::AdminUkm);
+it('akun yang nonaktif atau sudah dihapus tidak tampil di bagan', function () {
+    $nonaktif = User::factory()->create(['name' => 'Akun Nonaktif', 'status' => UserStatus::Inactive]);
+    $dihapus = User::factory()->create(['name' => 'Akun Dihapus']);
+    $aktif = User::factory()->create(['name' => 'Akun Aktif']);
 
-    livewire(ManageOrganizationProfile::class)
-        ->fillForm(['history' => '', 'vision' => ''])
-        ->call('save')
-        ->assertHasFormErrors(['history' => 'required', 'vision' => 'required']);
+    OrganizationProfile::current()->update([
+        'core_members' => [['position' => 'Ketua Umum', 'user_id' => $nonaktif->id]],
+        'divisions' => [['name' => 'Pameran', 'description' => null, 'member_ids' => [$dihapus->id, $aktif->id]]],
+    ]);
+    $dihapus->delete();
+
+    $levels = OrganizationProfile::sole()->chartLevels();
+
+    expect($levels[0][0]['person'])->toBeNull()
+        ->and(array_column(last($levels)[0]['members'], 'name'))->toBe(['Akun Aktif']);
 });
 
-it('hanya admin UKM yang bisa membuka halaman profil', function (Role $role) {
-    loginAs($role);
+it('pilihan pengurus hanya berisi anggota PhotoUP yang aktif', function () {
+    $member = User::factory()->create(['name' => 'Member Aktif']);
+    $kurator = User::factory()->role(Role::Kurator)->create(['name' => 'Kurator Aktif']);
+    $tamu = User::factory()->role(Role::AnggotaLain)->create(['name' => 'Anggota UKM Lain']);
+    $pending = User::factory()->pending()->create(['name' => 'Belum Aktif']);
 
-    $this->get(ManageOrganizationProfile::getUrl())->assertForbidden();
-})->with([Role::AdminInventaris, Role::Kurator, Role::Member, Role::AnggotaLain]);
+    $options = OrganizationProfile::memberOptions();
+
+    expect($options)->toHaveKeys([$member->id, $kurator->id])
+        ->not->toHaveKey($tamu->id)
+        ->not->toHaveKey($pending->id);
+});
 
 it('menyusun bagan dengan Ketua Umum paling atas dan divisi di baris terbawah', function () {
     $levels = OrganizationProfile::current()->chartLevels();
@@ -112,90 +131,21 @@ it('menyusun bagan dengan Ketua Umum paling atas dan divisi di baris terbawah', 
             'Divisi Humas Internal dan Eksternal',
         ],
     ]);
-});
-
-it('urutan pengurus inti menentukan posisi di bagan', function () {
-    OrganizationProfile::current()->update([
-        'core_members' => [
-            ['position' => 'Ketua Umum', 'name' => 'Rizky', 'photo' => null],
-            ['position' => 'Sekretaris', 'name' => null, 'photo' => null],
-        ],
-        'divisions' => [],
-    ]);
-
-    $levels = OrganizationProfile::sole()->chartLevels();
-
-    expect($levels)->toHaveCount(2)
-        ->and($levels[0][0])->toMatchArray(['title' => 'Ketua Umum', 'name' => 'Rizky'])
-        ->and($levels[1][0]['title'])->toBe('Sekretaris');
 
     $this->get('/')->assertSee('chart-top', false);
 });
 
-it('NPM anggota divisi wajib berupa angka', function () {
+it('sejarah dan visi wajib diisi', function () {
     loginAs(Role::AdminUkm);
 
     livewire(ManageOrganizationProfile::class)
-        ->fillForm([
-            'divisions' => [[
-                'name' => 'Pameran',
-                'description' => null,
-                'members' => [['name' => 'Budi', 'npm' => 'ABC', 'photo' => null]],
-            ]],
-        ])
+        ->fillForm(['history' => '', 'vision' => ''])
         ->call('save')
-        ->assertHasFormErrors(['divisions.0.members.0.npm' => 'NPM harus berupa 6–20 digit angka.']);
+        ->assertHasFormErrors(['history' => 'required', 'vision' => 'required']);
 });
 
-it('tiap divisi bisa berisi lebih dari satu anggota tanpa koordinator', function () {
-    OrganizationProfile::current()->update([
-        'divisions' => [[
-            'name' => 'Inventaris',
-            'description' => null,
-            'members' => [
-                ['name' => 'Andi', 'npm' => '4123000333', 'photo' => null],
-                ['name' => 'Bela', 'npm' => '4123000444', 'photo' => null],
-                ['name' => 'Caca', 'npm' => '4123000555', 'photo' => null],
-            ],
-        ]],
-    ]);
+it('hanya admin UKM yang bisa membuka halaman profil', function (Role $role) {
+    loginAs($role);
 
-    $divisionRow = last(OrganizationProfile::sole()->chartLevels());
-
-    expect($divisionRow[0]['title'])->toBe('Divisi Inventaris')
-        ->and(array_column($divisionRow[0]['members'], 'name'))->toBe(['Andi', 'Bela', 'Caca'])
-        ->and($divisionRow[0]['members'][0]['npm'])->toBe('4123000333');
-
-    $this->get('/')->assertDontSee('Koordinator');
-});
-
-it('wakil ketua dan sekretaris bisa diisi foto, nama, dan NPM yang tampil di bagan', function () {
-    loginAs(Role::AdminUkm);
-
-    livewire(ManageOrganizationProfile::class)
-        ->fillForm([
-            'core_members' => [
-                ['position' => 'Ketua Umum', 'name' => 'Rizky Pratama', 'npm' => '4122000001', 'photo' => null],
-                ['position' => 'Wakil Ketua', 'name' => 'Putri Ramadhani', 'npm' => '4122000002', 'photo' => null],
-                ['position' => 'Sekretaris', 'name' => 'Dewi Lestari', 'npm' => '4122000003', 'photo' => null],
-                ['position' => 'Bendahara', 'name' => 'Rangga Saputra', 'npm' => '4122000004', 'photo' => null],
-            ],
-        ])
-        ->call('save')
-        ->assertHasNoFormErrors();
-
-    $this->get('/')
-        ->assertSeeInOrder(['Wakil Ketua', 'Putri Ramadhani', '4122000002'])
-        ->assertSeeInOrder(['Sekretaris', 'Dewi Lestari', '4122000003']);
-});
-
-it('NPM pengurus inti wajib berupa angka bila diisi', function () {
-    loginAs(Role::AdminUkm);
-
-    livewire(ManageOrganizationProfile::class)
-        ->fillForm([
-            'core_members' => [['position' => 'Wakil Ketua', 'name' => 'Putri', 'npm' => '41-ABC', 'photo' => null]],
-        ])
-        ->call('save')
-        ->assertHasFormErrors(['core_members.0.npm' => 'NPM harus berupa 6–20 digit angka.']);
-});
+    $this->get(ManageOrganizationProfile::getUrl())->assertForbidden();
+})->with([Role::AdminInventaris, Role::Kurator, Role::Member, Role::AnggotaLain]);

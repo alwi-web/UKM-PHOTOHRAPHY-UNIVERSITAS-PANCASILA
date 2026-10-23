@@ -99,9 +99,10 @@ Profil (nama, slogan, deskripsi, kontak), sejarah, visi & misi, dan struktur org
 Isi awalnya diambil dari `profile_defaults` di `config/ukm.php` saat profil pertama kali dibuka.
 
 Struktur organisasi tampil sebagai bagan: pengurus inti pertama (Ketua Umum) di paling atas, kedua di
-bawahnya, sisanya bercabang, lalu semua divisi di baris terbawah. Setiap pengurus inti punya foto, nama,
-dan NPM. Setiap divisi berisi daftar anggota
-(foto, nama, NPM) yang tampil di website: foto berbingkai, lalu nama dan NPM di bawahnya.
+bawahnya, sisanya bercabang, lalu semua divisi di baris terbawah. Admin UKM **memilih orangnya dari akun
+anggota PhotoUP yang aktif** (Member, Kurator, Admin Inventaris, Admin UKM); foto, nama, dan NPM di bagan
+diambil dari akun tersebut, sehingga perubahan data di menu Anggota & User langsung terbawa. Akun yang
+dinonaktifkan atau dihapus otomatis hilang dari bagan.
 
 ## Pengujian otomatis
 
