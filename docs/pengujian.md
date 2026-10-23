@@ -57,6 +57,11 @@ Isi kolom **Hasil** saat pengujian manual (✓ sesuai / ✗ tidak sesuai).
 | B30 | Laporan | Filter laporan kegiatan per periode | Dari–sampai bulan ini | Hanya kegiatan pada periode itu | |
 | B31 | Laporan | Unduh CSV laporan kegiatan | Tombol "Unduh CSV" | File CSV terunduh sesuai filter | |
 | B32 | Laporan | Admin UKM membuka insight karya | Login admin UKM | Statistik & grafik tampil | |
+| B33 | Login | Login dengan akun aktif | Email & password benar di `/login` | Masuk dan diarahkan ke panel `/admin` | |
+| B34 | Login | Login dengan password salah | Password salah | Pesan "Email atau password salah." | |
+| B35 | Login | Login akun yang belum aktif | Akun berstatus menunggu | Pesan "Akun kamu belum aktif. Hubungi Admin UKM." | |
+| B36 | Login | Membuka panel tanpa login | Buka `/admin` | Diarahkan ke halaman `/login` | |
+| B37 | Login | Keluar dari panel | Menu akun → Keluar | Kembali ke halaman `/login` | |
 
 ## 3. UAT (User Acceptance Test)
 

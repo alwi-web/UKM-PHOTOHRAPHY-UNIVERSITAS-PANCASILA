@@ -78,7 +78,7 @@ php artisan storage:link
 php artisan serve
 ```
 
-Buka http://localhost:8000 untuk website dan http://localhost:8000/admin untuk panel.
+Buka http://localhost:8000 untuk website. Login lewat halaman terpisah http://localhost:8000/login (tombol **Masuk** di website); setelah berhasil masuk kamu diarahkan ke panel http://localhost:8000/admin. Membuka `/admin` tanpa login juga diarahkan ke `/login`, dan keluar dari panel kembali ke halaman login.
 
 ### Akun demo (dari seeder, password semua: `password`)
 

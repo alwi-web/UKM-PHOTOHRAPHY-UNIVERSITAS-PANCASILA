@@ -28,7 +28,7 @@
         <a href="#kontak">Kontak</a>
       </nav>
       <div class="nav-actions">
-        <a href="{{ url('/admin') }}" class="nav-login"><x-glyph name="login" :size="16" /> Masuk</a>
+        <a href="{{ route('login') }}" class="nav-login"><x-glyph name="login" :size="16" /> Masuk</a>
         <a href="#daftar" class="btn btn-sm">Daftar</a>
       </div>
     </div>

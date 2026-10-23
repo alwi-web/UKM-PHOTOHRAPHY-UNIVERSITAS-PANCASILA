@@ -26,7 +26,7 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
-            ->login()
+            // login memakai halaman terpisah di /login (lihat LoginController)
             ->profile(isSimple: false)
             ->brandName('UKM Fotografi UP')
             ->brandLogo(asset('images/photoup-logo.svg'))
