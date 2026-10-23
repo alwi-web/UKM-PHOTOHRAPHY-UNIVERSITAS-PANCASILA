@@ -18,6 +18,7 @@ $pages = [
     'acara' => '/admin/events',
     'user' => '/admin/users',
     'pendaftar calon anggota' => '/admin/registrations',
+    'profil ukm' => '/admin/profil-ukm',
     'laporan kegiatan' => '/admin/event-report',
     'insight karya' => '/admin/artwork-insight',
 ];

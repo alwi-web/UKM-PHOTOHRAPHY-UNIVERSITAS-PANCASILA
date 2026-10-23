@@ -16,7 +16,7 @@ acara & kegiatan, manajemen anggota, dan laporan.
 
 | Role | Yang bisa dilakukan | Menu panel |
 |---|---|---|
-| **Admin UKM** | Mengatur semuanya, termasuk memproses pendaftar calon anggota | Semua menu |
+| **Admin UKM** | Mengatur semuanya, termasuk memproses pendaftar calon anggota serta mengubah profil, sejarah, visi & misi, dan struktur organisasi | Semua menu |
 | **Admin Inventaris** | Mengelola daftar barang & jumlahnya, melihat barang yang sedang dipinjam dan siapa peminjamnya, mengatur tanggal pinjam & tanggal kembali, mencatat kondisi barang sebelum & sesudah dipinjam | Daftar Barang, Peminjaman |
 | **Kurator** | Mengkurasi foto dan memilih yang tampil di website | Karya Foto (kurasi) |
 | **Member UKM Fotografi** | Mengunggah foto beserta kategori, caption, segitiga exposure (aperture, shutter speed, ISO, dan deskripsinya), link Instagram; melihat foto mana yang lulus kurasi | Karya Foto |
@@ -92,10 +92,11 @@ Buka http://localhost:8000 untuk website dan http://localhost:8000/admin untuk p
 
 Foto karya di data demo memakai placeholder dari picsum.photos. Ganti dengan unggahan asli lewat panel.
 
-### Mengubah isi bagian "Tentang Kami"
+### Mengubah profil UKM
 
-Teks sejarah, nama organisasi, serta daftar jabatan pengurus inti dan divisi ada di `config/ukm.php`
-(`name`, `history`, `structure`). Setiap elemen `history` ditampilkan sebagai satu paragraf.
+Profil (nama, slogan, deskripsi, kontak), sejarah, visi & misi, dan struktur organisasi diubah oleh
+**Admin UKM** lewat menu **Profil UKM** di panel (`/admin/profil-ukm`). Role lain tidak bisa membukanya.
+Isi awalnya diambil dari `profile_defaults` di `config/ukm.php` saat profil pertama kali dibuka.
 
 ## Pengujian otomatis
 
@@ -109,7 +110,7 @@ Tes ada di `tests/Feature` (hak akses per role, pendaftaran, halaman depan, inve
 
 ```
 app/Enums/                 role & status (label Indonesia, warna badge)
-app/Models/                User, Registration, Item, Loan, LoanItem, Category, Artwork, Event
+app/Models/                User, OrganizationProfile, Registration, Item, Loan, LoanItem, Category, Artwork, Event
 app/Policies/              hak akses per role
 app/Filament/Resources/    halaman CRUD panel admin
 app/Filament/Pages/        laporan kegiatan & insight karya

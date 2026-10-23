@@ -6,6 +6,7 @@ use App\Enums\ArtworkStatus;
 use App\Models\Artwork;
 use App\Models\Category;
 use App\Models\Event;
+use App\Models\OrganizationProfile;
 use Illuminate\Http\JsonResponse;
 use Illuminate\View\View;
 
@@ -16,6 +17,7 @@ class HomeController extends Controller
         $artworks = Artwork::published()->with(['user', 'category'])->latest('curated_at')->take(24)->get();
 
         return view('home', [
+            'profile' => OrganizationProfile::current(),
             'artworks' => $artworks,
             'categories' => Category::whereIn('id', $artworks->pluck('category_id')->unique())->orderBy('name')->get(),
             'events' => Event::upcoming()->take(6)->get(),

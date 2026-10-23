@@ -35,10 +35,10 @@
     <section class="hero" id="beranda">
       <div class="container">
         <p class="label">Unit Kegiatan Mahasiswa · Universitas Pancasila</p>
-        <h1>UKM Fotografi</h1>
-        <p class="lead">
-          Tempat mahasiswa Universitas Pancasila belajar, berkarya, dan berbagi cerita lewat foto.
-        </p>
+        <h1>{{ $profile->name }}</h1>
+        @if ($profile->tagline)
+          <p class="lead">{{ $profile->tagline }}</p>
+        @endif
         <div class="actions">
           <a href="#daftar" class="btn">Daftar Calon Anggota</a>
           <a href="#galeri" class="btn btn-ghost">Lihat Karya</a>
@@ -49,43 +49,76 @@
     <section class="section" id="tentang">
       <div class="container narrow">
         <h2>Tentang Kami</h2>
-        <p>
-          UKM Fotografi adalah wadah minat dan bakat mahasiswa di bidang fotografi. Kami belajar bersama
-          lewat kelas, hunting foto, pameran, dan kolaborasi dengan komunitas kreatif lain.
-        </p>
+        @if ($profile->about)
+          <p>{{ $profile->about }}</p>
+        @endif
 
-        <div class="about-block">
-          <h3>Sejarah {{ config('ukm.name') }}</h3>
-          @foreach (config('ukm.history') as $paragraph)
-            <p>{{ $paragraph }}</p>
-          @endforeach
-        </div>
-
-        <div class="about-block">
-          <h3>Visi &amp; Misi</h3>
-          <dl class="vm">
-            <dt>Visi</dt>
-            <dd>Menjadi komunitas fotografi mahasiswa yang unggul, kreatif, dan berkarakter Pancasila.</dd>
-            <dt>Misi</dt>
-            <dd>Mengembangkan keterampilan fotografi anggota, menghasilkan karya yang bermanfaat bagi kampus dan masyarakat, serta membangun jejaring dengan komunitas kreatif lain.</dd>
-          </dl>
-        </div>
-
-        <div class="about-block">
-          <h3>Struktur Organisasi</h3>
-          <p class="org-label">Pengurus Inti</p>
-          <ul class="org org-core">
-            @foreach (config('ukm.structure.core') as $position)
-              <li>{{ $position }}</li>
+        @if ($profile->historyParagraphs())
+          <div class="about-block">
+            <h3>Sejarah {{ $profile->name }}</h3>
+            @foreach ($profile->historyParagraphs() as $paragraph)
+              <p>{{ $paragraph }}</p>
             @endforeach
-          </ul>
-          <p class="org-label">Divisi</p>
-          <ul class="org">
-            @foreach (config('ukm.structure.divisions') as $division)
-              <li>Divisi {{ $division }}</li>
-            @endforeach
-          </ul>
-        </div>
+          </div>
+        @endif
+
+        @if ($profile->vision || $profile->missions)
+          <div class="about-block">
+            <h3>Visi &amp; Misi</h3>
+            <dl class="vm">
+              @if ($profile->vision)
+                <dt>Visi</dt>
+                <dd>{{ $profile->vision }}</dd>
+              @endif
+              @if ($profile->missions)
+                <dt>Misi</dt>
+                <dd>
+                  <ol class="missions">
+                    @foreach ($profile->missions as $mission)
+                      <li>{{ $mission }}</li>
+                    @endforeach
+                  </ol>
+                </dd>
+              @endif
+            </dl>
+          </div>
+        @endif
+
+        @if ($profile->core_members || $profile->divisions)
+          <div class="about-block">
+            <h3>Struktur Organisasi</h3>
+            @if ($profile->core_members)
+              <p class="org-label">Pengurus Inti</p>
+              <ul class="org org-core">
+                @foreach ($profile->core_members as $member)
+                  <li>
+                    @if ($photo = \App\Models\OrganizationProfile::photoUrl($member['photo'] ?? null))
+                      <img src="{{ $photo }}" alt="" class="org-photo" width="40" height="40" loading="lazy" />
+                    @endif
+                    <span>
+                      <strong>{{ $member['position'] }}</strong>
+                      @if (! empty($member['name']))<small>{{ $member['name'] }}</small>@endif
+                    </span>
+                  </li>
+                @endforeach
+              </ul>
+            @endif
+            @if ($profile->divisions)
+              <p class="org-label">Divisi</p>
+              <ul class="org">
+                @foreach ($profile->divisions as $division)
+                  <li>
+                    <span>
+                      <strong>Divisi {{ $division['name'] }}</strong>
+                      @if (! empty($division['coordinator']))<small>Koordinator: {{ $division['coordinator'] }}</small>@endif
+                      @if (! empty($division['description']))<small>{{ $division['description'] }}</small>@endif
+                    </span>
+                  </li>
+                @endforeach
+              </ul>
+            @endif
+          </div>
+        @endif
       </div>
     </section>
 
@@ -209,11 +242,21 @@
       <div class="container narrow">
         <h2>Kontak</h2>
         <ul class="contact">
-          <li><span>Alamat</span>{{ config('ukm.contact.address') }}</li>
-          <li><span>Email</span><a href="mailto:{{ config('ukm.contact.email') }}">{{ config('ukm.contact.email') }}</a></li>
-          <li><span>Instagram</span><a href="https://instagram.com/{{ config('ukm.contact.instagram') }}" target="_blank" rel="noopener">{{ '@'.config('ukm.contact.instagram') }}</a></li>
-          <li><span>TikTok</span><a href="https://www.tiktok.com/@{{ config('ukm.contact.tiktok') }}" target="_blank" rel="noopener">{{ '@'.config('ukm.contact.tiktok') }}</a></li>
-          <li><span>Telepon</span>{{ config('ukm.contact.phone') }}</li>
+          @if ($profile->address)
+            <li><span>Alamat</span>{{ $profile->address }}</li>
+          @endif
+          @if ($profile->email)
+            <li><span>Email</span><a href="mailto:{{ $profile->email }}">{{ $profile->email }}</a></li>
+          @endif
+          @if ($profile->instagram)
+            <li><span>Instagram</span><a href="https://instagram.com/{{ ltrim($profile->instagram, '@') }}" target="_blank" rel="noopener">{{ '@'.ltrim($profile->instagram, '@') }}</a></li>
+          @endif
+          @if ($profile->tiktok)
+            <li><span>TikTok</span><a href="https://www.tiktok.com/@{{ ltrim($profile->tiktok, '@') }}" target="_blank" rel="noopener">{{ '@'.ltrim($profile->tiktok, '@') }}</a></li>
+          @endif
+          @if ($profile->phone)
+            <li><span>Telepon</span>{{ $profile->phone }}</li>
+          @endif
         </ul>
       </div>
     </section>

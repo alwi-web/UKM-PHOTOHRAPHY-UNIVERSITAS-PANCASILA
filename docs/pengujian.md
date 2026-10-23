@@ -15,6 +15,7 @@ Jalankan `./vendor/bin/pest`. Cakupan:
 | `tests/Feature/InventoryTest.php` | Stok tersedia, keterlambatan, pengajuan multi-barang, tambah/hapus barang, serah terima, pengembalian & kondisi barang, ubah tanggal |
 | `tests/Feature/GalleryTest.php` | Unggah karya dengan segitiga exposure, hasil kurasi untuk member, kurasi, kurator tidak bisa mengunggah/mengubah |
 | `tests/Feature/EventTest.php` | CRUD acara, daftar peserta, kuota, kehadiran, laporan kegiatan |
+| `tests/Feature/OrganizationProfileTest.php` | Admin UKM mengubah profil, sejarah, visi & misi, struktur organisasi; tampil di website; role lain ditolak |
 | `tests/Feature/UserManagementTest.php` | Tambah user, atur role, tunjuk kurator |
 | `tests/Unit/EnumTest.php` | Matriks kemampuan tiap role |
 
@@ -30,30 +31,32 @@ Isi kolom **Hasil** saat pengujian manual (✓ sesuai / ✗ tidak sesuai).
 | B04 | Pendaftar calon anggota | Admin menghubungi pendaftar | Klik nomor WhatsApp, lalu "Sudah Dihubungi" | Chat WhatsApp terbuka; status jadi "Sudah Dihubungi" | |
 | B05 | Pendaftar calon anggota | Admin menerima pendaftar | "Terima & buat akun", isi email & password | Akun Member terbentuk dan bisa login ke panel | |
 | B06 | Manajemen user | Admin menunjuk kurator | Menu "Tunjuk sebagai Kurator" | Role berubah jadi Kurator | |
-| B07 | Inventaris | Admin inventaris menambah barang | Kode CAM-010, jumlah 2 | Barang muncul di daftar, tersedia 2 | |
-| B08 | Peminjaman | Anggota UKM lain membuka form pengajuan | Login anggota UKM lain | Nama, NPM, dan Fakultas/UKM terisi otomatis | |
-| B09 | Peminjaman | Mengajukan 2 barang sekaligus | Kamera ×1, Tripod ×2, tanggal dari–sampai | Pengajuan tersimpan berstatus "Diajukan" dengan 2 barang | |
-| B10 | Peminjaman | Jumlah melebihi stok | Jumlah 5, stok 2 | Muncul pesan stok tersedia hanya 2 unit | |
-| B11 | Peminjaman | Tanggal kembali sebelum tanggal pinjam | Dari 10 Nov, sampai 8 Nov | Muncul pesan validasi tanggal | |
-| B12 | Peminjaman | Tanggal bentrok dengan pemesanan lain | Kamera (stok 1) sudah dipesan 10–12 Nov, ajukan 11–13 Nov | Muncul keterangan jadwal bentrok dan pesan "sudah habis dipesan pada tanggal tersebut" | |
-| B13 | Peminjaman | Tanggal tidak bentrok | Kamera sudah dipesan 10–12 Nov 17.00, ajukan 12 Nov 17.00–14 Nov | Pengajuan diterima | |
-| B14 | Inventaris | Cek ketersediaan di daftar barang | Filter tanggal 11 Nov | Kamera yang sudah dipesan tidak muncul | |
-| B15 | Peminjaman | Menghapus satu barang dari pengajuan yang belum diproses | Hapus Tripod | Pengajuan tinggal berisi Kamera | |
-| B16 | Peminjaman | Admin menyerahkan barang | Kondisi sebelum "Baik" per barang | Status "Sedang Dipinjam", stok tersedia berkurang | |
-| B17 | Peminjaman | Admin mengubah tanggal kembali | Mundur 3 hari | Tanggal kembali berubah | |
-| B18 | Peminjaman | Admin menerima pengembalian | Kondisi sesudah "Rusak Ringan" | Status "Dikembalikan", kondisi barang ikut berubah | |
-| B19 | Peminjaman | Barang lewat batas kembali | Batas kembali kemarin | Tampil di tab "Terlambat", tanggal berwarna merah | |
-| B20 | Galeri | Member mengunggah foto tanpa data exposure | Aperture/shutter/ISO kosong | Muncul pesan wajib diisi | |
-| B21 | Galeri | Member mengunggah foto lengkap | Kategori, caption, f/8 · 1/250 · ISO 100, deskripsi, link IG | Karya berstatus "Menunggu Kurasi" | |
-| B22 | Galeri | Member membuka tab "Lolos Kurasi" | Login member | Hanya karya miliknya yang lolos kurasi | |
-| B23 | Kurasi | Kurator meloloskan & menampilkan karya | Lolos + tampilkan di website | Karya muncul di galeri website beserta data exposure | |
-| B24 | Kurasi | Kurator mencoba mengunggah atau mengubah karya | Login kurator | Tidak ada tombol unggah/ubah (403) | |
-| B25 | Hak akses | Setiap role membuka menu yang bukan miliknya | Mis. member membuka /admin/loans | Akses ditolak (403) | |
-| B26 | Acara | Admin UKM membuat acara | Kuota 20, status Dipublikasikan | Acara tampil di agenda website | |
-| B27 | Acara | Admin menandai hadir | Pilih peserta → "Tandai Hadir" | Status kehadiran "Hadir" | |
-| B28 | Laporan | Filter laporan kegiatan per periode | Dari–sampai bulan ini | Hanya kegiatan pada periode itu | |
-| B29 | Laporan | Unduh CSV laporan kegiatan | Tombol "Unduh CSV" | File CSV terunduh sesuai filter | |
-| B30 | Laporan | Admin UKM membuka insight karya | Login admin UKM | Statistik & grafik tampil | |
+| B07 | Profil UKM | Admin UKM mengubah sejarah dan struktur organisasi | Isi sejarah 2 paragraf, nama Ketua, koordinator divisi | Setelah Simpan, perubahan tampil di bagian Tentang Kami website | |
+| B08 | Profil UKM | Role selain Admin UKM membuka /admin/profil-ukm | Login admin inventaris | Menu tidak tampil dan akses ditolak (403) | |
+| B09 | Inventaris | Admin inventaris menambah barang | Kode CAM-010, jumlah 2 | Barang muncul di daftar, tersedia 2 | |
+| B10 | Peminjaman | Anggota UKM lain membuka form pengajuan | Login anggota UKM lain | Nama, NPM, dan Fakultas/UKM terisi otomatis | |
+| B11 | Peminjaman | Mengajukan 2 barang sekaligus | Kamera ×1, Tripod ×2, tanggal dari–sampai | Pengajuan tersimpan berstatus "Diajukan" dengan 2 barang | |
+| B12 | Peminjaman | Jumlah melebihi stok | Jumlah 5, stok 2 | Muncul pesan stok tersedia hanya 2 unit | |
+| B13 | Peminjaman | Tanggal kembali sebelum tanggal pinjam | Dari 10 Nov, sampai 8 Nov | Muncul pesan validasi tanggal | |
+| B14 | Peminjaman | Tanggal bentrok dengan pemesanan lain | Kamera (stok 1) sudah dipesan 10–12 Nov, ajukan 11–13 Nov | Muncul keterangan jadwal bentrok dan pesan "sudah habis dipesan pada tanggal tersebut" | |
+| B15 | Peminjaman | Tanggal tidak bentrok | Kamera sudah dipesan 10–12 Nov 17.00, ajukan 12 Nov 17.00–14 Nov | Pengajuan diterima | |
+| B16 | Inventaris | Cek ketersediaan di daftar barang | Filter tanggal 11 Nov | Kamera yang sudah dipesan tidak muncul | |
+| B17 | Peminjaman | Menghapus satu barang dari pengajuan yang belum diproses | Hapus Tripod | Pengajuan tinggal berisi Kamera | |
+| B18 | Peminjaman | Admin menyerahkan barang | Kondisi sebelum "Baik" per barang | Status "Sedang Dipinjam", stok tersedia berkurang | |
+| B19 | Peminjaman | Admin mengubah tanggal kembali | Mundur 3 hari | Tanggal kembali berubah | |
+| B20 | Peminjaman | Admin menerima pengembalian | Kondisi sesudah "Rusak Ringan" | Status "Dikembalikan", kondisi barang ikut berubah | |
+| B21 | Peminjaman | Barang lewat batas kembali | Batas kembali kemarin | Tampil di tab "Terlambat", tanggal berwarna merah | |
+| B22 | Galeri | Member mengunggah foto tanpa data exposure | Aperture/shutter/ISO kosong | Muncul pesan wajib diisi | |
+| B23 | Galeri | Member mengunggah foto lengkap | Kategori, caption, f/8 · 1/250 · ISO 100, deskripsi, link IG | Karya berstatus "Menunggu Kurasi" | |
+| B24 | Galeri | Member membuka tab "Lolos Kurasi" | Login member | Hanya karya miliknya yang lolos kurasi | |
+| B25 | Kurasi | Kurator meloloskan & menampilkan karya | Lolos + tampilkan di website | Karya muncul di galeri website beserta data exposure | |
+| B26 | Kurasi | Kurator mencoba mengunggah atau mengubah karya | Login kurator | Tidak ada tombol unggah/ubah (403) | |
+| B27 | Hak akses | Setiap role membuka menu yang bukan miliknya | Mis. member membuka /admin/loans | Akses ditolak (403) | |
+| B28 | Acara | Admin UKM membuat acara | Kuota 20, status Dipublikasikan | Acara tampil di agenda website | |
+| B29 | Acara | Admin menandai hadir | Pilih peserta → "Tandai Hadir" | Status kehadiran "Hadir" | |
+| B30 | Laporan | Filter laporan kegiatan per periode | Dari–sampai bulan ini | Hanya kegiatan pada periode itu | |
+| B31 | Laporan | Unduh CSV laporan kegiatan | Tombol "Unduh CSV" | File CSV terunduh sesuai filter | |
+| B32 | Laporan | Admin UKM membuka insight karya | Login admin UKM | Statistik & grafik tampil | |
 
 ## 3. UAT (User Acceptance Test)
 

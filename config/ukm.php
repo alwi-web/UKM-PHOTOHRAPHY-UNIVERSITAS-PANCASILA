@@ -13,31 +13,37 @@ return [
     ],
 
     /*
-     * Ditampilkan di bagian "Tentang Kami" pada halaman depan.
-     * Setiap elemen 'history' adalah satu paragraf.
+     * Isi awal profil UKM. Setelah aplikasi berjalan, profil diubah oleh Admin UKM
+     * lewat menu "Profil UKM" di panel admin (tersimpan di tabel organization_profiles).
      */
-    'name' => 'PhotoUP 94',
-
-    'history' => [
-        'PhotoUP 94 adalah Unit Kegiatan Mahasiswa fotografi di Universitas Pancasila.',
-    ],
-
-    'structure' => [
-        'core' => ['Ketua', 'Wakil Ketua', 'Sekretaris', 'Bendahara'],
-        'divisions' => [
-            'Penelitian dan Pengembangan',
-            'Hunting',
-            'Pameran',
-            'Inventaris',
-            'Humas Internal dan Eksternal',
+    'profile_defaults' => [
+        'name' => 'PhotoUP 94',
+        'tagline' => 'Tempat mahasiswa Universitas Pancasila belajar, berkarya, dan berbagi cerita lewat foto.',
+        'about' => 'UKM Fotografi adalah wadah minat dan bakat mahasiswa di bidang fotografi. Kami belajar bersama lewat kelas, hunting foto, pameran, dan kolaborasi dengan komunitas kreatif lain.',
+        'history' => 'PhotoUP 94 adalah Unit Kegiatan Mahasiswa fotografi di Universitas Pancasila.',
+        'vision' => 'Menjadi komunitas fotografi mahasiswa yang unggul, kreatif, dan berkarakter Pancasila.',
+        'missions' => [
+            'Mengembangkan keterampilan fotografi anggota.',
+            'Menghasilkan karya yang bermanfaat bagi kampus dan masyarakat.',
+            'Membangun jejaring dengan komunitas kreatif lain.',
         ],
-    ],
-
-    'contact' => [
-        'address' => env('UKM_ADDRESS', 'Sekretariat UKM, Universitas Pancasila, Jl. Srengseng Sawah, Jagakarsa, Jakarta Selatan 12640'),
-        'email' => env('UKM_EMAIL', 'ukmfotografi@univpancasila.ac.id'),
-        'instagram' => env('UKM_INSTAGRAM', 'ukmfotografi.up'),
-        'tiktok' => env('UKM_TIKTOK', 'ukmfotografi.up'),
-        'phone' => env('UKM_PHONE', '0812-0000-0000 (Humas)'),
+        'core_members' => [
+            ['position' => 'Ketua', 'name' => null, 'photo' => null],
+            ['position' => 'Wakil Ketua', 'name' => null, 'photo' => null],
+            ['position' => 'Sekretaris', 'name' => null, 'photo' => null],
+            ['position' => 'Bendahara', 'name' => null, 'photo' => null],
+        ],
+        'divisions' => [
+            ['name' => 'Penelitian dan Pengembangan', 'coordinator' => null, 'description' => null],
+            ['name' => 'Hunting', 'coordinator' => null, 'description' => null],
+            ['name' => 'Pameran', 'coordinator' => null, 'description' => null],
+            ['name' => 'Inventaris', 'coordinator' => null, 'description' => null],
+            ['name' => 'Humas Internal dan Eksternal', 'coordinator' => null, 'description' => null],
+        ],
+        'address' => 'Sekretariat UKM, Universitas Pancasila, Jl. Srengseng Sawah, Jagakarsa, Jakarta Selatan 12640',
+        'email' => 'ukmfotografi@univpancasila.ac.id',
+        'instagram' => 'ukmfotografi.up',
+        'tiktok' => 'ukmfotografi.up',
+        'phone' => '0812-0000-0000 (Humas)',
     ],
 ];
