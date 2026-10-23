@@ -10,9 +10,14 @@ it('menampilkan halaman login terpisah', function () {
         ->assertSee('Masukkan email dan password akunmu.')
         ->assertDontSee('Masuk ke panel PhotoUP')
         ->assertDontSee('Calon anggota')
-        ->assertSee('Kembali ke website')
-        ->assertSee('type="password"', false)
-        ->assertDontSee('passwordToggle', false);
+        ->assertSee('Kembali ke website');
+});
+
+it('password awalnya tertutup dan tombol mata bisa menampilkannya', function () {
+    $this->get('/login')
+        ->assertSee('type="password" id="password"', false)
+        ->assertSee('id="passwordToggle" aria-label="Tampilkan password" aria-pressed="false"', false)
+        ->assertSeeInOrder(['icon-closed', 'icon-open'], false);
 });
 
 it('tombol Masuk di website mengarah ke halaman login', function () {

@@ -23,7 +23,14 @@
 
     <div class="field @error('password') invalid @enderror">
       <label for="password">Password</label>
-      <input type="password" id="password" name="password" autocomplete="current-password" required />
+      <div class="password-wrap">
+        <input type="password" id="password" name="password" autocomplete="current-password" required />
+        <button type="button" class="password-toggle" id="passwordToggle" aria-label="Tampilkan password" aria-pressed="false">
+          {{-- awalnya tertutup: ikon mata tertutup; ditekan: password terlihat, ikon mata terbuka --}}
+          <x-glyph name="eye-off" :size="18" class="icon-closed" />
+          <x-glyph name="eye" :size="18" class="icon-open" />
+        </button>
+      </div>
     </div>
 
     <div class="field field-check">
@@ -41,6 +48,15 @@
 
 @push('scripts')
 <script>
+  // tampilkan / sembunyikan password
+  const toggle = document.getElementById("passwordToggle");
+  const input = document.getElementById("password");
+  toggle.addEventListener("click", () => {
+    const show = input.type === "password";
+    input.type = show ? "text" : "password";
+    toggle.setAttribute("aria-pressed", String(show));
+    toggle.setAttribute("aria-label", show ? "Sembunyikan password" : "Tampilkan password");
+  });
   document.querySelector(".auth-form").addEventListener("submit", (e) => {
     const btn = e.target.querySelector("button[type=submit]");
     btn.disabled = true;
