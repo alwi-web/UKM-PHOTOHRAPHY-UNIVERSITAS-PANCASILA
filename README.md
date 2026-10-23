@@ -126,6 +126,3 @@ resources/views/home.blade.php   halaman depan website
 public/css/style.css, public/js/main.js   aset website publik
 database/seeders/          data demo
 ```
-
-> `index.html`, `css/`, `js/`, dan `assets/` di root adalah versi statis awal (sebelum Laravel). Isinya sudah dipindah ke
-> `resources/views/home.blade.php` dan `public/`, jadi folder lama tersebut boleh dihapus.
