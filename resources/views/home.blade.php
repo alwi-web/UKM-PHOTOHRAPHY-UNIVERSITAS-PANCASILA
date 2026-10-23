@@ -40,9 +40,6 @@
       <div class="hero-grid-bg" aria-hidden="true"></div>
       <div class="container hero-split">
         <div class="hero-copy">
-          <span class="hero-logo reveal">
-            <img src="{{ asset('images/photoup-logo.svg') }}" alt="Logo PhotoUP" width="72" height="72" />
-          </span>
           <p class="hello reveal"><span class="wave" aria-hidden="true">👋</span> Hai!</p>
           <h1 class="reveal">Selamat Datang <span>di UKM <span class="mark">PHOTO UP</span> KMUP</span></h1>
           @if ($profile->tagline)
@@ -64,7 +61,6 @@
           </div>
           <div class="phone">
             <span class="phone-notch" aria-hidden="true"></span>
-            <img src="{{ asset('images/photoup-logo.svg') }}" alt="" class="phone-logo" width="44" height="44" />
             <p class="phone-text">Yuk berkenalan dengan kami, belajar fotografi dan organisasi bersama!</p>
             <a href="#profil" class="phone-btn" aria-label="Kenalan dengan kami"><x-glyph name="chevron-right" :size="20" /></a>
           </div>
@@ -91,18 +87,12 @@
         </div>
 
         @if ($profile->historyParagraphs())
-          {{-- sejarah: panel logo di kiri, cerita di kanan --}}
           <article class="card card-history reveal">
-            <div class="history-art" aria-hidden="true">
-              <img src="{{ asset('images/photoup-logo.svg') }}" alt="" width="140" height="140" />
-            </div>
-            <div class="history-text">
-              <span class="card-icon"><x-glyph name="history" /></span>
-              <h3>Sejarah {{ $profile->name }}</h3>
-              @foreach ($profile->historyParagraphs() as $paragraph)
-                <p>{{ $paragraph }}</p>
-              @endforeach
-            </div>
+            <span class="card-icon"><x-glyph name="history" /></span>
+            <h3>Sejarah {{ $profile->name }}</h3>
+            @foreach ($profile->historyParagraphs() as $paragraph)
+              <p>{{ $paragraph }}</p>
+            @endforeach
           </article>
         @endif
 
@@ -388,7 +378,6 @@
   <footer class="footer">
     <div class="container footer-inner">
       <a href="#beranda" class="brand">
-        <img src="{{ asset('images/photoup-logo.svg') }}" alt="" width="28" height="28" />
         <span>{{ $profile->name }}</span>
       </a>
       <p>&copy; {{ now()->year }} UKM Fotografi Universitas Pancasila</p>

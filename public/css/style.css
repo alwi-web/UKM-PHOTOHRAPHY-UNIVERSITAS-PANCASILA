@@ -266,22 +266,10 @@ p {
   align-items: flex-start;
 }
 
-.hero-logo {
-  display: grid;
-  place-items: center;
-  width: 96px;
-  height: 96px;
-  border: 1px solid var(--line);
-  border-radius: 50%;
-  background: var(--surface);
-  box-shadow: var(--shadow);
-}
-
 .hello {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-top: 28px;
   font-size: clamp(2.6rem, 6vw, 4rem);
   font-weight: 800;
   line-height: 1;
@@ -401,12 +389,6 @@ p {
   transform: translateX(-50%);
 }
 
-.phone-logo {
-  width: 44px;
-  height: 44px;
-}
-
-/* teks ajakan memenuhi layar HP sampai tombol di bawahnya */
 .phone-text {
   margin: 18px 0 20px;
   font-size: 1.95rem;
@@ -531,28 +513,6 @@ p {
 }
 
 /* ---------- Profil ---------- */
-.card-history {
-  display: grid;
-  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
-  gap: 32px;
-  align-items: center;
-}
-
-.history-art {
-  display: grid;
-  place-items: center;
-  min-height: 260px;
-  border-radius: 16px;
-  background:
-    radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.6), transparent 55%),
-    linear-gradient(135deg, var(--yellow-soft), #ffe48a);
-}
-
-.history-art img {
-  width: 140px;
-  height: 140px;
-}
-
 .vm-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
@@ -1336,20 +1296,6 @@ p {
     min-height: 0;
   }
 
-  .card-history {
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
-
-  .history-art {
-    min-height: 160px;
-  }
-
-  .history-art img {
-    width: 96px;
-    height: 96px;
-  }
-
   .join {
     grid-template-columns: 1fr;
   }
@@ -1388,18 +1334,7 @@ p {
     text-align: center;
   }
 
-  .hero-logo {
-    width: 76px;
-    height: 76px;
-  }
-
-  .hero-logo img {
-    width: 56px;
-    height: 56px;
-  }
-
   .hello {
-    margin-top: 16px;
     font-size: 2.4rem;
   }
 
@@ -1441,10 +1376,6 @@ p {
     min-height: 0;
     padding: 36px 18px 18px;
     border-radius: 30px;
-  }
-
-  .phone-logo {
-    display: none;
   }
 
   .phone-text {
