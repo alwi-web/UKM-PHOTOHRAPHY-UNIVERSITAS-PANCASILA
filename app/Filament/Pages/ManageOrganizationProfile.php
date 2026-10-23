@@ -135,11 +135,36 @@ class ManageOrganizationProfile extends Page
                                     ->helperText('Semua divisi tampil berjajar di baris paling bawah bagan.')
                                     ->schema([
                                         TextInput::make('name')->label('Nama Divisi')->required()->maxLength(100),
-                                        TextInput::make('coordinator')->label('Koordinator')->maxLength(100),
-                                        Textarea::make('description')->label('Deskripsi')->rows(2)->columnSpanFull()->maxLength(500),
+                                        Textarea::make('description')->label('Deskripsi')->rows(2)->maxLength(500),
+                                        Repeater::make('members')
+                                            ->label('Anggota Divisi')
+                                            ->helperText('Foto dan nama tampil di website. NPM hanya terlihat di panel admin.')
+                                            ->schema([
+                                                FileUpload::make('photo')
+                                                    ->label('Foto')
+                                                    ->image()
+                                                    ->avatar()
+                                                    ->disk('public')
+                                                    ->directory('organization')
+                                                    ->maxSize(2048),
+                                                TextInput::make('name')->label('Nama')->required()->maxLength(100),
+                                                TextInput::make('npm')
+                                                    ->label('NPM')
+                                                    ->required()
+                                                    ->regex('/^\d{6,20}$/')
+                                                    ->validationMessages(['regex' => 'NPM harus berupa 6–20 digit angka.'])
+                                                    ->maxLength(20),
+                                            ])
+                                            ->columns(3)
+                                            ->defaultItems(0)
+                                            ->itemLabel(fn (array $state) => $state['name'] ?? null)
+                                            ->addActionLabel('Tambah anggota')
+                                            ->reorderable()
+                                            ->collapsible(),
                                     ])
-                                    ->columns(2)
-                                    ->itemLabel(fn (array $state) => isset($state['name']) ? 'Divisi '.$state['name'] : null)
+                                    ->itemLabel(fn (array $state) => isset($state['name'])
+                                        ? 'Divisi '.$state['name'].' ('.count($state['members'] ?? []).' anggota)'
+                                        : null)
                                     ->addActionLabel('Tambah divisi')
                                     ->reorderable()
                                     ->collapsible(),

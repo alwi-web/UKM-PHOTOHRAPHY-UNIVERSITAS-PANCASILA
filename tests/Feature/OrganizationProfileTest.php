@@ -32,7 +32,14 @@ it('admin UKM mengubah sejarah, visi misi, dan struktur organisasi', function ()
                 ['position' => 'Bendahara', 'name' => 'Sari', 'photo' => null],
             ],
             'divisions' => [
-                ['name' => 'Hunting', 'coordinator' => 'Dimas', 'description' => 'Hunting foto setiap bulan.'],
+                [
+                    'name' => 'Hunting',
+                    'description' => 'Hunting foto setiap bulan.',
+                    'members' => [
+                        ['name' => 'Dimas', 'npm' => '4123000111', 'photo' => null],
+                        ['name' => 'Intan', 'npm' => '4123000222', 'photo' => null],
+                    ],
+                ],
             ],
         ])
         ->call('save')
@@ -46,6 +53,7 @@ it('admin UKM mengubah sejarah, visi misi, dan struktur organisasi', function ()
     ])
         ->and($profile->missions)->toBe(['Mengadakan kelas rutin.', 'Mengadakan pameran tahunan.'])
         ->and($profile->core_members[0]['name'])->toBe('Rizky Pratama')
+        ->and(collect($profile->divisions[0]['members'])->pluck('npm', 'name')->all())->toBe(['Dimas' => '4123000111', 'Intan' => '4123000222'])
         ->and($profile->updated_by)->toBe($admin->id);
 });
 
@@ -55,7 +63,14 @@ it('perubahan profil langsung tampil di halaman depan', function () {
         'vision' => 'Visi baru PhotoUP.',
         'missions' => ['Misi satu.', 'Misi dua.'],
         'core_members' => [['position' => 'Ketua', 'name' => 'Rizky Pratama', 'photo' => null]],
-        'divisions' => [['name' => 'Hunting', 'coordinator' => 'Dimas', 'description' => null]],
+        'divisions' => [[
+            'name' => 'Hunting',
+            'description' => null,
+            'members' => [
+                ['name' => 'Dimas', 'npm' => '4123000111', 'photo' => null],
+                ['name' => 'Intan', 'npm' => '4123000222', 'photo' => null],
+            ],
+        ]],
     ]);
 
     $this->get('/')
@@ -63,7 +78,8 @@ it('perubahan profil langsung tampil di halaman depan', function () {
         ->assertSeeInOrder(['Sejarah PhotoUP 94', 'Paragraf pertama sejarah.', 'Paragraf kedua sejarah.'])
         ->assertSeeInOrder(['Visi baru PhotoUP.', 'Misi satu.', 'Misi dua.'])
         ->assertSeeInOrder(['Struktur Organisasi', 'Ketua', 'Rizky Pratama'])
-        ->assertSeeInOrder(['Divisi Hunting', 'Dimas'])
+        ->assertSeeInOrder(['Divisi Hunting', 'Dimas', 'Intan'])
+        ->assertDontSee('4123000111')
         ->assertDontSee('Wakil Ketua');
 });
 
@@ -115,4 +131,41 @@ it('urutan pengurus inti menentukan posisi di bagan', function () {
         ->and($levels[1][0]['title'])->toBe('Sekretaris');
 
     $this->get('/')->assertSee('chart-top', false);
+});
+
+it('NPM anggota divisi wajib berupa angka', function () {
+    loginAs(Role::AdminUkm);
+
+    livewire(ManageOrganizationProfile::class)
+        ->fillForm([
+            'divisions' => [[
+                'name' => 'Pameran',
+                'description' => null,
+                'members' => [['name' => 'Budi', 'npm' => 'ABC', 'photo' => null]],
+            ]],
+        ])
+        ->call('save')
+        ->assertHasFormErrors(['divisions.0.members.0.npm' => 'NPM harus berupa 6–20 digit angka.']);
+});
+
+it('tiap divisi bisa berisi lebih dari satu anggota tanpa koordinator', function () {
+    OrganizationProfile::current()->update([
+        'divisions' => [[
+            'name' => 'Inventaris',
+            'description' => null,
+            'members' => [
+                ['name' => 'Andi', 'npm' => '4123000333', 'photo' => null],
+                ['name' => 'Bela', 'npm' => '4123000444', 'photo' => null],
+                ['name' => 'Caca', 'npm' => '4123000555', 'photo' => null],
+            ],
+        ]],
+    ]);
+
+    $divisionRow = last(OrganizationProfile::sole()->chartLevels());
+
+    expect($divisionRow[0]['title'])->toBe('Divisi Inventaris')
+        ->and(array_column($divisionRow[0]['members'], 'name'))->toBe(['Andi', 'Bela', 'Caca'])
+        ->and($divisionRow[0]['members'][0])->not->toHaveKey('npm');
+
+    $this->get('/')->assertDontSee('Koordinator');
 });

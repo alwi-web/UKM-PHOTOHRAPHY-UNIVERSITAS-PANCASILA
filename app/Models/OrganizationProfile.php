@@ -45,7 +45,7 @@ class OrganizationProfile extends Model
      * pengurus inti pertama (Ketua Umum), pengurus inti kedua, sisa pengurus inti berjajar,
      * lalu semua divisi di baris paling bawah.
      *
-     * @return array<int, array<int, array{title: string, name: ?string, photo: ?string, note: ?string}>>
+     * @return array<int, array<int, array{title: string, name: ?string, photo: ?string, note: ?string, members: array<int, array{name: string, photo: ?string}>}>>
      */
     public function chartLevels(): array
     {
@@ -54,13 +54,19 @@ class OrganizationProfile extends Model
             'name' => $m['name'] ?? null,
             'photo' => static::photoUrl($m['photo'] ?? null),
             'note' => null,
+            'members' => [],
         ]);
 
+        // NPM sengaja tidak ikut ditampilkan di website
         $divisions = collect($this->divisions ?? [])->map(fn (array $d) => [
             'title' => 'Divisi '.$d['name'],
-            'name' => $d['coordinator'] ?? null,
+            'name' => null,
             'photo' => null,
             'note' => $d['description'] ?? null,
+            'members' => collect($d['members'] ?? [])->map(fn (array $member) => [
+                'name' => $member['name'],
+                'photo' => static::photoUrl($member['photo'] ?? null),
+            ])->values()->all(),
         ]);
 
         return array_values(array_filter([

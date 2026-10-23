@@ -110,6 +110,20 @@
                         <strong>{{ $node['title'] }}</strong>
                         @if ($node['name'])<small>{{ $node['name'] }}</small>@endif
                         @if ($node['note'])<small class="node-note">{{ $node['note'] }}</small>@endif
+                        @if ($node['members'])
+                          <ul class="node-members">
+                            @foreach ($node['members'] as $member)
+                              <li>
+                                @if ($member['photo'])
+                                  <img src="{{ $member['photo'] }}" alt="" width="28" height="28" loading="lazy" />
+                                @else
+                                  <span class="member-initial" aria-hidden="true">{{ mb_substr($member['name'], 0, 1) }}</span>
+                                @endif
+                                <span>{{ $member['name'] }}</span>
+                              </li>
+                            @endforeach
+                          </ul>
+                        @endif
                       </div>
                     </div>
                   @endforeach

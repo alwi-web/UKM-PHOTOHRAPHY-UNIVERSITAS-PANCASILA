@@ -98,6 +98,10 @@ Profil (nama, slogan, deskripsi, kontak), sejarah, visi & misi, dan struktur org
 **Admin UKM** lewat menu **Profil UKM** di panel (`/admin/profil-ukm`). Role lain tidak bisa membukanya.
 Isi awalnya diambil dari `profile_defaults` di `config/ukm.php` saat profil pertama kali dibuka.
 
+Struktur organisasi tampil sebagai bagan: pengurus inti pertama (Ketua Umum) di paling atas, kedua di
+bawahnya, sisanya bercabang, lalu semua divisi di baris terbawah. Setiap divisi berisi daftar anggota
+(foto, nama, NPM). Foto dan nama tampil di website, sedangkan NPM hanya terlihat di panel admin.
+
 ## Pengujian otomatis
 
 ```bash
