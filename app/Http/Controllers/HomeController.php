@@ -3,13 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Enums\ArtworkStatus;
-use App\Enums\Role;
-use App\Enums\UserStatus;
 use App\Models\Artwork;
 use App\Models\Category;
 use App\Models\Event;
 use App\Models\OrganizationProfile;
-use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\View\View;
 
@@ -24,12 +21,6 @@ class HomeController extends Controller
             'artworks' => $artworks,
             'categories' => Category::whereIn('id', $artworks->pluck('category_id')->unique())->orderBy('name')->get(),
             'events' => Event::upcoming()->take(6)->get(),
-            // angka ringkas di bagian atas halaman
-            'stats' => [
-                'artworks' => Artwork::published()->count(),
-                'events' => Event::upcoming()->count(),
-                'members' => User::where('role', Role::Member)->where('status', UserStatus::Active)->count(),
-            ],
         ]);
     }
 

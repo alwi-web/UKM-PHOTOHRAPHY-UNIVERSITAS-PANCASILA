@@ -49,14 +49,8 @@
             <p class="lead reveal">{{ $profile->tagline }}</p>
           @endif
           <div class="actions reveal">
-            <a href="#daftar" class="btn">Daftar Calon Anggota <x-glyph name="arrow-right" :size="18" /></a>
-            <a href="#galeri" class="btn btn-ghost">Lihat Karya</a>
+            <a href="#galeri" class="btn">Lihat Karya <x-glyph name="arrow-right" :size="18" /></a>
           </div>
-          <a href="#daftar" class="badge reveal">
-            <span class="badge-dot" aria-hidden="true"><span class="pulse"></span></span>
-            Pendaftaran calon anggota dibuka
-            <x-glyph name="arrow-right" :size="14" />
-          </a>
         </div>
 
         {{-- mockup HP di atas bentuk-bentuk warna --}}
@@ -72,28 +66,11 @@
             <span class="phone-notch" aria-hidden="true"></span>
             <img src="{{ asset('images/photoup-logo.svg') }}" alt="" class="phone-logo" width="44" height="44" />
             <p class="phone-text">Yuk berkenalan dengan kami, belajar fotografi dan organisasi bersama!</p>
-            <dl class="stats">
-              <div><dd>{{ $stats['artworks'] }}</dd><dt>Karya terkurasi</dt></div>
-              <div><dd>{{ $stats['events'] }}</dd><dt>Agenda mendatang</dt></div>
-              <div><dd>{{ $stats['members'] }}</dd><dt>Anggota aktif</dt></div>
-            </dl>
             <a href="#profil" class="phone-btn" aria-label="Kenalan dengan kami"><x-glyph name="chevron-right" :size="20" /></a>
           </div>
         </div>
       </div>
 
-      @php
-        $tags = $categories->isNotEmpty() ? $categories->pluck('name') : ['Hunting', 'Pameran', 'Street', 'Portrait', 'Landscape', 'Workshop'];
-      @endphp
-      <div class="marquee" aria-hidden="true">
-        <div class="marquee-track">
-          @foreach (range(1, 4) as $loopIndex)
-            @foreach ($tags as $tag)
-              <span>{{ $tag }}</span>
-            @endforeach
-          @endforeach
-        </div>
-      </div>
     </section>
 
     {{-- ================= PROFIL ================= --}}
