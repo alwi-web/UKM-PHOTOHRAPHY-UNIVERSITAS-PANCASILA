@@ -37,11 +37,11 @@ it('tidak mencatat view untuk karya yang belum tampil', function () {
     $this->post(route('artworks.view', $artwork))->assertNotFound();
 });
 
-it('menampilkan sejarah dan struktur organisasi di bagian Tentang Kami', function () {
+it('menampilkan sejarah dan bagan struktur organisasi di bagian Tentang Kami', function () {
     $this->get('/')
         ->assertOk()
         ->assertSee('Sejarah PhotoUP 94')
-        ->assertSeeInOrder(['Struktur Organisasi', 'Pengurus Inti', 'Ketua', 'Wakil Ketua', 'Sekretaris', 'Bendahara'])
+        ->assertSeeInOrder(['Struktur Organisasi', 'Ketua Umum', 'Wakil Ketua', 'Sekretaris', 'Bendahara'])
         ->assertSeeInOrder([
             'Divisi Penelitian dan Pengembangan',
             'Divisi Hunting',

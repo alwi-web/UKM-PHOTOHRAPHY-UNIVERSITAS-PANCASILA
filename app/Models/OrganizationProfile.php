@@ -40,6 +40,37 @@ class OrganizationProfile extends Model
         return array_values(array_filter(array_map('trim', preg_split('/\R{2,}/', (string) $this->history))));
     }
 
+    /**
+     * Tingkat-tingkat bagan struktur organisasi, dari atas ke bawah:
+     * pengurus inti pertama (Ketua Umum), pengurus inti kedua, sisa pengurus inti berjajar,
+     * lalu semua divisi di baris paling bawah.
+     *
+     * @return array<int, array<int, array{title: string, name: ?string, photo: ?string, note: ?string}>>
+     */
+    public function chartLevels(): array
+    {
+        $core = collect($this->core_members ?? [])->map(fn (array $m) => [
+            'title' => $m['position'],
+            'name' => $m['name'] ?? null,
+            'photo' => static::photoUrl($m['photo'] ?? null),
+            'note' => null,
+        ]);
+
+        $divisions = collect($this->divisions ?? [])->map(fn (array $d) => [
+            'title' => 'Divisi '.$d['name'],
+            'name' => $d['coordinator'] ?? null,
+            'photo' => null,
+            'note' => $d['description'] ?? null,
+        ]);
+
+        return array_values(array_filter([
+            $core->take(1)->values()->all(),
+            $core->slice(1, 1)->values()->all(),
+            $core->slice(2)->values()->all(),
+            $divisions->all(),
+        ]));
+    }
+
     public static function photoUrl(?string $path): ?string
     {
         return $path ? Storage::disk('public')->url($path) : null;

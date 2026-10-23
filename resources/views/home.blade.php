@@ -87,36 +87,35 @@
         @if ($profile->core_members || $profile->divisions)
           <div class="about-block">
             <h3>Struktur Organisasi</h3>
-            @if ($profile->core_members)
-              <p class="org-label">Pengurus Inti</p>
-              <ul class="org org-core">
-                @foreach ($profile->core_members as $member)
-                  <li>
-                    @if ($photo = \App\Models\OrganizationProfile::photoUrl($member['photo'] ?? null))
-                      <img src="{{ $photo }}" alt="" class="org-photo" width="40" height="40" loading="lazy" />
-                    @endif
-                    <span>
-                      <strong>{{ $member['position'] }}</strong>
-                      @if (! empty($member['name']))<small>{{ $member['name'] }}</small>@endif
-                    </span>
-                  </li>
-                @endforeach
-              </ul>
-            @endif
-            @if ($profile->divisions)
-              <p class="org-label">Divisi</p>
-              <ul class="org">
-                @foreach ($profile->divisions as $division)
-                  <li>
-                    <span>
-                      <strong>Divisi {{ $division['name'] }}</strong>
-                      @if (! empty($division['coordinator']))<small>Koordinator: {{ $division['coordinator'] }}</small>@endif
-                      @if (! empty($division['description']))<small>{{ $division['description'] }}</small>@endif
-                    </span>
-                  </li>
-                @endforeach
-              </ul>
-            @endif
+            <div class="chart">
+              @php($levels = $profile->chartLevels())
+              @foreach ($levels as $level => $nodes)
+                @if ($level > 0)
+                  <span class="chart-line" aria-hidden="true"></span>
+                @endif
+                <div @class([
+                  'chart-level',
+                  'chart-row' => count($nodes) > 1,
+                  'chart-pair' => count($nodes) === 2,
+                  'chart-top' => $level === 0,
+                  // garis tengah menembus baris bercabang (mis. Sekretaris–Bendahara) menuju tingkat berikutnya
+                  'chart-branch' => count($nodes) > 1 && count($nodes) % 2 === 0 && $level < count($levels) - 1,
+                ])>
+                  @foreach ($nodes as $node)
+                    <div class="chart-cell">
+                      <div class="node">
+                        @if ($node['photo'])
+                          <img src="{{ $node['photo'] }}" alt="" class="node-photo" width="44" height="44" loading="lazy" />
+                        @endif
+                        <strong>{{ $node['title'] }}</strong>
+                        @if ($node['name'])<small>{{ $node['name'] }}</small>@endif
+                        @if ($node['note'])<small class="node-note">{{ $node['note'] }}</small>@endif
+                      </div>
+                    </div>
+                  @endforeach
+                </div>
+              @endforeach
+            </div>
           </div>
         @endif
       </div>

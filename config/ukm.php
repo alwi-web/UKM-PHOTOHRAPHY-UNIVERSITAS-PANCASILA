@@ -28,7 +28,7 @@ return [
             'Membangun jejaring dengan komunitas kreatif lain.',
         ],
         'core_members' => [
-            ['position' => 'Ketua', 'name' => null, 'photo' => null],
+            ['position' => 'Ketua Umum', 'name' => null, 'photo' => null],
             ['position' => 'Wakil Ketua', 'name' => null, 'photo' => null],
             ['position' => 'Sekretaris', 'name' => null, 'photo' => null],
             ['position' => 'Bendahara', 'name' => null, 'photo' => null],

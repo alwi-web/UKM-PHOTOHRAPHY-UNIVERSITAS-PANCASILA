@@ -10,7 +10,7 @@ it('membuat profil dari isi awal saat pertama kali dibuka', function () {
     $profile = OrganizationProfile::current();
 
     expect($profile->name)->toBe('PhotoUP 94')
-        ->and(collect($profile->core_members)->pluck('position')->all())->toBe(['Ketua', 'Wakil Ketua', 'Sekretaris', 'Bendahara'])
+        ->and(collect($profile->core_members)->pluck('position')->all())->toBe(['Ketua Umum', 'Wakil Ketua', 'Sekretaris', 'Bendahara'])
         ->and(OrganizationProfile::count())->toBe(1);
 
     OrganizationProfile::current();
@@ -62,8 +62,8 @@ it('perubahan profil langsung tampil di halaman depan', function () {
         ->assertOk()
         ->assertSeeInOrder(['Sejarah PhotoUP 94', 'Paragraf pertama sejarah.', 'Paragraf kedua sejarah.'])
         ->assertSeeInOrder(['Visi baru PhotoUP.', 'Misi satu.', 'Misi dua.'])
-        ->assertSeeInOrder(['Pengurus Inti', 'Ketua', 'Rizky Pratama'])
-        ->assertSeeInOrder(['Divisi Hunting', 'Koordinator: Dimas'])
+        ->assertSeeInOrder(['Struktur Organisasi', 'Ketua', 'Rizky Pratama'])
+        ->assertSeeInOrder(['Divisi Hunting', 'Dimas'])
         ->assertDontSee('Wakil Ketua');
 });
 
@@ -81,3 +81,38 @@ it('hanya admin UKM yang bisa membuka halaman profil', function (Role $role) {
 
     $this->get(ManageOrganizationProfile::getUrl())->assertForbidden();
 })->with([Role::AdminInventaris, Role::Kurator, Role::Member, Role::AnggotaLain]);
+
+it('menyusun bagan dengan Ketua Umum paling atas dan divisi di baris terbawah', function () {
+    $levels = OrganizationProfile::current()->chartLevels();
+
+    expect(array_map(fn ($nodes) => array_column($nodes, 'title'), $levels))->toBe([
+        ['Ketua Umum'],
+        ['Wakil Ketua'],
+        ['Sekretaris', 'Bendahara'],
+        [
+            'Divisi Penelitian dan Pengembangan',
+            'Divisi Hunting',
+            'Divisi Pameran',
+            'Divisi Inventaris',
+            'Divisi Humas Internal dan Eksternal',
+        ],
+    ]);
+});
+
+it('urutan pengurus inti menentukan posisi di bagan', function () {
+    OrganizationProfile::current()->update([
+        'core_members' => [
+            ['position' => 'Ketua Umum', 'name' => 'Rizky', 'photo' => null],
+            ['position' => 'Sekretaris', 'name' => null, 'photo' => null],
+        ],
+        'divisions' => [],
+    ]);
+
+    $levels = OrganizationProfile::sole()->chartLevels();
+
+    expect($levels)->toHaveCount(2)
+        ->and($levels[0][0])->toMatchArray(['title' => 'Ketua Umum', 'name' => 'Rizky'])
+        ->and($levels[1][0]['title'])->toBe('Sekretaris');
+
+    $this->get('/')->assertSee('chart-top', false);
+});

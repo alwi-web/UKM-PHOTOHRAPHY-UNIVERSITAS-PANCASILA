@@ -261,54 +261,133 @@ p {
   margin: 0;
 }
 
-.org-label {
-  margin-top: 16px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-.org {
-  list-style: none;
-  margin: 8px 0 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr));
-  gap: 8px;
-}
-
-.org-core {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-}
-
-.org li {
+.chart {
+  --chart-line: #b9b9b2;
+  position: relative;
+  left: 50%;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 10px;
-  padding: 10px 14px;
-  border: 1px solid var(--line);
-  border-left: 4px solid var(--yellow);
-  border-radius: 6px;
+  /* bagan lebih lebar dari kolom teks agar kotak divisi tidak sempit */
+  width: min(1040px, 100vw - 32px);
+  margin-top: 20px;
+  transform: translateX(-50%);
 }
 
-.org li span {
-  display: grid;
+.chart-level {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+/* garis vertikal antar tingkat */
+.chart-line {
+  display: block;
+  width: 2px;
+  height: 24px;
+  background: var(--chart-line);
+}
+
+.chart-cell {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  flex: 1 1 0;
   min-width: 0;
+  padding-inline: 4px;
 }
 
-.org li strong {
-  font-weight: 500;
+.chart-level:not(.chart-row) .chart-cell {
+  flex: 0 1 260px;
 }
 
-.org li small {
-  font-size: 0.85rem;
+/* baris berisi beberapa kotak: garis horizontal + garis turun ke tiap kotak */
+.chart-row .chart-cell {
+  padding-top: 20px;
 }
 
-.org-photo {
-  width: 40px;
-  height: 40px;
-  flex-shrink: 0;
+.chart-row .chart-cell::before,
+.chart-row .chart-cell::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  background: var(--chart-line);
+}
+
+.chart-row .chart-cell::before {
+  left: calc(50% - 1px);
+  width: 2px;
+  height: 20px;
+}
+
+.chart-row .chart-cell::after {
+  left: 0;
+  right: 0;
+  height: 2px;
+}
+
+.chart-row .chart-cell:first-child::after {
+  left: 50%;
+}
+
+.chart-row .chart-cell:last-child::after {
+  right: 50%;
+}
+
+/* pasangan (mis. Sekretaris–Bendahara) dibuat lebih rapat */
+.chart-pair {
+  max-width: 600px;
+}
+
+/* baris bercabang: garis tengah terus turun melewati baris ini */
+.chart-branch {
+  position: relative;
+}
+
+.chart-branch::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(50% - 1px);
+  width: 2px;
+  background: var(--chart-line);
+}
+
+.node {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  width: 100%;
+  max-width: 220px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--yellow);
+  border-radius: 8px;
+  background: var(--bg);
+  text-align: center;
+}
+
+.chart-top .node {
+  background: var(--yellow);
+  border-color: var(--yellow);
+}
+
+.node strong {
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.node small {
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.node-photo {
+  width: 44px;
+  height: 44px;
+  margin-bottom: 4px;
   border-radius: 50%;
   object-fit: cover;
 }
@@ -674,8 +753,26 @@ p {
     gap: 12px;
   }
 
-  .org-core {
+  /* di HP: pasangan (Sekretaris–Bendahara) tetap berdampingan, divisi jadi dua kolom */
+  .chart-row:not(.chart-pair) {
+    display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    padding-top: 12px;
+    border-top: 2px solid var(--chart-line);
+  }
+
+  .chart-row:not(.chart-pair) .chart-cell {
+    padding: 0;
+  }
+
+  .chart-row:not(.chart-pair) .chart-cell::before,
+  .chart-row:not(.chart-pair) .chart-cell::after {
+    display: none;
+  }
+
+  .node strong {
+    font-size: 0.85rem;
   }
 
   .event,

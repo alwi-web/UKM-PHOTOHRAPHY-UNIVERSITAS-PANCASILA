@@ -113,6 +113,7 @@ class ManageOrganizationProfile extends Page
                             ->schema([
                                 Repeater::make('core_members')
                                     ->label('Pengurus Inti')
+                                    ->helperText('Urutan menentukan posisi di bagan website: pertama paling atas (Ketua Umum), kedua tepat di bawahnya, sisanya berjajar. Seret untuk mengubah urutan.')
                                     ->schema([
                                         TextInput::make('position')->label('Jabatan')->required()->maxLength(100),
                                         TextInput::make('name')->label('Nama')->maxLength(100),
@@ -131,6 +132,7 @@ class ManageOrganizationProfile extends Page
                                     ->collapsible(),
                                 Repeater::make('divisions')
                                     ->label('Divisi')
+                                    ->helperText('Semua divisi tampil berjajar di baris paling bawah bagan.')
                                     ->schema([
                                         TextInput::make('name')->label('Nama Divisi')->required()->maxLength(100),
                                         TextInput::make('coordinator')->label('Koordinator')->maxLength(100),
