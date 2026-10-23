@@ -661,6 +661,58 @@ p {
   height: 140px;
 }
 
+.vm-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.card-vision {
+  background: linear-gradient(160deg, var(--yellow-soft), #fff 70%);
+}
+
+.card-vision .card-icon {
+  background: var(--yellow);
+}
+
+.vision {
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.5;
+}
+
+.card-mission {
+  background: linear-gradient(160deg, var(--lilac-soft), #fff 70%);
+}
+
+.card-mission .card-icon {
+  background: #fff;
+}
+
+.missions {
+  list-style: none;
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+}
+
+.missions li {
+  display: flex;
+  gap: 10px;
+}
+
+.missions .icon {
+  width: 20px;
+  height: 20px;
+  margin-top: 3px;
+  padding: 3px;
+  border-radius: 50%;
+  background: var(--yellow);
+}
+
 .card-chart {
   margin-top: 16px;
   text-align: center;

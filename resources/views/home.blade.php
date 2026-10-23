@@ -101,7 +101,7 @@
       {{-- di HP: tiap bagian tampil sebagai tombol, isinya dibuka saat diketuk --}}
       <button type="button" class="section-toggle" aria-expanded="false" aria-controls="profil-body">
         <span class="toggle-icon"><x-glyph name="users" /></span>
-        <span class="toggle-text"><strong>Profil</strong><small>Sejarah dan struktur BPH PhotoUP</small></span>
+        <span class="toggle-text"><strong>Profil</strong><small>Sejarah, visi &amp; misi, struktur BPH PhotoUP</small></span>
         <x-glyph name="chevron-right" class="toggle-chevron" />
       </button>
       <div id="profil-body" class="section-body container">
@@ -127,6 +127,30 @@
               @endforeach
             </div>
           </article>
+        @endif
+
+        @if ($profile->vision || $profile->missions)
+          <div class="vm-grid">
+            @if ($profile->vision)
+              <article class="card card-vision reveal">
+                <span class="card-icon"><x-glyph name="eye" /></span>
+                <h3>Visi</h3>
+                <p class="vision">{{ $profile->vision }}</p>
+              </article>
+            @endif
+
+            @if ($profile->missions)
+              <article class="card card-mission reveal">
+                <span class="card-icon"><x-glyph name="target" /></span>
+                <h3>Misi</h3>
+                <ol class="missions">
+                  @foreach ($profile->missions as $mission)
+                    <li><x-glyph name="check" :size="16" /><span>{{ $mission }}</span></li>
+                  @endforeach
+                </ol>
+              </article>
+            @endif
+          </div>
         @endif
 
         @if ($profile->core_members || $profile->divisions)
