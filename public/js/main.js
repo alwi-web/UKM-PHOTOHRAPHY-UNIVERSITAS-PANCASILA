@@ -6,47 +6,7 @@
 const $ = (sel, ctx = document) => ctx.querySelector(sel);
 const $$ = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
 
-/* ---------- NAVBAR ---------- */
-function initNavbar() {
-  const navbar = $("#navbar");
-  const toggle = $("#navToggle");
-  const menu = $("#navMenu");
-  const links = $$(".nav-link").filter((l) => l.getAttribute("href").startsWith("#"));
-  const sections = links.map((l) => $(l.getAttribute("href")));
-  const backToTop = $("#backToTop");
-
-  const closeMenu = () => {
-    menu.classList.remove("open");
-    toggle.classList.remove("open");
-    toggle.setAttribute("aria-expanded", "false");
-  };
-
-  toggle.addEventListener("click", () => {
-    const open = menu.classList.toggle("open");
-    toggle.classList.toggle("open", open);
-    toggle.setAttribute("aria-expanded", String(open));
-  });
-
-  $$("a", menu).forEach((a) => a.addEventListener("click", closeMenu));
-
-  const onScroll = () => {
-    const y = window.scrollY;
-    navbar.classList.toggle("scrolled", y > 50);
-    backToTop.classList.toggle("show", y > 600);
-
-    // tandai menu sesuai section yang sedang terlihat
-    let current = 0;
-    sections.forEach((s, i) => {
-      if (s && s.offsetTop - 120 <= y) current = i;
-    });
-    links.forEach((l, i) => l.classList.toggle("active", i === current));
-  };
-
-  window.addEventListener("scroll", onScroll, { passive: true });
-  onScroll();
-}
-
-/* ---------- GALLERY FILTER + LIGHTBOX ---------- */
+/* ---------- GALERI: FILTER + LIGHTBOX ---------- */
 function initGallery() {
   const items = $$(".gallery-item");
   if (!items.length) return;
@@ -58,10 +18,10 @@ function initGallery() {
   let current = 0;
 
   $("#filterBar").addEventListener("click", (e) => {
-    const btn = e.target.closest(".filter-btn");
-    if (!btn) return;
-    $$(".filter-btn").forEach((b) => b.classList.toggle("active", b === btn));
-    const f = btn.dataset.filter;
+    const chip = e.target.closest(".chip");
+    if (!chip) return;
+    $$(".chip").forEach((c) => c.classList.toggle("active", c === chip));
+    const f = chip.dataset.filter;
     items.forEach((it) => it.classList.toggle("hide", f !== "semua" && it.dataset.kategori !== f));
     visible = items.filter((it) => !it.classList.contains("hide"));
   });
@@ -73,7 +33,7 @@ function initGallery() {
 
   // catat jumlah dilihat (sekali per foto per kunjungan) untuk laporan insight karya
   const recordView = (item) => {
-    if (viewed.has(item)) return;
+    if (viewed.has(item) || !item.dataset.viewUrl) return;
     viewed.add(item);
     fetch(item.dataset.viewUrl, { method: "POST", headers: { "X-CSRF-TOKEN": csrf } }).catch(() => {});
   };
@@ -86,7 +46,7 @@ function initGallery() {
     $("#lbTitle").textContent = d.title;
     $("#lbAuthor").textContent = `oleh ${d.author}`;
     $("#lbCaption").textContent = d.caption || "";
-    $("#lbExposure").textContent = d.exposure ? `📷 ${d.exposure}` : "";
+    $("#lbExposure").textContent = d.exposure || "";
     $("#lbExposureNotes").textContent = d.exposureNotes || "";
     setLink($("#lbInstagram"), d.instagram);
     setLink($("#lbTiktok"), d.tiktok);
@@ -98,6 +58,7 @@ function initGallery() {
     lightbox.classList.add("open");
     lightbox.setAttribute("aria-hidden", "false");
     document.body.style.overflow = "hidden";
+    $("#lbClose").focus();
   };
 
   const close = () => {
@@ -124,45 +85,6 @@ function initGallery() {
   });
 }
 
-/* ---------- COUNTER ---------- */
-function initCounters() {
-  const obs = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        const el = entry.target;
-        const target = +el.dataset.count;
-        const start = performance.now();
-        const step = (now) => {
-          const p = Math.min((now - start) / 1500, 1);
-          el.textContent = Math.floor(target * (1 - Math.pow(1 - p, 3)));
-          if (p < 1) requestAnimationFrame(step);
-        };
-        requestAnimationFrame(step);
-        obs.unobserve(el);
-      });
-    },
-    { threshold: 0.5 }
-  );
-  $$("[data-count]").forEach((c) => obs.observe(c));
-}
-
-/* ---------- REVEAL ON SCROLL ---------- */
-function initReveal() {
-  const obs = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("visible");
-          obs.unobserve(entry.target);
-        }
-      });
-    },
-    { threshold: 0.12 }
-  );
-  $$(".reveal").forEach((el) => obs.observe(el));
-}
-
 /* ---------- FORM PENDAFTARAN ---------- */
 function initForm() {
   const form = $("#registerForm");
@@ -175,11 +97,7 @@ function initForm() {
   });
 }
 
-/* ---------- INIT ---------- */
 document.addEventListener("DOMContentLoaded", () => {
-  initNavbar();
   initGallery();
-  initCounters();
-  initReveal();
   initForm();
 });

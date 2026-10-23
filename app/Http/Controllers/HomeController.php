@@ -27,11 +27,6 @@ class HomeController extends Controller
                 ->orderByRaw("case role when 'admin_ukm' then 1 when 'admin_inventaris' then 2 else 3 end")
                 ->take(8)
                 ->get(),
-            'stats' => [
-                'members' => User::where('status', UserStatus::Active)->count(),
-                'events' => Event::whereYear('start_at', now()->year)->count(),
-                'artworks' => Artwork::published()->count(),
-            ],
         ]);
     }
 
