@@ -9,6 +9,7 @@ it('menampilkan halaman login terpisah', function () {
         ->assertOk()
         ->assertSee('Masukkan email dan password akunmu.')
         ->assertDontSee('Masuk ke panel PhotoUP')
+        ->assertDontSee('Calon anggota')
         ->assertSee('Kembali ke website');
 });
 

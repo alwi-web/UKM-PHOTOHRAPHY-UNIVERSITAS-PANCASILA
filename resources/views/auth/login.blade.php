@@ -59,10 +59,7 @@
 
         <button type="submit" class="btn btn-block">Masuk <x-glyph name="arrow-right" :size="18" /></button>
 
-        <p class="auth-note">
-          Belum punya akun? Calon anggota bisa <a href="{{ route('home') }}#daftar">mendaftar di sini</a>.
-          Lupa password? Hubungi Admin UKM.
-        </p>
+        <p class="auth-note">Lupa password? Hubungi Admin UKM.</p>
       </form>
     </div>
   </main>
