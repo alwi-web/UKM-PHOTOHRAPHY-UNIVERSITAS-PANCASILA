@@ -59,6 +59,26 @@
   box-shadow: var(--shadow-lg);
 }
 
+/* kartu lebih lebar untuk formulir pendaftaran */
+.auth-card-wide {
+  width: min(560px, 100%);
+}
+
+.auth-done {
+  text-align: center;
+}
+
+.done-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  margin-bottom: 16px;
+  border-radius: 50%;
+  background: var(--mint-soft);
+  color: var(--success);
+}
+
 /* formulir */
 .auth-form {
   padding: 36px 32px 32px;

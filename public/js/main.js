@@ -150,22 +150,9 @@ function initReveal() {
   items.forEach((el) => io.observe(el));
 }
 
-/* ---------- FORM PENDAFTARAN ---------- */
-function initForm() {
-  const form = $("#registerForm");
-  if (!form) return;
-
-  form.addEventListener("submit", () => {
-    const btn = $("button[type=submit]", form);
-    btn.disabled = true;
-    btn.textContent = "Mengirim...";
-  });
-}
-
 document.addEventListener("DOMContentLoaded", () => {
   initSections();
   initTopbar();
   initReveal();
   initGallery();
-  initForm();
 });

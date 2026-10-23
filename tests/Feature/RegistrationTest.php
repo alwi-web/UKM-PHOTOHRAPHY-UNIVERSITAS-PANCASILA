@@ -22,10 +22,12 @@ function registrationData(array $overrides = []): array
     ], $overrides);
 }
 
-describe('formulir di website', function () {
+describe('halaman daftar terpisah', function () {
     it('hanya meminta nama, NPM, fakultas, dan nomor WhatsApp', function () {
-        $this->get('/')
-            ->assertSee('Formulir Pendaftaran Calon Anggota')
+        $this->get('/daftar')
+            ->assertOk()
+            ->assertSee('Daftar Calon Anggota')
+            ->assertSee('Kembali ke website')
             ->assertDontSee('Pendaftaran Kaderisasi')
             ->assertSee('Saya belum pernah mendaftar di PhotoUP.')
             ->assertSee('name="name"', false)
@@ -39,8 +41,12 @@ describe('formulir di website', function () {
 
     it('menyimpan pendaftar calon anggota baru', function () {
         $this->post(route('register'), registrationData())
-            ->assertRedirect(route('home').'#daftar')
+            ->assertRedirect(route('register.show'))
             ->assertSessionHas('registered');
+
+        $this->get('/daftar')
+            ->assertSee('Pendaftaran terkirim!')
+            ->assertDontSee('id="registerForm"', false);
 
         $registration = Registration::sole();
         expect($registration->name)->toBe('Budi Santoso')
@@ -49,6 +55,19 @@ describe('formulir di website', function () {
             ->and($registration->phone)->toBe('081234567890')
             ->and($registration->status)->toBe(RegistrationStatus::Baru)
             ->and(User::count())->toBe(0);
+    });
+
+    it('kembali ke halaman daftar dengan pesan kesalahan bila isian tidak valid', function () {
+        $this->from('/daftar')
+            ->post(route('register'), registrationData(['phone' => '123']))
+            ->assertRedirect('/daftar')
+            ->assertSessionHasErrors('phone');
+
+        $this->followingRedirects()
+            ->from('/daftar')
+            ->post(route('register'), registrationData(['phone' => '123']))
+            ->assertSee('Periksa kembali isian yang ditandai merah.')
+            ->assertSee('Nomor WhatsApp tidak valid');
     });
 
     it('wajib menyatakan belum pernah mendaftar di PhotoUP', function () {

@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
+Route::get('/daftar', [RegistrationController::class, 'show'])->name('register.show');
 Route::post('/daftar', [RegistrationController::class, 'store'])
     ->middleware('throttle:5,1')
     ->name('register');

@@ -6,10 +6,17 @@ use App\Models\Registration;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 
 /** Pendaftaran calon anggota dari website, khusus mahasiswa yang belum pernah mendaftar di PhotoUP. */
 class RegistrationController extends Controller
 {
+    /** Halaman pendaftaran terpisah dari website. */
+    public function show(): View
+    {
+        return view('registration');
+    }
+
     public function store(Request $request): RedirectResponse
     {
         // izinkan nomor diketik dengan spasi atau tanda strip, mis. 0812-3456-7890
@@ -40,7 +47,7 @@ class RegistrationController extends Controller
             'phone' => $data['phone'],
         ]);
 
-        return redirect()->to(route('home').'#daftar')
+        return redirect()->route('register.show')
             ->with('registered', 'Terima kasih! Pendaftaranmu sudah kami terima. Pengurus akan menghubungimu lewat WhatsApp untuk info jadwal kaderisasi.');
     }
 }

@@ -56,14 +56,12 @@ it('di HP setiap bagian punya tombol buka-tutup', function () {
         ->assertSee('aria-controls="profil-body"', false)
         ->assertSee('aria-controls="galeri-body"', false)
         ->assertSee('aria-controls="kegiatan-body"', false)
-        ->assertSee('aria-controls="daftar-body"', false)
         ->assertSee('aria-controls="kontak-body"', false);
 });
 
-it('bagian pendaftaran langsung terbuka saat formulir gagal dikirim', function () {
-    $this->post(route('register'), [])->assertSessionHasErrors();
-
-    $this->followingRedirects()
-        ->post(route('register'), [])
-        ->assertSee('id="daftar" class="section is-open"', false);
+it('formulir pendaftaran tidak lagi ada di halaman depan, tombol Daftar menuju halaman terpisah', function () {
+    $this->get('/')
+        ->assertDontSee('id="registerForm"', false)
+        ->assertDontSee('aria-controls="daftar-body"', false)
+        ->assertSee('href="'.route('register.show').'"', false);
 });

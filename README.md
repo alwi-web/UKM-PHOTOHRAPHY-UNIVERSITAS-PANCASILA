@@ -50,7 +50,7 @@ Aturan ini ada di `app/Enums/Role.php` dan `app/Policies`, dan diuji di `tests/F
 - Tambah user, atur role, tunjuk atau cabut kurator.
 
 **Pendaftaran calon anggota** (`/admin/registrations`, menu Pendaftar Calon Anggota, Admin UKM)
-- Formulir di website khusus mahasiswa yang belum pernah mengikuti kaderisasi. Isiannya: nama, NPM, fakultas, nomor WhatsApp, dan centang pernyataan "Saya belum pernah mendaftar di PhotoUP".
+- Formulir ada di halaman terpisah `/daftar` (tombol **Daftar** di website), khusus mahasiswa yang belum pernah mengikuti kaderisasi. Isiannya: nama, NPM, fakultas, nomor WhatsApp, dan centang pernyataan "Saya belum pernah mendaftar di PhotoUP".
 - NPM yang sudah menjadi anggota atau sudah pernah mendaftar ditolak.
 - Admin melihat pendaftar per status (Baru, Sudah Dihubungi, Diterima, Ditolak) dan bisa membuka chat WhatsApp langsung dari tabel.
 - Setelah kaderisasi, "Terima & buat akun" membuat akun Member dari data pendaftar. Admin mengisi email dan password untuk diserahkan ke anggota baru.
@@ -59,7 +59,7 @@ Aturan ini ada di `app/Enums/Role.php` dan `app/Policies`, dan diuji di `tests/F
 - Daftar kegiatan dengan jumlah peserta dan persentase kehadiran, bisa difilter per periode dan diunduh sebagai CSV.
 - Insight karya: total karya, tingkat lolos kurasi, total dilihat, grafik per kategori, unggahan per bulan, dan karya terpopuler.
 
-**Website publik** (`/`): profil UKM (sejarah PhotoUP 94, visi & misi, struktur organisasi), galeri karya pilihan kurator, agenda mendatang, pengurus, formulir pendaftaran calon anggota, dan kontak.
+**Website publik** (`/`): profil UKM (sejarah PhotoUP 94, visi & misi, struktur organisasi), galeri karya pilihan kurator, agenda mendatang, pengurus, dan kontak. Halaman **Daftar** (`/daftar`) dan **Login** (`/login`) terpisah dari halaman depan.
 
 ## Instalasi
 

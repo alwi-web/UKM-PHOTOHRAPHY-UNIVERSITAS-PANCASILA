@@ -29,7 +29,7 @@
       </nav>
       <div class="nav-actions">
         <a href="{{ route('login') }}" class="nav-login"><x-glyph name="login" :size="16" /> Masuk</a>
-        <a href="#daftar" class="btn btn-sm">Daftar</a>
+        <a href="{{ route('register.show') }}" class="btn btn-sm">Daftar</a>
       </div>
     </div>
   </header>
@@ -264,80 +264,6 @@
             @endforeach
           </div>
         @endif
-      </div>
-    </section>
-
-    {{-- ================= DAFTAR ================= --}}
-    <section id="daftar" @class(['section', 'is-open' => session('registered') || $errors->any()])>
-      <button type="button" class="section-toggle" aria-expanded="false" aria-controls="daftar-body">
-        <span class="toggle-icon"><x-glyph name="user-plus" /></span>
-        <span class="toggle-text"><strong>Daftar Calon Anggota</strong><small>Formulir pendaftaran anggota baru</small></span>
-        <x-glyph name="chevron-right" class="toggle-chevron" />
-      </button>
-      <div id="daftar-body" class="section-body container">
-        <div class="join">
-          <div class="join-info">
-            <span class="eyebrow eyebrow-dark"><x-glyph name="user-plus" :size="14" /> Gabung</span>
-            <h2>Daftar Calon Anggota</h2>
-            <p>
-              Khusus mahasiswa Universitas Pancasila yang belum pernah mengikuti kaderisasi UKM Fotografi.
-              Tidak perlu punya kamera mahal — yang penting mau belajar.
-            </p>
-            <ol class="steps">
-              <li><b>1</b><span><strong>Isi formulir</strong>Nama, NPM, fakultas, dan nomor WhatsApp.</span></li>
-              <li><b>2</b><span><strong>Dihubungi pengurus</strong>Info selanjutnya dikirim lewat WhatsApp.</span></li>
-              <li><b>3</b><span><strong>Ikut kaderisasi</strong>Mulai belajar dan berkarya bareng PhotoUP.</span></li>
-            </ol>
-          </div>
-
-          <form class="form" id="registerForm" method="POST" action="{{ route('register') }}">
-            @csrf
-            <h3>Formulir Pendaftaran Calon Anggota</h3>
-
-            @if (session('registered'))
-              <p class="notice notice-success">{{ session('registered') }}</p>
-            @endif
-            @if ($errors->any())
-              <p class="notice notice-error">Periksa kembali isian yang ditandai merah.</p>
-            @endif
-
-            <div class="field @error('name') invalid @enderror">
-              <label for="name">Nama Lengkap</label>
-              <input type="text" id="name" name="name" value="{{ old('name') }}" autocomplete="name" placeholder="Nama sesuai KTM" required />
-              @error('name')<small class="error">{{ $message }}</small>@enderror
-            </div>
-            <div class="field-row">
-              <div class="field @error('npm') invalid @enderror">
-                <label for="npm">NPM</label>
-                <input type="text" id="npm" name="npm" value="{{ old('npm') }}" inputmode="numeric" pattern="\d{6,20}" placeholder="Contoh: 4522210001" required />
-                @error('npm')<small class="error">{{ $message }}</small>@enderror
-              </div>
-              <div class="field @error('faculty') invalid @enderror">
-                <label for="faculty">Fakultas</label>
-                <select id="faculty" name="faculty" required>
-                  <option value="">Pilih fakultas</option>
-                  @foreach (config('ukm.faculties') as $faculty)
-                    <option @selected(old('faculty') === $faculty)>{{ $faculty }}</option>
-                  @endforeach
-                </select>
-                @error('faculty')<small class="error">{{ $message }}</small>@enderror
-              </div>
-            </div>
-            <div class="field @error('phone') invalid @enderror">
-              <label for="phone">Nomor WhatsApp</label>
-              <input type="tel" id="phone" name="phone" value="{{ old('phone') }}" placeholder="08xxxxxxxxxx" autocomplete="tel" required />
-              @error('phone')<small class="error">{{ $message }}</small>@enderror
-            </div>
-            <div class="field field-check @error('not_cadre_yet') invalid @enderror">
-              <label for="not_cadre_yet">
-                <input type="checkbox" id="not_cadre_yet" name="not_cadre_yet" value="1" @checked(old('not_cadre_yet')) required />
-                Saya belum pernah mendaftar di PhotoUP.
-              </label>
-              @error('not_cadre_yet')<small class="error">{{ $message }}</small>@enderror
-            </div>
-            <button type="submit" class="btn btn-block">Kirim Pendaftaran <x-glyph name="arrow-right" :size="18" /></button>
-          </form>
-        </div>
       </div>
     </section>
 
