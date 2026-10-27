@@ -1,18 +1,19 @@
 /* =========================================================
    UKM Fotografi Universitas Pancasila — halaman depan
    Gaya "landing page" modern: latar terang, kartu berbingkai tipis,
-   tulisan hitam, aksen kuning (+ pastel lembut sebagai pendamping).
+   latar abu-abu, kartu putih, tulisan hitam, widget aksen hitam.
    ========================================================= */
 
 :root {
-  --bg: #fafaf8;
+  --bg: #e9e9e7;
   --surface: #ffffff;
   --text: #000000;
   --line: #e7e7e2;
   --line-strong: #d6d6cf;
-  --yellow: #f5b301;
-  --yellow-dark: #e0a200;
-  --yellow-soft: #fff4cf;
+  --accent: #111111;
+  --accent-dark: #000000;
+  --accent-soft: #f0f0ee;
+  --on-accent: #ffffff;
   --lilac-soft: #efebff;
   --mint-soft: #e9f8ee;
   --danger: #c81e3a;
@@ -82,7 +83,7 @@ p {
 }
 
 :focus-visible {
-  outline: 3px solid var(--yellow);
+  outline: 3px solid var(--accent);
   outline-offset: 2px;
 }
 
@@ -93,20 +94,20 @@ p {
   justify-content: center;
   gap: 8px;
   padding: 13px 24px;
-  border: 1px solid var(--yellow-dark);
+  border: 1px solid var(--accent-dark);
   border-radius: 999px;
-  background: var(--yellow);
-  color: var(--text);
+  background: var(--accent);
+  color: var(--on-accent);
   font: inherit;
   font-weight: 700;
   text-decoration: none;
   cursor: pointer;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 6px 18px -6px rgba(245, 179, 1, 0.7);
+  box-shadow: 0 6px 18px -8px rgba(0, 0, 0, 0.55);
   transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
 }
 
 .btn:hover {
-  background: var(--yellow-dark);
+  background: var(--accent-dark);
   transform: translateY(-1px);
 }
 
@@ -125,6 +126,7 @@ p {
 }
 
 .btn-ghost {
+  color: var(--text);
   background: var(--surface);
   border-color: var(--line-strong);
   box-shadow: var(--shadow);
@@ -191,7 +193,8 @@ p {
 .brand b {
   padding: 0 6px;
   border-radius: 6px;
-  background: var(--yellow);
+  background: var(--accent);
+  color: var(--on-accent);
 }
 
 .nav {
@@ -210,7 +213,7 @@ p {
 
 .nav a:hover,
 .nav a.active {
-  background: var(--yellow-soft);
+  background: var(--accent-soft);
 }
 
 .nav-actions {
@@ -241,15 +244,15 @@ p {
   overflow: hidden;
 }
 
-/* kotak-kotak tipis + cahaya kuning di belakang judul */
+/* kotak-kotak tipis + cahaya lembut di belakang judul */
 .hero-grid-bg {
   position: absolute;
   inset: -100px 0 0;
   background:
-    radial-gradient(600px 360px at 25% 30%, rgba(245, 179, 1, 0.2), transparent 70%),
+    radial-gradient(600px 360px at 25% 30%, rgba(255, 255, 255, 0.55), transparent 70%),
     radial-gradient(420px 300px at 80% 50%, rgba(155, 135, 245, 0.14), transparent 70%),
-    linear-gradient(var(--line) 1px, transparent 1px) 0 0 / 48px 48px,
-    linear-gradient(90deg, var(--line) 1px, transparent 1px) 0 0 / 48px 48px;
+    linear-gradient(#d4d4d0 1px, transparent 1px) 0 0 / 48px 48px,
+    linear-gradient(90deg, #d4d4d0 1px, transparent 1px) 0 0 / 48px 48px;
   mask-image: radial-gradient(ellipse 80% 75% at 50% 40%, #000 40%, transparent 85%);
   -webkit-mask-image: radial-gradient(ellipse 80% 75% at 50% 40%, #000 40%, transparent 85%);
   pointer-events: none;
@@ -306,6 +309,7 @@ p {
 
 /* stabilo kuning */
 .mark {
+  color: var(--on-accent);
   position: relative;
   display: inline-block;
   padding: 0 0.15em;
@@ -319,7 +323,7 @@ p {
   inset: 10% -2% 4%;
   z-index: -1;
   border-radius: 0.2em;
-  background: var(--yellow);
+  background: var(--accent);
   transform: rotate(-2deg);
 }
 
@@ -359,7 +363,7 @@ p {
 
 .blob-1 { width: 210px; height: 260px; left: 6%; top: 22%; background: #6cb4ee; }
 .blob-2 { width: 150px; height: 130px; left: 14%; top: 8%; background: #cfcfc7; animation-delay: -3s; }
-.blob-3 { width: 220px; height: 250px; right: 4%; top: 28%; background: var(--yellow); animation-delay: -6s; }
+.blob-3 { width: 220px; height: 250px; right: 4%; top: 28%; background: #f5b301; animation-delay: -6s; }
 .blob-4 { width: 190px; height: 210px; right: 8%; bottom: 4%; background: #f06aa8; animation-delay: -9s; }
 .blob-5 { width: 96px; height: 96px; right: 10%; top: 6%; border-radius: 50%; background: #ef4f5f; animation-delay: -2s; }
 
@@ -456,7 +460,7 @@ p {
 }
 
 .eyebrow .icon {
-  color: var(--yellow-dark);
+  color: var(--accent-dark);
 }
 
 .empty {
@@ -504,7 +508,7 @@ p {
   margin-bottom: 18px;
   border: 1px solid rgba(0, 0, 0, 0.06);
   border-radius: 12px;
-  background: var(--yellow-soft);
+  background: var(--accent-soft);
 }
 
 /* ---------- Profil ---------- */
@@ -516,11 +520,12 @@ p {
 }
 
 .card-vision {
-  background: linear-gradient(160deg, var(--yellow-soft), #fff 70%);
+  background: linear-gradient(160deg, var(--accent-soft), #fff 70%);
 }
 
 .card-vision .card-icon {
-  background: var(--yellow);
+  background: var(--accent);
+  color: var(--on-accent);
 }
 
 .vision {
@@ -557,7 +562,8 @@ p {
   margin-top: 3px;
   padding: 3px;
   border-radius: 50%;
-  background: var(--yellow);
+  background: var(--accent);
+  color: var(--on-accent);
 }
 
 .card-chart {
@@ -668,8 +674,9 @@ p {
 }
 
 .chart-top .node {
-  background: var(--yellow);
-  border-color: var(--yellow-dark);
+  background: var(--accent);
+  border-color: var(--accent-dark);
+  color: var(--on-accent);
 }
 
 .node strong {
@@ -728,7 +735,7 @@ p {
   width: 64px;
   height: 64px;
   margin-bottom: 4px;
-  border: 3px solid var(--yellow);
+  border: 3px solid var(--accent);
   border-radius: 50%;
   object-fit: cover;
   background: var(--surface);
@@ -737,7 +744,7 @@ p {
 .member-initial {
   display: grid;
   place-items: center;
-  background: var(--yellow-soft);
+  background: var(--accent-soft);
   font-size: 1.3rem;
   font-weight: 700;
 }
@@ -759,9 +766,13 @@ p {
   font-variant-numeric: tabular-nums;
 }
 
-/* di kotak kuning Ketua Umum, bingkai dibuat putih agar tetap terlihat */
+/* di kotak hitam Ketua Umum, bingkai dibuat putih dan inisial tetap hitam */
 .chart-top .member-photo {
   border-color: var(--surface);
+}
+
+.chart-top .member-initial {
+  color: var(--text);
 }
 
 /* ---------- Galeri ---------- */
@@ -798,7 +809,8 @@ p {
 }
 
 .chip.active {
-  background: var(--yellow);
+  background: var(--accent);
+  color: var(--on-accent);
 }
 
 .gallery {
@@ -887,7 +899,8 @@ p {
   width: 72px;
   height: 76px;
   border-radius: 14px;
-  background: var(--yellow);
+  background: var(--accent);
+  color: var(--on-accent);
   text-align: center;
   line-height: 1.1;
 }
@@ -978,9 +991,9 @@ p {
 .field input:focus,
 .field select:focus {
   outline: none;
-  border-color: var(--yellow-dark);
+  border-color: var(--accent-dark);
   background: var(--surface);
-  box-shadow: 0 0 0 4px var(--yellow-soft);
+  box-shadow: 0 0 0 4px var(--accent-soft);
 }
 
 .field.invalid input,
@@ -1001,7 +1014,7 @@ p {
   height: 18px;
   margin-top: 3px;
   flex-shrink: 0;
-  accent-color: var(--yellow);
+  accent-color: var(--accent);
 }
 
 .error {
@@ -1074,7 +1087,7 @@ p {
 
 .contact a {
   overflow-wrap: anywhere;
-  text-decoration-color: var(--yellow);
+  text-decoration-color: var(--accent);
   text-decoration-thickness: 2px;
   text-underline-offset: 3px;
 }
@@ -1160,7 +1173,7 @@ p {
   margin-top: 6px;
   padding: 3px 12px;
   border-radius: 999px;
-  background: var(--yellow-soft);
+  background: var(--accent-soft);
   font-weight: 600;
   font-variant-numeric: tabular-nums;
 }
@@ -1178,7 +1191,7 @@ p {
 
 .lb-links a {
   font-weight: 600;
-  text-decoration-color: var(--yellow);
+  text-decoration-color: var(--accent);
   text-decoration-thickness: 2px;
 }
 
@@ -1197,8 +1210,9 @@ p {
 }
 
 .lb-btn:hover {
-  background: var(--yellow);
-  border-color: var(--yellow);
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
 }
 
 .lb-close {
@@ -1381,7 +1395,7 @@ p {
     width: 44px;
     height: 44px;
     border-radius: 12px;
-    background: var(--yellow-soft);
+    background: var(--accent-soft);
   }
 
   .toggle-text {
@@ -1405,12 +1419,13 @@ p {
   }
 
   .section.is-open .section-toggle {
-    background: var(--yellow);
-    border-color: var(--yellow-dark);
+    background: var(--accent);
+    border-color: var(--accent-dark);
+    color: var(--on-accent);
   }
 
   .section.is-open .toggle-icon {
-    background: rgba(255, 255, 255, 0.6);
+    background: rgba(255, 255, 255, 0.15);
   }
 
   .section.is-open .toggle-chevron {

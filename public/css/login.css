@@ -144,7 +144,7 @@
 
 .auth-note a {
   font-weight: 600;
-  text-decoration-color: var(--yellow);
+  text-decoration-color: var(--accent);
   text-decoration-thickness: 2px;
   text-underline-offset: 3px;
 }
