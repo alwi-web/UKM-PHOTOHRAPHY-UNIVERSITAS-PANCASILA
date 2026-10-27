@@ -1259,6 +1259,9 @@ p {
     padding: 24px 0 48px;
   }
 
+  /* di HP bubble diam: animasi melayang terlihat seperti ikut bergerak saat di-scroll */
+  .blob { animation: none; }
+
   .blob-1 { width: 160px; height: 180px; left: 8%; top: 4%; }
   .blob-2 { width: 100px; height: 90px; left: 26%; top: -2%; }
   .blob-3 { width: 170px; height: 180px; right: 8%; top: 10%; }
