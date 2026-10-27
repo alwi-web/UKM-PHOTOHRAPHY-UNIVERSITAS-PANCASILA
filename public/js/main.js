@@ -114,7 +114,24 @@ function initSections() {
 /* ---------- HERO: bubble di belakang mockup ikut bergerak saat di-scroll ---------- */
 function initBlobs() {
   const blobs = $(".blobs");
-  if (!blobs || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  if (!blobs) return;
+  const hero = blobs.parentElement;
+  const mobile = matchMedia("(max-width: 900px)");
+
+  // di HP bubble menempel di layar mulai dari posisi mockup, jadi ikut turun saat di-scroll
+  const place = () => {
+    blobs.classList.toggle("follow", mobile.matches);
+    if (!mobile.matches) { blobs.removeAttribute("style"); return; }
+    // posisi di dokumen lewat offset, supaya tidak terpengaruh transform animasi
+    let top = 0, left = 0;
+    for (let el = hero; el; el = el.offsetParent) { top += el.offsetTop; left += el.offsetLeft; }
+    Object.assign(blobs.style, { top: `${top}px`, left: `${left}px`, width: `${hero.offsetWidth}px`, height: `${hero.offsetHeight}px` });
+  };
+  place();
+  window.addEventListener("resize", place);
+  window.addEventListener("load", place);
+
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   let ticking = false;
   const update = () => {
     blobs.style.setProperty("--sy", `${Math.min(window.scrollY, 320)}px`);

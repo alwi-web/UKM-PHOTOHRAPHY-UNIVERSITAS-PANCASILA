@@ -1256,6 +1256,22 @@ p {
     margin-inline: auto;
   }
 
+  /* bubble menempel di layar (di belakang isi halaman) sehingga ikut turun saat di-scroll;
+     posisi awalnya diisi main.js = posisi mockup HP */
+  .blobs.follow {
+    position: fixed;
+    z-index: -1;
+  }
+
+  .hero-grid-bg {
+    z-index: -2;
+  }
+
+  /* transform animasi masuk akan mengurung layer bubble yang fixed */
+  .js .hero-phone.reveal {
+    transform: none;
+  }
+
   /* mockup jadi kartu ringkas tanpa bingkai tinggi */
   .hero-phone {
     min-height: 0;
