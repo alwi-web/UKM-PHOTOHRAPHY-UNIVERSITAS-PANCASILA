@@ -10,6 +10,8 @@ class ArtworksPerCategoryChart extends ChartWidget
     /** Hanya tampil di halaman Insight Karya, bukan di dasbor. */
     protected static bool $isDiscovered = false;
 
+    protected static ?int $sort = 3;
+
     protected ?string $heading = 'Karya per Kategori';
 
     protected function getData(): array

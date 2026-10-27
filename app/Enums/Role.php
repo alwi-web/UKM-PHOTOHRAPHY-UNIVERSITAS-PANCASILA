@@ -44,6 +44,16 @@ enum Role: string implements HasColor, HasLabel
      * - Anggota UKM lain : meminjam barang.
      */
 
+    /** Id panel Filament milik role ini: Kurator dan Anggota UKM lain punya panel sendiri. */
+    public function panel(): string
+    {
+        return match ($this) {
+            self::Kurator => 'kurator',
+            self::AnggotaLain => 'anggota',
+            default => 'admin',
+        };
+    }
+
     /** Mengelola data barang dan memproses semua peminjaman. */
     public function canManageInventory(): bool
     {

@@ -16,15 +16,15 @@ acara & kegiatan, manajemen anggota, dan laporan.
 
 ## Aktor & hak akses
 
-| Role | Yang bisa dilakukan | Menu panel |
+| Role | Yang bisa dilakukan | Panel & menu |
 |---|---|---|
-| **Admin UKM** | Mengatur semuanya, termasuk memproses pendaftar calon anggota serta mengubah profil, sejarah, visi & misi, dan struktur organisasi | Semua menu |
-| **Admin Inventaris** | Mengelola daftar barang & jumlahnya, melihat barang yang sedang dipinjam dan siapa peminjamnya, mengatur tanggal pinjam & tanggal kembali, mencatat kondisi barang sebelum & sesudah dipinjam | Daftar Barang, Peminjaman |
-| **Kurator** | Mengkurasi foto dan memilih yang tampil di website | Karya Foto (kurasi) |
-| **Member UKM Fotografi** | Mengunggah foto beserta kategori, caption, segitiga exposure (aperture, shutter speed, ISO, dan deskripsinya), link Instagram; melihat foto mana yang lulus kurasi; meminjam barang seperti anggota UKM lain (data diri terisi dari akun) | Karya Foto, Daftar Barang, Peminjaman |
-| **Anggota UKM Lain** | Melihat barang yang tersedia, mengajukan peminjaman (nama lengkap, NPM, fakultas/UKM, tanggal dari–sampai), menambah & menghapus barang dalam pengajuan selama belum diproses | Daftar Barang, Peminjaman |
+| **Admin UKM** | Mengatur semuanya, termasuk memproses pendaftar calon anggota serta mengubah profil, sejarah, visi & misi, dan struktur organisasi | `/admin`, semua menu |
+| **Admin Inventaris** | Mengelola daftar barang & jumlahnya, melihat barang yang sedang dipinjam dan siapa peminjamnya, mengatur tanggal pinjam & tanggal kembali, mencatat kondisi barang sebelum & sesudah dipinjam | `/admin`: Daftar Barang, Peminjaman |
+| **Kurator** | Mengkurasi foto dan memilih yang tampil di website | **Panel Kurator** `/kurator`: dasbor antrean kurasi & grafik karya, Karya Foto (kurasi) |
+| **Member UKM Fotografi** | Mengunggah foto beserta kategori, caption, segitiga exposure (aperture, shutter speed, ISO, dan deskripsinya), link Instagram; melihat foto mana yang lulus kurasi; meminjam barang seperti anggota UKM lain (data diri terisi dari akun) | `/admin`: Karya Foto, Daftar Barang, Peminjaman |
+| **Anggota UKM Lain** | Melihat barang yang tersedia, mengajukan peminjaman (nama lengkap, NPM, fakultas/UKM, tanggal dari–sampai), menambah & menghapus barang dalam pengajuan selama belum diproses | **Panel Anggota UKM Lain** `/anggota`: dasbor peminjaman, Daftar Barang, Peminjaman |
 
-Aturan ini ada di `app/Enums/Role.php` dan `app/Policies`, dan diuji di `tests/Feature/RoleAccessTest.php`.
+Kurator dan Anggota UKM Lain punya panel sendiri; membuka panel role lain otomatis diarahkan ke panelnya. Aturan ini ada di `app/Enums/Role.php` (`panel()`), `app/Policies`, dan `app/Providers/Filament`, dan diuji di `tests/Feature/RoleAccessTest.php`.
 
 ## Fitur
 
@@ -80,7 +80,7 @@ php artisan storage:link
 php artisan serve
 ```
 
-Buka http://localhost:8000 untuk website. Login lewat halaman terpisah http://localhost:8000/login (tombol **Masuk** di website); setelah berhasil masuk kamu diarahkan ke panel http://localhost:8000/admin. Membuka `/admin` tanpa login juga diarahkan ke `/login`, dan keluar dari panel kembali ke halaman login.
+Buka http://localhost:8000 untuk website. Login lewat halaman terpisah http://localhost:8000/login (tombol **Masuk** di website); setelah berhasil masuk kamu diarahkan ke panel sesuai role: http://localhost:8000/admin (Admin UKM, Admin Inventaris, Member), http://localhost:8000/kurator (Kurator), atau http://localhost:8000/anggota (Anggota UKM Lain). Membuka `/admin` tanpa login juga diarahkan ke `/login`, dan keluar dari panel kembali ke halaman login.
 
 ### Akun demo (dari seeder, password semua: `password`)
 
@@ -123,6 +123,7 @@ app/Policies/              hak akses per role
 app/Filament/Resources/    halaman CRUD panel admin
 app/Filament/Pages/        laporan kegiatan & insight karya
 app/Filament/Widgets/      ringkasan dasbor & grafik
+app/Providers/Filament/    panel admin, panel kurator, panel anggota UKM lain
 app/Http/Controllers/      website publik & pendaftaran
 resources/views/home.blade.php   halaman depan website
 public/css/style.css, public/js/main.js   aset website publik

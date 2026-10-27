@@ -157,7 +157,7 @@ describe('pengajuan oleh anggota UKM lain', function () {
         $tamu = loginAs(Role::AnggotaLain);
         $loan = Loan::factory()->borrowed()->for($tamu)->withItem()->create();
 
-        $this->get(EditLoan::getUrl(['record' => $loan]))->assertForbidden();
+        $this->get(EditLoan::getUrl(['record' => $loan], panel: 'anggota'))->assertForbidden();
     });
 
     it('hanya melihat peminjamannya sendiri', function () {

@@ -157,4 +157,10 @@ it('hanya admin UKM yang bisa membuka halaman profil', function (Role $role) {
     loginAs($role);
 
     $this->get(ManageOrganizationProfile::getUrl())->assertForbidden();
-})->with([Role::AdminInventaris, Role::Kurator, Role::Member, Role::AnggotaLain]);
+})->with([Role::AdminInventaris, Role::Member]);
+
+it('kurator dan anggota UKM lain yang membuka halaman profil diarahkan ke panelnya', function (Role $role) {
+    loginAs($role);
+
+    $this->get(ManageOrganizationProfile::getUrl())->assertRedirect('/'.$role->panel());
+})->with([Role::Kurator, Role::AnggotaLain]);

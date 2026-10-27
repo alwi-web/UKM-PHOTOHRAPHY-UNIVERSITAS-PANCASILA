@@ -10,6 +10,8 @@ class UploadsPerMonthChart extends ChartWidget
     /** Hanya tampil di halaman Insight Karya, bukan di dasbor. */
     protected static bool $isDiscovered = false;
 
+    protected static ?int $sort = 4;
+
     protected ?string $heading = 'Unggahan 6 Bulan Terakhir';
 
     protected function getData(): array

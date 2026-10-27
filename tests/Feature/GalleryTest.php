@@ -98,7 +98,7 @@ it('kurator hanya mengkurasi, tidak mengunggah atau mengubah karya', function ()
         ->assertActionVisible(TestAction::make('curate')->table($artwork))
         ->assertActionHidden(TestAction::make('edit')->table($artwork))
         ->assertActionHidden(TestAction::make('delete')->table($artwork));
-    $this->get(CreateArtwork::getUrl())->assertForbidden();
+    $this->get(CreateArtwork::getUrl(panel: 'kurator'))->assertForbidden();
 });
 
 it('karya yang ditolak tidak pernah tampil di website', function () {

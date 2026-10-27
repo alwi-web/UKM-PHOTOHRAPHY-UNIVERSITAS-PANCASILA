@@ -18,7 +18,7 @@ class LoginController extends Controller
     public function show(): View|RedirectResponse
     {
         if (Auth::check()) {
-            return redirect()->to(Filament::getUrl());
+            return redirect()->to($this->panelUrl());
         }
 
         return view('auth.login');
@@ -54,7 +54,7 @@ class LoginController extends Controller
 
         RateLimiter::clear($key);
 
-        if (! Auth::user()->canAccessPanel(Filament::getPanel('admin'))) {
+        if (! Auth::user()->canAccessPanel(Filament::getPanel(Auth::user()->role->panel()))) {
             Auth::logout();
 
             throw ValidationException::withMessages([
@@ -64,6 +64,12 @@ class LoginController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(Filament::getUrl());
+        return redirect()->intended($this->panelUrl());
+    }
+
+    /** Admin & member ke /admin, kurator ke /kurator, anggota UKM lain ke /anggota. */
+    private function panelUrl(): string
+    {
+        return Filament::getPanel(Auth::user()->role->panel())->getUrl();
     }
 }

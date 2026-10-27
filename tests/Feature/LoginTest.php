@@ -37,6 +37,16 @@ it('login berhasil lalu diarahkan ke panel', function () {
     $this->assertAuthenticatedAs($user);
 });
 
+it('kurator dan anggota UKM lain diarahkan ke panelnya masing-masing', function (Role $role, string $panel) {
+    User::factory()->role($role)->create(['email' => 'user@ukmfoto.test']);
+
+    $this->post('/login', ['email' => 'user@ukmfoto.test', 'password' => 'password'])
+        ->assertRedirect($panel);
+})->with([
+    [Role::Kurator, '/kurator'],
+    [Role::AnggotaLain, '/anggota'],
+]);
+
 it('menolak password yang salah', function () {
     User::factory()->create(['email' => 'member@ukmfoto.test']);
 
