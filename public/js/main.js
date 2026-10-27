@@ -111,6 +111,21 @@ function initSections() {
   openFromHash(location.hash);
 }
 
+/* ---------- HERO: bubble di belakang mockup ikut bergerak saat di-scroll ---------- */
+function initBlobs() {
+  const blobs = $(".blobs");
+  if (!blobs || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  let ticking = false;
+  const update = () => {
+    blobs.style.setProperty("--sy", `${Math.min(window.scrollY, 320)}px`);
+    ticking = false;
+  };
+  window.addEventListener("scroll", () => {
+    if (!ticking) { ticking = true; requestAnimationFrame(update); }
+  }, { passive: true });
+  update();
+}
+
 /* ---------- HEADER: bayangan saat di-scroll + menu aktif ---------- */
 function initTopbar() {
   const topbar = $(".topbar");
@@ -153,6 +168,7 @@ function initReveal() {
 document.addEventListener("DOMContentLoaded", () => {
   initSections();
   initTopbar();
+  initBlobs();
   initReveal();
   initGallery();
 });
