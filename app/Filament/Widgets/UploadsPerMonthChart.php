@@ -23,8 +23,8 @@ class UploadsPerMonthChart extends ChartWidget
                 [
                     'label' => 'Karya diunggah',
                     'data' => $counts->all(),
-                    'borderColor' => '#f5b301',
-                    'backgroundColor' => 'rgba(245, 179, 1, 0.2)',
+                    'borderColor' => '#111111',
+                    'backgroundColor' => 'rgba(17, 17, 17, 0.12)',
                     'fill' => true,
                 ],
             ],

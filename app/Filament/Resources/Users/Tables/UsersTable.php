@@ -26,7 +26,7 @@ class UsersTable
             ->defaultSort('created_at', 'desc')
             ->columns([
                 ImageColumn::make('photo')->label('')->disk('public')->circular()
-                    ->defaultImageUrl(fn (User $record) => 'https://ui-avatars.com/api/?background=f5b301&color=111&name='.urlencode($record->name)),
+                    ->defaultImageUrl(fn (User $record) => 'https://ui-avatars.com/api/?background=111111&color=fff&name='.urlencode($record->name)),
                 TextColumn::make('name')->label('Nama')->searchable()->sortable()
                     ->description(fn (User $record) => $record->npm),
                 TextColumn::make('email')->searchable()->toggleable(),

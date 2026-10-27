@@ -21,7 +21,7 @@ class ArtworksPerCategoryChart extends ChartWidget
                 [
                     'label' => 'Jumlah karya',
                     'data' => $categories->pluck('artworks_count')->all(),
-                    'backgroundColor' => '#f5b301',
+                    'backgroundColor' => '#111111',
                 ],
             ],
             'labels' => $categories->pluck('name')->all(),
