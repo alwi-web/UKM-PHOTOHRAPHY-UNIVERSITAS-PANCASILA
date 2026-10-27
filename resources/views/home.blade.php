@@ -58,6 +58,8 @@
             <span class="blob blob-3"></span>
             <span class="blob blob-4"></span>
             <span class="blob blob-5"></span>
+            <span class="blob blob-6"></span>
+            <span class="blob blob-7"></span>
           </div>
           <div class="phone">
             <span class="phone-notch" aria-hidden="true"></span>

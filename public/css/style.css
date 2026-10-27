@@ -360,11 +360,13 @@ p {
   animation: blob 12s ease-in-out infinite;
 }
 
-.blob-1 { width: 210px; height: 260px; left: 6%; top: 22%; background: #6cb4ee; }
-.blob-2 { width: 150px; height: 130px; left: 14%; top: 8%; background: #cfcfc7; animation-delay: -3s; }
-.blob-3 { width: 220px; height: 250px; right: 4%; top: 28%; background: #f5b301; animation-delay: -6s; }
-.blob-4 { width: 190px; height: 210px; right: 8%; bottom: 4%; background: #f06aa8; animation-delay: -9s; }
-.blob-5 { width: 96px; height: 96px; right: 10%; top: 6%; border-radius: 50%; background: #ef4f5f; animation-delay: -2s; }
+.blob-1 { width: 210px; height: 250px; left: 6%; top: 24%; background: #3b82f6; }
+.blob-2 { width: 150px; height: 130px; left: 14%; top: 6%; background: #cfcfc7; animation-delay: -3s; }
+.blob-3 { width: 220px; height: 240px; right: 4%; top: 26%; background: #f59e3b; animation-delay: -6s; }
+.blob-4 { width: 180px; height: 200px; right: 10%; bottom: 2%; background: #f06aa8; animation-delay: -9s; }
+.blob-5 { width: 96px; height: 96px; right: 10%; top: 4%; border-radius: 50%; background: #ef4f5f; animation-delay: -2s; }
+.blob-6 { width: 170px; height: 150px; left: 10%; bottom: 2%; background: #9b7be8; animation-delay: -5s; }
+.blob-7 { width: 80px; height: 80px; left: 2%; top: 52%; border-radius: 50%; background: #8fd3f4; animation-delay: -8s; }
 
 @keyframes blob {
   50% { border-radius: 42% 58% 45% 55% / 55% 45% 55% 45%; translate: 0 -10px; }
@@ -1258,10 +1260,12 @@ p {
   }
 
   .blob-1 { width: 160px; height: 180px; left: 8%; top: 4%; }
-  .blob-2 { display: none; }
+  .blob-2 { width: 100px; height: 90px; left: 26%; top: -2%; }
   .blob-3 { width: 170px; height: 180px; right: 8%; top: 10%; }
   .blob-4 { width: 140px; height: 140px; right: 16%; bottom: -2%; }
   .blob-5 { width: 64px; height: 64px; right: 12%; top: 0; }
+  .blob-6 { width: 130px; height: 120px; left: 12%; bottom: -2%; }
+  .blob-7 { width: 56px; height: 56px; left: 4%; top: 48%; }
 
   .phone {
     align-items: center;
@@ -1346,9 +1350,12 @@ p {
   }
 
   .blob-1 { width: 140px; height: 160px; left: -4%; }
-  .blob-3 { width: 150px; height: 160px; right: -4%; }
+  .blob-2 { left: 18%; }
+  .blob-3 { width: 120px; height: 110px; right: 22%; top: -6%; }
   .blob-4 { width: 130px; height: 130px; right: 6%; bottom: -4%; }
   .blob-5 { width: 60px; height: 60px; right: 2%; }
+  .blob-6 { width: 110px; height: 100px; left: 2%; bottom: -4%; }
+  .blob-7 { width: 56px; height: 56px; left: 44%; top: auto; bottom: -6%; }
 
   .phone {
     padding: 36px 18px 18px;
