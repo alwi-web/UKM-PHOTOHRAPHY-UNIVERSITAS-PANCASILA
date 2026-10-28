@@ -113,6 +113,8 @@ class DatabaseSeeder extends Seeder
                 'curator_note' => $i === 1 ? 'Komposisi rule of thirds-nya kuat, warna senja terjaga.' : null,
                 'curated_by' => $kurator->id,
                 'curated_at' => now()->subDays($i),
+                // empat karya terbaru jadi nominasi foto minggu ini
+                'nominated_week' => $i <= 4 ? Artwork::weekOf() : null,
                 'views' => fake()->numberBetween(5, 300),
                 'created_at' => now()->subDays($i * 10),
             ]);

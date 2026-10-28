@@ -197,6 +197,60 @@
           <p>Karya pilihan kurator. Klik foto untuk melihat cerita dan pengaturan kameranya.</p>
         </div>
 
+        {{-- nominasi foto mingguan: carousel yang bergeser otomatis --}}
+        @if ($nominees['artworks']->isNotEmpty())
+          @php($week = $nominees['week'])
+          <div class="nominee reveal" data-carousel aria-roledescription="carousel" aria-label="Nominasi Foto Mingguan">
+            <div class="nominee-head">
+              <div>
+                <span class="nominee-badge"><x-glyph name="star" :size="14" /> Nominasi Foto Mingguan</span>
+                <h3>Pilihan kurator minggu ini</h3>
+                <p class="nominee-week">{{ $week->translatedFormat('j M') }} – {{ $week->copy()->addDays(6)->translatedFormat('j M Y') }}</p>
+              </div>
+              @if ($nominees['artworks']->count() > 1)
+                <div class="nominee-nav">
+                  <button type="button" class="nominee-btn" data-prev aria-label="Foto sebelumnya"><x-glyph name="chevron-left" /></button>
+                  <button type="button" class="nominee-btn" data-next aria-label="Foto berikutnya"><x-glyph name="chevron-right" /></button>
+                </div>
+              @endif
+            </div>
+            <div class="nominee-viewport">
+              <div class="nominee-track" aria-live="polite">
+                @foreach ($nominees['artworks'] as $artwork)
+                  <figure class="nominee-slide @if ($loop->first) is-active @endif" role="group" aria-roledescription="slide"
+                    aria-label="{{ $loop->iteration }} dari {{ $loop->count }}: {{ $artwork->title }}" tabindex="0"
+                    data-src="{{ $artwork->imageUrl() }}"
+                    data-title="{{ $artwork->title }}"
+                    data-author="{{ $artwork->user->name }}"
+                    data-caption="{{ $artwork->caption }}"
+                    data-exposure="{{ $artwork->exposureSummary() }}"
+                    data-exposure-notes="{{ $artwork->exposure_notes }}"
+                    data-instagram="{{ $artwork->instagram_url }}"
+                    data-tiktok="{{ $artwork->tiktok_url }}"
+                    data-view-url="{{ route('artworks.view', $artwork) }}">
+                    <img src="{{ $artwork->imageUrl() }}" alt="{{ $artwork->title }}" @if (! $loop->first) loading="lazy" @endif draggable="false" />
+                    <figcaption>
+                      <span class="nominee-num">#{{ $loop->iteration }}</span>
+                      <strong>{{ $artwork->title }}</strong>
+                      <span>{{ $artwork->user->name }}@if ($artwork->category) · {{ $artwork->category->name }}@endif</span>
+                      @if ($artwork->exposureSummary())
+                        <small>{{ $artwork->exposureSummary() }}</small>
+                      @endif
+                    </figcaption>
+                  </figure>
+                @endforeach
+              </div>
+            </div>
+            @if ($nominees['artworks']->count() > 1)
+              <div class="nominee-dots">
+                @foreach ($nominees['artworks'] as $artwork)
+                  <button type="button" class="nominee-dot @if ($loop->first) active @endif" data-dot="{{ $loop->index }}" aria-label="Tampilkan foto {{ $loop->iteration }}"><i></i></button>
+                @endforeach
+              </div>
+            @endif
+          </div>
+        @endif
+
         @if ($artworks->isEmpty())
           <p class="empty">Belum ada karya yang ditampilkan.</p>
         @else

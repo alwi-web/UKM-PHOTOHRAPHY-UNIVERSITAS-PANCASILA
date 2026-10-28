@@ -48,6 +48,9 @@ class ArtworksTable
                     ->toggleable(),
                 TextColumn::make('status')->badge(),
                 IconColumn::make('is_featured')->label('Di Website')->boolean(),
+                TextColumn::make('nominated_week')->label('Nominasi Mingguan')
+                    ->state(fn (Artwork $record) => $record->isNominatedThisWeek() ? 'Minggu ini' : null)
+                    ->badge()->color('primary')->icon(Heroicon::Star)->placeholder('-'),
                 TextColumn::make('views')->label('Dilihat')->numeric()->sortable()->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('curator_note')->label('Catatan Kurator')->placeholder('-')->limit(50)
                     ->tooltip(fn (Artwork $record) => $record->curator_note)
@@ -92,6 +95,31 @@ class ArtworksTable
                         $status = $data['status'] instanceof ArtworkStatus ? $data['status'] : ArtworkStatus::from($data['status']);
                         $record->curate(auth()->user(), $status, (bool) ($data['is_featured'] ?? false), $data['curator_note'] ?? null);
                         Notification::make()->title('Hasil kurasi disimpan.')->success()->send();
+                    }),
+                Action::make('nominate')
+                    ->label('Nominasikan')
+                    ->tooltip('Jadikan nominasi foto mingguan di galeri website')
+                    ->icon(Heroicon::OutlinedStar)
+                    ->color('gray')
+                    ->authorize('curate')
+                    ->visible(fn (Artwork $record) => $record->status === ArtworkStatus::Approved && ! $record->isNominatedThisWeek())
+                    ->requiresConfirmation()
+                    ->modalHeading(fn (Artwork $record) => "Nominasikan \"{$record->title}\"?")
+                    ->modalDescription('Karya tampil di carousel Nominasi Foto Mingguan pada galeri website selama minggu ini.')
+                    ->modalSubmitActionLabel('Nominasikan')
+                    ->action(function (Artwork $record) {
+                        $record->nominate();
+                        Notification::make()->title('Karya dinominasikan sebagai foto minggu ini.')->success()->send();
+                    }),
+                Action::make('cancelNomination')
+                    ->label('Batalkan nominasi')
+                    ->icon(Heroicon::Star)
+                    ->color('warning')
+                    ->authorize('curate')
+                    ->visible(fn (Artwork $record) => $record->isNominatedThisWeek())
+                    ->action(function (Artwork $record) {
+                        $record->cancelNomination();
+                        Notification::make()->title('Nominasi dibatalkan.')->success()->send();
                     }),
                 ActionGroup::make([
                     EditAction::make(),

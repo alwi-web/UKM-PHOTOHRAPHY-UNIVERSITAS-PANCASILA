@@ -43,6 +43,7 @@ Kurator dan Anggota UKM Lain punya panel sendiri; membuka panel role lain otomat
 - Member melihat status kurasi dan catatan kurator untuk setiap karyanya. Karya yang sudah dikurasi tidak bisa diubah lagi.
 - Kurator meloloskan atau menolak karya, lalu memilih yang tampil di website.
 - Di website, pengunjung melihat data exposure saat membuka foto. Jumlah dilihat tercatat untuk laporan.
+- **Nominasi foto mingguan:** kurator atau Admin UKM menekan **Nominasikan** pada karya yang lolos kurasi (tab *Nominasi Minggu Ini* untuk melihat daftarnya). Di bagian galeri website, nominasi minggu ini tampil sebagai carousel yang bergeser otomatis (bisa digeser, berhenti saat disentuh/diarahkan kursor). Jika minggu ini belum ada nominasi, yang tampil nominasi minggu terakhir.
 
 **Acara & kegiatan** (`/admin/events`, Admin UKM)
 - CRUD acara: nama, jenis, lokasi, waktu, deskripsi, kuota, poster, dan status.

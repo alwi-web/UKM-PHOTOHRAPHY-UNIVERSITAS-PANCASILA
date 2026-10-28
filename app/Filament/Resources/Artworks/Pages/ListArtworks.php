@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Artworks\Pages;
 use App\Enums\ArtworkStatus;
 use App\Enums\Role;
 use App\Filament\Resources\Artworks\ArtworkResource;
+use App\Models\Artwork;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Schemas\Components\Tabs\Tab;
@@ -37,6 +38,8 @@ class ListArtworks extends ListRecords
                 ->modifyQueryUsing(fn (Builder $query) => $query->where('status', ArtworkStatus::Approved)),
             'featured' => Tab::make('Tampil di Website')
                 ->modifyQueryUsing(fn (Builder $query) => $query->published()),
+            'nominasi' => Tab::make('Nominasi Minggu Ini')
+                ->modifyQueryUsing(fn (Builder $query) => $query->whereDate('nominated_week', Artwork::weekOf()->toDateString())),
             'rejected' => Tab::make('Ditolak')
                 ->modifyQueryUsing(fn (Builder $query) => $query->where('status', ArtworkStatus::Rejected)),
         ];

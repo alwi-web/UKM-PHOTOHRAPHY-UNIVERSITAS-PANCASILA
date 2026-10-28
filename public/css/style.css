@@ -1126,6 +1126,255 @@ p {
   transform: none;
 }
 
+/* ---------- Nominasi foto mingguan (carousel) ---------- */
+.nominee {
+  --slide-ms: 5000ms;
+  margin: 0 auto 36px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.nominee-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 2px 4px 16px;
+}
+
+.nominee-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.nominee-badge .icon {
+  fill: currentColor;
+}
+
+.nominee-head h3 {
+  margin: 10px 0 2px;
+  font-size: 1.35rem;
+}
+
+.nominee-week {
+  margin: 0;
+  color: #5f5f58;
+  font-size: 0.92rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.nominee-nav {
+  display: flex;
+  gap: 8px;
+}
+
+.nominee-btn {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.nominee-btn:hover {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.nominee-btn:active {
+  transform: scale(0.94);
+}
+
+.nominee-viewport {
+  overflow: hidden;
+  border-radius: 18px;
+  touch-action: pan-y;
+  user-select: none;
+}
+
+.nominee-track {
+  display: flex;
+  transition: transform 0.9s cubic-bezier(0.22, 0.61, 0.36, 1);
+  will-change: transform;
+}
+
+.nominee-track.dragging {
+  transition: none;
+}
+
+.nominee-slide {
+  position: relative;
+  flex: 0 0 100%;
+  aspect-ratio: 21 / 9;
+  min-height: 340px;
+  margin: 0;
+  overflow: hidden;
+  background: #1a1a1a;
+  cursor: zoom-in;
+}
+
+.nominee-slide img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* zoom pelan pada foto yang sedang tampil */
+  transform: scale(1.08);
+  transition: transform 6s ease-out;
+}
+
+.nominee-slide.is-active img {
+  transform: scale(1);
+}
+
+.nominee-slide figcaption {
+  position: absolute;
+  inset: auto 0 0;
+  display: grid;
+  gap: 2px;
+  padding: 64px 26px 22px;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.72));
+  color: #fff;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.6s ease 0.35s, transform 0.6s ease 0.35s;
+}
+
+.nominee-slide.is-active figcaption {
+  opacity: 1;
+  transform: none;
+}
+
+.nominee-slide figcaption strong {
+  font-size: 1.35rem;
+  line-height: 1.25;
+}
+
+.nominee-slide figcaption span {
+  color: rgba(255, 255, 255, 0.86);
+}
+
+.nominee-slide figcaption small {
+  color: rgba(255, 255, 255, 0.7);
+  font-variant-numeric: tabular-nums;
+}
+
+.nominee-num {
+  justify-self: start;
+  margin-bottom: 4px;
+  padding: 1px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #111 !important;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.nominee-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.nominee-dot {
+  position: relative;
+  width: 28px;
+  height: 6px;
+  padding: 0;
+  border: 0;
+  border-radius: 3px;
+  background: var(--line-strong);
+  overflow: hidden;
+  cursor: pointer;
+  transition: width 0.4s ease;
+}
+
+.nominee-dot.active {
+  width: 44px;
+}
+
+/* garis waktu: terisi selama foto tampil, lalu pindah ke foto berikutnya */
+.nominee-dot i {
+  position: absolute;
+  inset: 0;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+.nominee-dot.active i {
+  animation: nominee-fill var(--slide-ms) linear forwards;
+}
+
+.nominee.paused .nominee-dot.active i {
+  animation-play-state: paused;
+}
+
+.nominee.static .nominee-dot.active i {
+  animation: none;
+  transform: none;
+}
+
+@keyframes nominee-fill {
+  to { transform: scaleX(1); }
+}
+
+@media (max-width: 600px) {
+  .nominee {
+    margin-bottom: 20px;
+    padding: 12px;
+    border-radius: 20px;
+  }
+
+  .nominee-head {
+    margin: 2px 2px 12px;
+  }
+
+  .nominee-head h3 {
+    font-size: 1.1rem;
+  }
+
+  .nominee-btn {
+    width: 38px;
+    height: 38px;
+  }
+
+  .nominee-viewport {
+    border-radius: 14px;
+  }
+
+  .nominee-slide {
+    aspect-ratio: 4 / 5;
+    min-height: 0;
+  }
+
+  .nominee-slide figcaption {
+    padding: 48px 16px 16px;
+  }
+
+  .nominee-slide figcaption strong {
+    font-size: 1.1rem;
+  }
+}
+
 /* ---------- Lightbox ---------- */
 .lightbox {
   position: fixed;

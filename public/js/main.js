@@ -7,17 +7,22 @@ const $ = (sel, ctx = document) => ctx.querySelector(sel);
 const $$ = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
 
 /* ---------- GALERI: FILTER + LIGHTBOX ---------- */
+// dipakai carousel nominasi untuk membuka foto di lightbox yang sama dengan galeri
+let openLightbox = null;
+
 function initGallery() {
   const items = $$(".gallery-item");
-  if (!items.length) return;
+  if (!$("#lightbox")) return;
 
   const lightbox = $("#lightbox");
   const csrf = $('meta[name="csrf-token"]').content;
   const viewed = new Set();
   let visible = items;
+  // daftar foto yang sedang dijelajahi di lightbox (galeri atau nominasi)
+  let list = items;
   let current = 0;
 
-  $("#filterBar").addEventListener("click", (e) => {
+  $("#filterBar")?.addEventListener("click", (e) => {
     const chip = e.target.closest(".chip");
     if (!chip) return;
     $$(".chip").forEach((c) => c.classList.toggle("active", c === chip));
@@ -39,8 +44,8 @@ function initGallery() {
   };
 
   const show = (i) => {
-    current = (i + visible.length) % visible.length;
-    const d = visible[current].dataset;
+    current = (i + list.length) % list.length;
+    const d = list[current].dataset;
     $("#lbImg").src = d.src;
     $("#lbImg").alt = d.title;
     $("#lbTitle").textContent = d.title;
@@ -50,11 +55,12 @@ function initGallery() {
     $("#lbExposureNotes").textContent = d.exposureNotes || "";
     setLink($("#lbInstagram"), d.instagram);
     setLink($("#lbTiktok"), d.tiktok);
-    recordView(visible[current]);
+    recordView(list[current]);
   };
 
-  const open = (item) => {
-    show(visible.indexOf(item));
+  const open = (item, from = visible) => {
+    list = from;
+    show(list.indexOf(item));
     lightbox.classList.add("open");
     lightbox.setAttribute("aria-hidden", "false");
     document.body.style.overflow = "hidden";
@@ -67,6 +73,7 @@ function initGallery() {
     document.body.style.overflow = "";
   };
 
+  openLightbox = open;
   items.forEach((it) => {
     it.addEventListener("click", () => open(it));
     it.addEventListener("keydown", (e) => e.key === "Enter" && open(it));
@@ -83,6 +90,105 @@ function initGallery() {
     if (e.key === "ArrowLeft") show(current - 1);
     if (e.key === "ArrowRight") show(current + 1);
   });
+}
+
+/* ---------- NOMINASI FOTO MINGGUAN: carousel yang bergeser halus ---------- */
+function initCarousel() {
+  const root = $("[data-carousel]");
+  if (!root) return;
+  const track = $(".nominee-track", root);
+  const slides = $$(".nominee-slide", root);
+  const dots = $$(".nominee-dot", root);
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const delay = parseFloat(getComputedStyle(root).getPropertyValue("--slide-ms")) || 5000;
+  let index = 0;
+  let timer = null;
+  let hovered = false;
+  let moved = false;
+
+  const autoplay = slides.length > 1 && !reduce;
+  root.classList.toggle("static", !autoplay);
+
+  const schedule = () => {
+    clearTimeout(timer);
+    if (autoplay && !root.classList.contains("paused")) timer = setTimeout(() => go(index + 1), delay);
+  };
+
+  const go = (n) => {
+    index = (n + slides.length) % slides.length;
+    track.style.transform = `translateX(-${index * 100}%)`;
+    slides.forEach((s, i) => {
+      s.classList.toggle("is-active", i === index);
+      s.setAttribute("aria-hidden", String(i !== index));
+      s.tabIndex = i === index ? 0 : -1;
+    });
+    dots.forEach((d, i) => {
+      d.classList.toggle("active", i === index);
+      d.setAttribute("aria-current", String(i === index));
+      // ulangi animasi garis waktu pada titik yang aktif
+      const bar = d.firstElementChild;
+      bar.style.animation = "none";
+      void bar.offsetWidth;
+      bar.style.animation = "";
+    });
+    schedule();
+  };
+
+  const setPaused = (paused) => {
+    root.classList.toggle("paused", paused);
+    paused ? clearTimeout(timer) : schedule();
+  };
+
+  $("[data-prev]", root)?.addEventListener("click", () => go(index - 1));
+  $("[data-next]", root)?.addEventListener("click", () => go(index + 1));
+  dots.forEach((d) => d.addEventListener("click", () => go(Number(d.dataset.dot))));
+
+  // berhenti sebentar saat diarahkan kursor, difokuskan, atau tab tidak terlihat
+  root.addEventListener("mouseenter", () => { hovered = true; setPaused(true); });
+  root.addEventListener("mouseleave", () => { hovered = false; setPaused(root.contains(document.activeElement)); });
+  root.addEventListener("focusin", () => setPaused(true));
+  root.addEventListener("focusout", (e) => !root.contains(e.relatedTarget) && setPaused(hovered));
+  document.addEventListener("visibilitychange", () => setPaused(document.hidden || hovered));
+
+  root.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowLeft") go(index - 1);
+    if (e.key === "ArrowRight") go(index + 1);
+    if (e.key === "Enter" && e.target.classList.contains("nominee-slide")) openLightbox?.(e.target, slides);
+  });
+
+  // geser dengan jari / mouse
+  let startX = 0;
+  let dragging = false;
+  const viewport = $(".nominee-viewport", root);
+  viewport.addEventListener("pointerdown", (e) => {
+    if (slides.length < 2) return;
+    dragging = true;
+    moved = false;
+    startX = e.clientX;
+    track.classList.add("dragging");
+    clearTimeout(timer);
+  });
+  window.addEventListener("pointermove", (e) => {
+    if (!dragging) return;
+    const dx = e.clientX - startX;
+    if (Math.abs(dx) > 6) moved = true;
+    track.style.transform = `translateX(calc(-${index * 100}% + ${dx}px))`;
+  });
+  const endDrag = (e) => {
+    if (!dragging) return;
+    dragging = false;
+    track.classList.remove("dragging");
+    const dx = e.clientX - startX;
+    go(Math.abs(dx) > viewport.clientWidth * 0.15 ? index - Math.sign(dx) : index);
+  };
+  window.addEventListener("pointerup", endDrag);
+  window.addEventListener("pointercancel", endDrag);
+
+  slides.forEach((s) => s.addEventListener("click", () => {
+    if (!moved) openLightbox?.(s, slides);
+  }));
+
+  go(0);
 }
 
 /* ---------- BAGIAN HALAMAN (HP: daftar tombol buka-tutup) ---------- */
@@ -186,6 +292,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initSections();
   initTopbar();
   initBlobs();
+  initCarousel();
   initReveal();
   initGallery();
 });

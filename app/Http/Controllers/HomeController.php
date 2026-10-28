@@ -19,6 +19,7 @@ class HomeController extends Controller
         return view('home', [
             'profile' => OrganizationProfile::current(),
             'artworks' => $artworks,
+            'nominees' => Artwork::weeklyNominees(),
             'categories' => Category::whereIn('id', $artworks->pluck('category_id')->unique())->orderBy('name')->get(),
             'events' => Event::upcoming()->take(6)->get(),
         ]);
