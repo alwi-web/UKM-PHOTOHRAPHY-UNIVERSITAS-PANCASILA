@@ -37,7 +37,9 @@ class ArtworksTable
             ->columns([
                 ImageColumn::make('image')->label('')->disk('public')->imageHeight(64),
                 TextColumn::make('title')->label('Judul')->searchable()->sortable()->limit(40)
-                    ->tooltip(fn (Artwork $record) => $record->caption),
+                    ->tooltip(fn (Artwork $record) => $record->caption)
+                    // tanda nominasi di bawah judul, supaya tabel tidak bertambah lebar
+                    ->description(fn (Artwork $record) => $record->isNominatedThisWeek() ? '★ Nominasi minggu ini' : null),
                 TextColumn::make('user.name')->label('Fotografer')->searchable()
                     ->visible(fn () => ArtworkPolicy::curates(auth()->user())),
                 TextColumn::make('category.name')->label('Kategori')->badge()->color('gray'),
@@ -48,9 +50,6 @@ class ArtworksTable
                     ->toggleable(),
                 TextColumn::make('status')->badge(),
                 IconColumn::make('is_featured')->label('Di Website')->boolean(),
-                TextColumn::make('nominated_week')->label('Nominasi Mingguan')
-                    ->state(fn (Artwork $record) => $record->isNominatedThisWeek() ? 'Minggu ini' : null)
-                    ->badge()->color('primary')->icon(Heroicon::Star)->placeholder('-'),
                 TextColumn::make('views')->label('Dilihat')->numeric()->sortable()->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('curator_note')->label('Catatan Kurator')->placeholder('-')->limit(50)
                     ->tooltip(fn (Artwork $record) => $record->curator_note)
