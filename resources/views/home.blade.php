@@ -347,7 +347,7 @@
             <li class="reveal"><span class="card-icon"><x-glyph name="instagram" /></span><span><small>Instagram</small><a href="https://instagram.com/{{ ltrim($profile->instagram, '@') }}" target="_blank" rel="noopener">{{ '@'.ltrim($profile->instagram, '@') }}</a></span></li>
           @endif
           @if ($profile->tiktok)
-            <li class="reveal"><span class="card-icon"><x-glyph name="music" /></span><span><small>TikTok</small><a href="https://www.tiktok.com/@{{ ltrim($profile->tiktok, '@') }}" target="_blank" rel="noopener">{{ '@'.ltrim($profile->tiktok, '@') }}</a></span></li>
+            <li class="reveal"><span class="card-icon"><x-glyph name="music" /></span><span><small>TikTok</small><a href="https://www.tiktok.com/{{ '@'.ltrim($profile->tiktok, '@') }}" target="_blank" rel="noopener">{{ '@'.ltrim($profile->tiktok, '@') }}</a></span></li>
           @endif
           @if ($profile->phone)
             <li class="reveal"><span class="card-icon"><x-glyph name="phone" /></span><span><small>Telepon</small>{{ $profile->phone }}</span></li>

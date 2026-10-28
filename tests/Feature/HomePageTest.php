@@ -3,6 +3,7 @@
 use App\Enums\EventStatus;
 use App\Models\Artwork;
 use App\Models\Event;
+use App\Models\OrganizationProfile;
 
 it('menampilkan hanya karya yang dipilih kurator', function () {
     Artwork::factory()->published()->create(['title' => 'Karya Terpilih']);
@@ -64,4 +65,13 @@ it('formulir pendaftaran tidak lagi ada di halaman depan, tombol Daftar menuju h
         ->assertDontSee('id="registerForm"', false)
         ->assertDontSee('aria-controls="daftar-body"', false)
         ->assertSee('href="'.route('register.show').'"', false);
+});
+
+it('link TikTok di bagian kontak mengarah ke akun TikTok UKM', function () {
+    OrganizationProfile::current()->update(['tiktok' => '@ukmfotografi.up']);
+
+    $this->get('/')
+        ->assertOk()
+        ->assertSee('href="https://www.tiktok.com/@ukmfotografi.up"', false)
+        ->assertDontSee('ltrim(', false);
 });
