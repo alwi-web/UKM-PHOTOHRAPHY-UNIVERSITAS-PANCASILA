@@ -137,12 +137,22 @@ class ManageOrganizationProfile extends Page
                                     ->schema([
                                         TextInput::make('name')->label('Nama Divisi')->required()->maxLength(100),
                                         Textarea::make('description')->label('Deskripsi')->rows(2)->maxLength(500),
-                                        Select::make('member_ids')
+                                        Repeater::make('member_ids')
                                             ->label('Anggota Divisi')
-                                            ->helperText('Bisa memilih lebih dari satu anggota.')
-                                            ->options(fn () => OrganizationProfile::memberOptions())
-                                            ->multiple()
-                                            ->searchable(),
+                                            ->helperText('Klik "Tambah anggota" untuk menambahkan orang ke divisi ini.')
+                                            ->simple(
+                                                Select::make('user_id')
+                                                    ->label('Anggota')
+                                                    ->options(fn () => OrganizationProfile::memberOptions())
+                                                    ->placeholder('Pilih Member UKM')
+                                                    ->searchable()
+                                                    ->distinct()
+                                                    ->required()
+                                                    ->validationMessages(['distinct' => 'Anggota ini sudah ada di divisi.']),
+                                            )
+                                            ->defaultItems(0)
+                                            ->addActionLabel('Tambah anggota')
+                                            ->reorderable(),
                                     ])
                                     ->itemLabel(fn (array $state) => isset($state['name'])
                                         ? 'Divisi '.$state['name'].' ('.count($state['member_ids'] ?? []).' anggota)'

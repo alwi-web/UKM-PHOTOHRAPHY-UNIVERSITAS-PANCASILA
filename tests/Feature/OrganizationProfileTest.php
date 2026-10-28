@@ -38,7 +38,8 @@ it('admin UKM mengubah sejarah, visi misi, dan memilih pengurus dari akun anggot
                 ['position' => 'Wakil Ketua', 'user_id' => null],
             ],
             'divisions' => [
-                ['name' => 'Hunting', 'description' => 'Hunting foto setiap bulan.', 'member_ids' => [$dimas->id, $intan->id]],
+                // anggota divisi ditambahkan satu per satu lewat "Tambah anggota"
+                ['name' => 'Hunting', 'description' => 'Hunting foto setiap bulan.', 'member_ids' => [['user_id' => $dimas->id], ['user_id' => $intan->id]]],
             ],
         ])
         ->call('save')
@@ -54,6 +55,31 @@ it('admin UKM mengubah sejarah, visi misi, dan memilih pengurus dari akun anggot
         ->and($profile->core_members[0]['user_id'])->toBe($ketua->id)
         ->and(array_map('intval', $profile->divisions[0]['member_ids']))->toBe([$dimas->id, $intan->id])
         ->and($profile->updated_by)->toBe($admin->id);
+});
+
+it('anggota yang sama tidak bisa ditambahkan dua kali ke satu divisi', function () {
+    loginAs(Role::AdminUkm);
+    $dimas = User::factory()->create();
+
+    [$intan] = User::factory(1)->create();
+    $form = fn (array $memberIds) => [
+        'name' => 'PhotoUP 94',
+        'history' => 'Sejarah.',
+        'vision' => 'Visi.',
+        'missions' => [['mission' => 'Misi.']],
+        'divisions' => [['name' => 'Hunting', 'description' => null, 'member_ids' => array_map(fn ($id) => ['user_id' => $id], $memberIds)]],
+    ];
+
+    livewire(ManageOrganizationProfile::class)
+        ->fillForm($form([$dimas->id, $dimas->id]))
+        ->call('save')
+        ->assertHasFormErrors()
+        ->assertNotNotified('Profil UKM disimpan.');
+
+    livewire(ManageOrganizationProfile::class)
+        ->fillForm($form([$dimas->id, $intan->id]))
+        ->call('save')
+        ->assertHasNoFormErrors();
 });
 
 it('foto, nama, dan NPM di bagan diambil dari akun anggota', function () {
