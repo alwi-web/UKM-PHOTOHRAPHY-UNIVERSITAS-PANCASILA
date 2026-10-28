@@ -9,11 +9,11 @@ Versi gambar ada di folder [`uml/`](uml/) dan semuanya digabung di [`uml.pdf`](u
 | 2 | Activity Diagram — Pendaftaran Calon Anggota | `uml/02-activity-pendaftaran.png` |
 | 3 | Activity Diagram — Login | `uml/03-activity-login.png` |
 | 4 | Activity Diagram — Peminjaman Barang | `uml/04-activity-peminjaman.png` |
-| 5 | Activity Diagram — Unggah & Kurasi Karya | `uml/05-activity-kurasi.png` |
+| 5 | Activity Diagram — Unggah, Kurasi & Nominasi Karya | `uml/05-activity-kurasi.png` |
 | 6 | Sequence Diagram — Login | `uml/06-sequence-login.png` |
 | 7 | Sequence Diagram — Pendaftaran Calon Anggota | `uml/07-sequence-pendaftaran.png` |
 | 8 | Sequence Diagram — Pengajuan & Proses Peminjaman | `uml/08-sequence-peminjaman.png` |
-| 9 | Sequence Diagram — Unggah & Kurasi Karya | `uml/09-sequence-kurasi.png` |
+| 9 | Sequence Diagram — Unggah, Kurasi & Nominasi Karya | `uml/09-sequence-kurasi.png` |
 | 10 | Class Diagram | `uml/10-class.png` |
 
 ## 1. Use Case Diagram
@@ -28,14 +28,14 @@ Ringkasan use case per aktor:
 
 | Aktor | Use case |
 |---|---|
-| Pengunjung / Calon Anggota | Melihat website; mendaftar sebagai calon anggota |
+| Pengunjung / Calon Anggota | Melihat website (beranda, profil, galeri, kegiatan, kontak); mencari karya berdasarkan judul atau nama fotografer; mendaftar sebagai calon anggota |
 | Member UKM Fotografi | Login/Logout; mengunggah karya; melihat hasil kurasi; melihat barang tersedia; mengajukan, mengubah, atau membatalkan peminjaman |
-| Anggota UKM Lain | Login/Logout; melihat barang tersedia; mengajukan, mengubah, atau membatalkan peminjaman |
-| Kurator | Login/Logout; mengkurasi karya |
+| Anggota UKM Lain | Login/Logout (Panel Anggota UKM Lain); melihat barang tersedia; mengajukan, mengubah, atau membatalkan peminjaman |
+| Kurator | Login/Logout (Panel Kurator); mengkurasi karya; menominasikan foto mingguan |
 | Admin Inventaris | Login/Logout; melihat barang tersedia; mengelola barang; memproses peminjaman |
 | Admin UKM | Semua use case di atas (generalisasi), ditambah mengelola user & kurator, memproses pendaftar, mengelola acara, kategori, profil & struktur BPH, serta melihat laporan |
 
-Mengajukan dan mengubah peminjaman selalu menyertakan (*include*) pengecekan bentrok tanggal.
+Mengajukan dan mengubah peminjaman selalu menyertakan (*include*) pengecekan bentrok tanggal. Login mengarahkan pengguna ke panelnya: Kurator ke `/kurator`, Anggota UKM Lain ke `/anggota`, peran lain ke `/admin`.
 
 ## 2. Activity Diagram — Pendaftaran Calon Anggota
 
@@ -88,7 +88,13 @@ flowchart TB
         B1 -- Ya --> B2{Status akun Aktif?}
         B2 -- Tidak --> B2a[Logout otomatis +<br/>pesan akun belum aktif] --> A6
         B2 -- Ya --> B3[Membuat sesi baru]
-        B3 --> B4[Menampilkan dasbor & menu<br/>sesuai role]
+        B3 --> B5{Role pengguna?}
+        B5 -- Kurator --> B6[Membuka Panel Kurator<br/>/kurator]
+        B5 -- Anggota UKM Lain --> B7[Membuka Panel Anggota<br/>UKM Lain /anggota]
+        B5 -- Admin UKM / Admin Inventaris / Member --> B8[Membuka panel admin<br/>/admin]
+        B6 --> B4[Menampilkan dasbor & menu<br/>sesuai role]
+        B7 --> B4
+        B8 --> B4
     end
     B4 --> E((◉))
 ```
@@ -126,7 +132,7 @@ flowchart TB
     B6 --> E
 ```
 
-## 5. Activity Diagram — Unggah & Kurasi Karya
+## 5. Activity Diagram — Unggah, Kurasi & Nominasi Karya
 
 <!-- uml:05-activity-kurasi -->
 ```mermaid
@@ -144,6 +150,7 @@ flowchart TB
         B4[Status Lolos Kurasi]
         B5[Status Ditolak + catatan]
         B6[Karya tampil di galeri website]
+        B7[Karya tampil di slider beranda<br/>sebagai Nominasi Foto Mingguan]
     end
     subgraph L3["Kurator"]
         B2 --> C1[Membuka tab Menunggu Kurasi,<br/>melihat pratinjau karya]
@@ -152,10 +159,13 @@ flowchart TB
         C2 -- Ya --> C4[Loloskan] --> B4
         B4 --> C5{Tampilkan di website?}
         C5 -- Ya --> B6
+        B6 --> C6{Nominasikan sebagai<br/>foto minggu ini?}
+        C6 -- Ya --> C7[Nominasikan] --> B7
     end
     B5 --> A8
     B4 --> A8
-    B6 --> A8
+    C6 -- Tidak --> A8
+    B7 --> A8
     A8 --> E((◉))
 ```
 
@@ -171,7 +181,7 @@ sequenceDiagram
     participant RL as RateLimiter
     participant A as Auth (sesi)
     participant DB as Database (users)
-    participant P as Panel /admin
+    participant P as Panel sesuai role
 
     U->>V: Buka halaman login
     U->>V: Isi email & password, tekan Masuk
@@ -190,13 +200,14 @@ sequenceDiagram
             C-->>V: Pesan "Email atau password salah."
         else Cocok
             A-->>C: user
-            C->>C: user.canAccessPanel() (status Aktif?)
+            C->>C: user.canAccessPanel(panel role) (status Aktif?)
             alt Belum aktif
                 C->>A: logout()
                 C-->>V: Pesan "Akun kamu belum aktif"
             else Aktif
                 C->>A: regenerate session
-                C-->>U: Redirect ke /admin
+                C->>C: role.panel() → admin / kurator / anggota
+                C-->>U: Redirect ke /admin, /kurator, atau /anggota
                 U->>P: Buka dasbor (menu sesuai role)
             end
         end
@@ -286,7 +297,7 @@ sequenceDiagram
     end
 ```
 
-## 9. Sequence Diagram — Unggah & Kurasi Karya
+## 9. Sequence Diagram — Unggah, Kurasi & Nominasi Karya
 
 <!-- uml:09-sequence-kurasi -->
 ```mermaid
@@ -316,9 +327,15 @@ sequenceDiagram
         K->>A: curate(kurator, rejected, false, catatan)
         A->>DB: UPDATE status rejected, curator_note
     end
+    opt Karya lolos & tampil
+        K->>A: nominate() (Nominasi Foto Mingguan)
+        A->>DB: UPDATE nominated_week = Senin minggu ini, is_featured = true
+    end
     M->>F: Melihat status & catatan kurator
     W->>A: published() (approved + is_featured)
     A-->>W: Daftar karya untuk galeri
+    W->>A: weeklyNominees()
+    A-->>W: Nominasi minggu ini (atau minggu terakhir) untuk slider beranda
 ```
 
 ## 10. Class Diagram
@@ -407,11 +424,16 @@ classDiagram
         +string tiktok_url
         +ArtworkStatus status
         +bool is_featured
+        +date nominated_week
         +string curator_note
         +int views
         +exposureSummary() string
         +imageUrl() string
         +curate(curator, status, featured, note) void
+        +nominate(week) void
+        +cancelNomination() void
+        +isNominatedThisWeek() bool
+        +weeklyNominees()$ array
         +scopePublished()
     }
 
@@ -473,6 +495,7 @@ classDiagram
         +canBorrow() bool
         +canUploadArtwork() bool
         +canCurate() bool
+        +panel() string
     }
 
     User "1" --> "0..*" Loan : mengajukan

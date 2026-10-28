@@ -90,6 +90,7 @@ erDiagram
         varchar tiktok_url "nullable"
         varchar status "pending, approved, rejected"
         boolean is_featured "tampil di website"
+        date nominated_week "nullable, Senin minggu nominasi"
         text curator_note "nullable"
         bigint curated_by FK "nullable, kurator"
         timestamp curated_at "nullable"
@@ -210,7 +211,7 @@ baris `loan_items`-nya.
 | `loans` | Pengajuan peminjaman beserta data peminjam & tanggal | Peminjam (milik sendiri), Admin Inventaris & Admin UKM (proses) |
 | `loan_items` | Rincian barang per peminjaman, jumlah, kondisi sebelum & sesudah | Sama dengan `loans` |
 | `categories` | Kategori karya foto | Admin UKM |
-| `artworks` | Karya foto, segitiga exposure, link IG/TikTok, hasil kurasi | Member (unggah), Kurator & Admin UKM (kurasi), publik (yang tampil) |
+| `artworks` | Karya foto, segitiga exposure, link IG/TikTok, hasil kurasi, nominasi foto mingguan | Member (unggah), Kurator & Admin UKM (kurasi), publik (yang tampil) |
 | `events` | Acara & kegiatan UKM | Admin UKM; publik (yang terbit) |
 | `event_user` | Peserta acara dan kehadirannya | Admin UKM |
 | `registrations` | Pendaftar calon anggota dari halaman `/daftar` | Publik (kirim), Admin UKM (proses) |
