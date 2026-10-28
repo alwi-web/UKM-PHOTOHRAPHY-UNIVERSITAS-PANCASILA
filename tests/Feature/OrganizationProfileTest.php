@@ -100,7 +100,7 @@ it('foto, nama, dan NPM di bagan diambil dari akun anggota', function () {
         'divisions' => [['name' => 'Hunting', 'description' => null, 'member_ids' => [$dimas->id, $intan->id]]],
     ]);
 
-    $this->get('/')
+    $this->get('/profil')
         ->assertOk()
         ->assertSeeInOrder(['Ketua Umum', 'Wakil Ketua', 'Putri Ramadhani', '4122000002'])
         ->assertSee(Storage::disk('public')->url($wakil->photo))
@@ -109,7 +109,7 @@ it('foto, nama, dan NPM di bagan diambil dari akun anggota', function () {
     // perubahan di akun anggota langsung terbawa ke bagan
     $wakil->update(['name' => 'Putri R.', 'npm' => '4122000099']);
 
-    $this->get('/')->assertSeeInOrder(['Wakil Ketua', 'Putri R.', '4122000099']);
+    $this->get('/profil')->assertSeeInOrder(['Wakil Ketua', 'Putri R.', '4122000099']);
 });
 
 it('akun yang nonaktif atau sudah dihapus tidak tampil di bagan', function () {
@@ -167,7 +167,7 @@ it('menyusun bagan dengan Ketua Umum paling atas dan divisi di baris terbawah', 
         ],
     ]);
 
-    $this->get('/')->assertSee('chart-top', false);
+    $this->get('/profil')->assertSee('chart-top', false);
 });
 
 it('sejarah dan visi wajib diisi', function () {

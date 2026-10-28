@@ -57,20 +57,24 @@ it('website menampilkan nominasi minggu ini, atau minggu terakhir yang punya nom
         ->and($result['artworks']->pluck('id')->all())->toBe([$baru->id]);
 });
 
-it('halaman depan menampilkan carousel nominasi foto mingguan', function () {
+it('slider di atas halaman depan menampilkan nominasi foto mingguan', function () {
     Artwork::factory()->published()->create(['title' => 'Senja di Danau Kampus', 'nominated_week' => '2026-10-26']);
     Artwork::factory()->published()->create(['title' => 'Pedagang Pagi', 'nominated_week' => '2026-10-26']);
+    Artwork::factory()->published()->create(['title' => 'Bukan Nominasi']);
 
-    $this->get('/')->assertOk()
+    $html = $this->get('/')->assertOk()
         ->assertSee('Nominasi Foto Mingguan')
-        ->assertSee('26 Okt – 1 Nov 2026')
-        ->assertSeeInOrder(['data-carousel', 'Senja di Danau Kampus', 'nominee-dot']);
+        ->assertSeeInOrder(['data-slider', 'Senja di Danau Kampus', 'slider-dot'], false)
+        ->getContent();
+
+    // slider hanya berisi nominasi (2 foto)
+    expect(preg_match_all('/class="slide( is-active)?"/', $html))->toBe(2);
 });
 
-it('carousel tidak tampil jika belum ada nominasi', function () {
+it('tanpa nominasi, slider tetap tampil tanpa label nominasi', function () {
     Artwork::factory()->published()->create();
 
-    $this->get('/')->assertOk()->assertDontSee('data-carousel', false);
+    $this->get('/')->assertOk()->assertSee('data-slider', false)->assertDontSee('credit-badge', false);
 });
 
 it('kurator menominasikan dan membatalkan nominasi dari panel', function () {

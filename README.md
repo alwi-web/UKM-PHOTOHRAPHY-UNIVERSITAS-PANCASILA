@@ -62,7 +62,11 @@ Kurator dan Anggota UKM Lain punya panel sendiri; membuka panel role lain otomat
 - Daftar kegiatan dengan jumlah peserta dan persentase kehadiran, bisa difilter per periode dan diunduh sebagai CSV.
 - Insight karya: total karya, tingkat lolos kurasi, total dilihat, grafik per kategori, unggahan per bulan, dan karya terpopuler.
 
-**Website publik** (`/`): profil UKM (sejarah PhotoUP 94, visi & misi, struktur organisasi), galeri karya pilihan kurator, agenda mendatang, pengurus, dan kontak. Halaman **Daftar** (`/daftar`) dan **Login** (`/login`) terpisah dari halaman depan.
+**Website publik**
+- **Beranda** (`/`): slider foto besar (Nominasi Foto Mingguan, atau karya terbaru bila belum ada nominasi), profil singkat dengan ikon mengambang Profil · Visi · Misi · Struktural, 5 karya terbaru, agenda kegiatan, dan kontak. Di HP ada menu ringkas berupa tombol ke setiap halaman.
+- **Profil** (`/profil`): sejarah, visi & misi, dan bagan struktur BPH.
+- **Galeri** (`/galeri`): semua karya pilihan kurator, filter kategori, dan pencarian judul karya / nama fotografer (juga dari ikon kaca pembesar di header).
+- Halaman **Daftar** (`/daftar`) dan **Login** (`/login`) terpisah dari website.
 
 ## Instalasi
 
@@ -126,7 +130,8 @@ app/Filament/Pages/        laporan kegiatan & insight karya
 app/Filament/Widgets/      ringkasan dasbor & grafik
 app/Providers/Filament/    panel admin, panel kurator, panel anggota UKM lain
 app/Http/Controllers/      website publik & pendaftaran
-resources/views/home.blade.php   halaman depan website
-public/css/style.css, public/js/main.js   aset website publik
+resources/views/layouts/site.blade.php   header, footer, lightbox website
+resources/views/home.blade.php, profile.blade.php, gallery.blade.php   halaman website
+public/css/style.css, public/css/site.css, public/js/main.js   aset website publik
 database/seeders/          data demo
 ```

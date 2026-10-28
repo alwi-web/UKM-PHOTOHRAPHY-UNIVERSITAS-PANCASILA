@@ -6,6 +6,8 @@ use App\Http\Controllers\RegistrationController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/profil', [HomeController::class, 'profile'])->name('profile');
+Route::get('/galeri', [HomeController::class, 'gallery'])->name('gallery');
 
 Route::get('/daftar', [RegistrationController::class, 'show'])->name('register.show');
 Route::post('/daftar', [RegistrationController::class, 'store'])

@@ -17,7 +17,7 @@ return [
      */
     'profile_defaults' => [
         'name' => 'PhotoUP 94',
-        'tagline' => 'Tempat mahasiswa Universitas Pancasila belajar, berkarya, dan berbagi cerita lewat foto.',
+        'tagline' => 'PhotoUP adalah UKM Fotografi mahasiswa Universitas Pancasila yang menjadi ruang bagi kreativitas, eksplorasi, dan kolaborasi melalui lensa.',
         'about' => 'UKM Fotografi adalah wadah minat dan bakat mahasiswa di bidang fotografi. Kami belajar bersama lewat kelas, hunting foto, pameran, dan kolaborasi dengan komunitas kreatif lain.',
         'history' => 'PhotoUP 94 adalah Unit Kegiatan Mahasiswa fotografi di Universitas Pancasila.',
         'vision' => 'Menjadi komunitas fotografi mahasiswa yang unggul, kreatif, dan berkarakter Pancasila.',
