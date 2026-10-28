@@ -1,0 +1,178 @@
+/* =========================================================
+   Halaman login (terpisah dari website).
+   Memakai token warna & komponen dari style.css.
+   ========================================================= */
+
+.auth {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.auth .hero-grid-bg {
+  position: fixed;
+  inset: 0;
+}
+
+.auth-top {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: min(1040px, 100% - 32px);
+  margin: 20px auto 0;
+}
+
+.auth-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.auth-back:hover {
+  border-color: var(--text);
+}
+
+.auth-main {
+  position: relative;
+  flex: 1;
+  display: grid;
+  place-items: center;
+  padding: 32px 16px 48px;
+}
+
+.auth-card {
+  width: min(440px, 100%);
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: var(--surface);
+  box-shadow: var(--shadow-lg);
+}
+
+/* kartu lebih lebar untuk formulir pendaftaran */
+.auth-card-wide {
+  width: min(560px, 100%);
+}
+
+.auth-done {
+  text-align: center;
+}
+
+.done-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  margin-bottom: 16px;
+  border-radius: 50%;
+  background: var(--mint-soft);
+  color: var(--success);
+}
+
+/* formulir */
+.auth-form {
+  padding: 36px 32px 32px;
+}
+
+.auth-form h2 {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.auth-sub {
+  margin: 6px 0 24px;
+}
+
+.password-wrap {
+  position: relative;
+}
+
+.password-wrap input {
+  padding-right: 48px;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  transform: translateY(-50%);
+}
+
+.password-toggle:hover {
+  background: #f1f1ec;
+}
+
+.password-toggle .icon-open,
+.password-toggle[aria-pressed="true"] .icon-closed {
+  display: none;
+}
+
+.password-toggle[aria-pressed="true"] .icon-open {
+  display: block;
+}
+
+.auth-form .field-check {
+  margin: 4px 0 20px;
+}
+
+.auth-note {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+
+.auth-note a {
+  font-weight: 600;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+@media (max-width: 600px) {
+  .auth-top {
+    margin-top: 12px;
+  }
+
+  .auth-back {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+  }
+
+  .auth-main {
+    place-items: start center;
+    padding-top: 20px;
+  }
+
+  .auth-card {
+    border-radius: 20px;
+  }
+
+  .auth-form {
+    padding: 28px 20px 24px;
+  }
+
+  .auth-form h2 {
+    font-size: 1.6rem;
+  }
+}

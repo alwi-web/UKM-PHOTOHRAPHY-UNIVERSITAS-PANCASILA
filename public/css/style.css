@@ -1,0 +1,1170 @@
+/* =========================================================
+   UKM Fotografi Universitas Pancasila — halaman depan
+   Gaya "landing page" modern: latar terang, kartu berbingkai tipis,
+   latar abu-abu, kartu putih, tulisan hitam, widget aksen hitam.
+   ========================================================= */
+
+:root {
+  --bg: #f3f3f0;
+  --surface: #ffffff;
+  --text: #000000;
+  --line: #e7e7e2;
+  --line-strong: #d6d6cf;
+  --accent: #111111;
+  --accent-dark: #000000;
+  --accent-soft: #f0f0ee;
+  --on-accent: #ffffff;
+  --mint-soft: #e9f8ee;
+  --danger: #c81e3a;
+  --success: #0f7a4f;
+  --radius: 20px;
+  --radius-sm: 12px;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 8px 24px -12px rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 2px 4px rgba(0, 0, 0, 0.04), 0 24px 48px -20px rgba(0, 0, 0, 0.22);
+  --font: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 96px;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: inherit;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+p {
+  margin: 0;
+}
+
+.container {
+  width: min(1160px, 100% - 32px);
+  margin-inline: auto;
+}
+
+.icon {
+  flex-shrink: 0;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ---------- Tombol ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 24px;
+  border: 1px solid var(--accent-dark);
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font: inherit;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 6px 18px -8px rgba(0, 0, 0, 0.55);
+  transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+}
+
+.btn:hover {
+  background: var(--accent-dark);
+  transform: translateY(-1px);
+}
+
+.btn .icon {
+  transition: transform 0.15s;
+}
+
+.btn:hover .icon {
+  transform: translateX(2px);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: wait;
+  transform: none;
+}
+
+.btn-ghost {
+  color: var(--text);
+  background: var(--surface);
+  border-color: var(--line-strong);
+  box-shadow: var(--shadow);
+}
+
+.btn-ghost:hover {
+  background: var(--surface);
+  border-color: var(--text);
+}
+
+.btn-sm {
+  padding: 8px 18px;
+  font-size: 0.9rem;
+}
+
+.btn-block {
+  width: 100%;
+}
+
+/* ---------- Header (pil melayang) ---------- */
+
+.brand img {
+  width: 40px;
+  height: 40px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.brand b {
+  padding: 0 6px;
+  border-radius: 6px;
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+/* ---------- Hero (beranda) ---------- */
+
+/* kotak-kotak tipis + cahaya lembut di belakang judul */
+.hero-grid-bg {
+  position: absolute;
+  inset: -100px 0 0;
+  background:
+    radial-gradient(600px 360px at 25% 30%, rgba(255, 255, 255, 0.55), transparent 70%),
+    radial-gradient(420px 300px at 80% 50%, rgba(255, 255, 255, 0.4), transparent 70%),
+    linear-gradient(#d4d4d0 1px, transparent 1px) 0 0 / 48px 48px,
+    linear-gradient(90deg, #d4d4d0 1px, transparent 1px) 0 0 / 48px 48px;
+  mask-image: radial-gradient(ellipse 80% 75% at 50% 40%, #000 40%, transparent 85%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 75% at 50% 40%, #000 40%, transparent 85%);
+  pointer-events: none;
+}
+
+@keyframes wave {
+  0%, 60%, 100% { transform: rotate(0); }
+  10%, 30% { transform: rotate(16deg); }
+  20%, 40% { transform: rotate(-8deg); }
+}
+
+/* stabilo kuning */
+
+/* mockup HP + bentuk warna di belakangnya */
+
+/* ---------- Section ---------- */
+
+.empty {
+  padding: 40px;
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius);
+  text-align: center;
+}
+
+/* tombol bagian: hanya muncul di HP */
+
+/* ---------- Kartu ---------- */
+.card {
+  position: relative;
+  padding: 28px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.card h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.card p + p {
+  margin-top: 10px;
+}
+
+.card-sub {
+  margin-top: -4px;
+}
+
+.card-icon {
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  margin-bottom: 18px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 12px;
+  background: var(--accent-soft);
+}
+
+/* ---------- Profil ---------- */
+.vm-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.card-vision {
+  background: linear-gradient(160deg, var(--accent-soft), #fff 70%);
+}
+
+.card-vision .card-icon {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.vision {
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.5;
+}
+
+.card-mission {
+  background: linear-gradient(160deg, var(--accent-soft), #fff 70%);
+}
+
+.card-mission .card-icon {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.missions {
+  list-style: none;
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+}
+
+.missions li {
+  display: flex;
+  gap: 10px;
+}
+
+.missions .icon {
+  width: 20px;
+  height: 20px;
+  margin-top: 3px;
+  padding: 3px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.card-chart {
+  margin-top: 16px;
+  text-align: center;
+}
+
+/* ---------- Bagan struktur organisasi ---------- */
+.chart {
+  --chart-line: #cfcfc7;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin-top: 28px;
+}
+
+.chart-level {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.chart-line {
+  display: block;
+  width: 2px;
+  height: 24px;
+  background: var(--chart-line);
+}
+
+.chart-cell {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  flex: 1 1 0;
+  min-width: 0;
+  padding-inline: 5px;
+}
+
+.chart-level:not(.chart-row) .chart-cell {
+  flex: 0 1 260px;
+}
+
+.chart-row .chart-cell {
+  padding-top: 20px;
+}
+
+.chart-row .chart-cell::before,
+.chart-row .chart-cell::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  background: var(--chart-line);
+}
+
+.chart-row .chart-cell::before {
+  left: calc(50% - 1px);
+  width: 2px;
+  height: 20px;
+}
+
+.chart-row .chart-cell::after {
+  left: 0;
+  right: 0;
+  height: 2px;
+}
+
+.chart-row .chart-cell:first-child::after {
+  left: 50%;
+}
+
+.chart-row .chart-cell:last-child::after {
+  right: 50%;
+}
+
+.chart-pair {
+  max-width: 600px;
+}
+
+.chart-branch {
+  position: relative;
+}
+
+.chart-branch::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(50% - 1px);
+  width: 2px;
+  background: var(--chart-line);
+}
+
+.node {
+  position: relative;
+  display: grid;
+  align-content: start;
+  justify-items: center;
+  gap: 2px;
+  width: 100%;
+  max-width: 220px;
+  padding: 14px 12px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+
+.chart-top .node {
+  background: var(--accent);
+  border-color: var(--accent-dark);
+  color: var(--on-accent);
+}
+
+.node strong {
+  font-size: 0.92rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.node small {
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+.node-members {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+  gap: 12px 8px;
+  width: 100%;
+  margin: 10px 0 0;
+  padding: 12px 0 0;
+  border-top: 1px dashed var(--line-strong);
+}
+
+/* baris divisi: judul dua baris agar garis putus-putus & foto sejajar antar kotak */
+.chart-row:not(.chart-pair) .node > strong {
+  display: grid;
+  align-items: center;
+  min-height: calc(2 * 1.3em);
+}
+
+.node-members li {
+  display: grid;
+  grid-template-rows: auto minmax(calc(2 * 1.3em), auto) auto;
+  align-content: start;
+  justify-items: center;
+  gap: 2px;
+  min-width: 0;
+  text-align: center;
+}
+
+.node-members strong {
+  align-self: start;
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.node-members small {
+  font-size: 0.72rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.member-photo {
+  width: 64px;
+  height: 64px;
+  margin-bottom: 4px;
+  border: 3px solid var(--accent);
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--surface);
+}
+
+.member-initial {
+  display: grid;
+  place-items: center;
+  background: var(--accent-soft);
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.node-person {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  margin-top: 10px;
+}
+
+.person-name {
+  font-size: 0.85rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.node-person small {
+  font-variant-numeric: tabular-nums;
+}
+
+/* di kotak hitam Ketua Umum, bingkai dibuat putih dan inisial tetap hitam */
+.chart-top .member-photo {
+  border-color: var(--surface);
+}
+
+.chart-top .member-initial {
+  color: var(--text);
+}
+
+/* ---------- Galeri ---------- */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto 32px;
+  padding: 6px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.chip {
+  padding: 7px 16px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.chip:hover {
+  background: #f1f1ec;
+}
+
+.chip.active {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.gallery {
+  columns: 4 240px;
+  column-gap: 16px;
+}
+
+.gallery-item {
+  position: relative;
+  margin: 0 0 16px;
+  break-inside: avoid;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #f1f1ec;
+  cursor: zoom-in;
+  box-shadow: var(--shadow);
+}
+
+.gallery-item.hide {
+  display: none;
+}
+
+.gallery-item img {
+  width: 100%;
+  transition: transform 0.5s;
+}
+
+.gallery-item:hover img,
+.gallery-item:focus-visible img {
+  transform: scale(1.05);
+}
+
+/* keterangan berupa kartu kaca yang naik saat diarahkan */
+.gallery-item figcaption {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  display: grid;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  font-size: 0.85rem;
+  line-height: 1.4;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.gallery-item:hover figcaption,
+.gallery-item:focus-visible figcaption {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------- Kegiatan ---------- */
+.events {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
+  gap: 16px;
+}
+
+.event {
+  display: flex;
+  gap: 18px;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  transition: translate 0.2s, box-shadow 0.2s, opacity 0.6s, transform 0.6s;
+}
+
+.event:hover,
+.contact li:hover {
+  translate: 0 -3px;
+  box-shadow: var(--shadow-lg);
+}
+
+.event-date {
+  display: grid;
+  place-content: center;
+  flex-shrink: 0;
+  width: 72px;
+  height: 76px;
+  border-radius: 14px;
+  background: var(--accent);
+  color: var(--on-accent);
+  text-align: center;
+  line-height: 1.1;
+}
+
+.event-date b {
+  font-size: 1.8rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.event-date span {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.event-body {
+  min-width: 0;
+}
+
+.tag {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.event h3 {
+  margin: 6px 0 8px;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.event-meta {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin: 0;
+  padding: 0;
+  font-size: 0.85rem;
+}
+
+.event-meta li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ---------- Formulir (halaman daftar) ---------- */
+.field {
+  margin-bottom: 16px;
+}
+
+.field-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 14px;
+}
+
+.field label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.field input,
+.field select {
+  width: 100%;
+  height: 46px;
+  padding: 0 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.95rem;
+  transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+}
+
+.field input::placeholder {
+  color: #767670;
+}
+
+.field input:focus,
+.field select:focus {
+  outline: none;
+  border-color: var(--accent-dark);
+  background: var(--surface);
+  box-shadow: 0 0 0 4px var(--accent-soft);
+}
+
+.field.invalid input,
+.field.invalid select {
+  border-color: var(--danger);
+}
+
+.field-check label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.field-check input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin-top: 3px;
+  flex-shrink: 0;
+  accent-color: var(--accent);
+}
+
+.error {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.8rem;
+  color: var(--danger);
+}
+
+.notice {
+  margin-bottom: 18px;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.notice-success {
+  background: var(--mint-soft);
+  color: var(--success);
+}
+
+.notice-error {
+  background: #fdecef;
+  color: var(--danger);
+}
+
+/* ---------- Kontak ---------- */
+.contact {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr));
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+}
+
+.contact li {
+  display: flex;
+  gap: 14px;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  transition: translate 0.2s, box-shadow 0.2s, opacity 0.6s, transform 0.6s;
+}
+
+.contact .card-icon {
+  margin: 0;
+}
+
+.contact li {
+  flex-direction: column;
+}
+
+.contact li > span:last-child {
+  display: grid;
+  align-content: start;
+  min-width: 0;
+  overflow-wrap: break-word;
+  line-height: 1.5;
+  font-weight: 600;
+}
+
+.contact small {
+  font-size: 0.78rem;
+  font-weight: 500;
+}
+
+.contact a {
+  overflow-wrap: anywhere;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+/* ---------- Footer ---------- */
+
+/* ---------- Muncul saat di-scroll ---------- */
+.js .reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.js .reveal.in {
+  opacity: 1;
+  transform: none;
+}
+
+/* garis waktu: terisi selama foto tampil, lalu pindah ke foto berikutnya */
+
+/* ---------- Lightbox ---------- */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(250, 250, 248, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s;
+}
+
+.lightbox.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.lightbox figure {
+  margin: 0;
+  max-width: min(900px, 100%);
+  text-align: center;
+}
+
+.lightbox img {
+  max-height: 66vh;
+  margin-inline: auto;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+}
+
+.lightbox figcaption {
+  display: grid;
+  gap: 2px;
+  max-width: 60ch;
+  margin: 16px auto 0;
+  font-size: 0.9rem;
+}
+
+.lightbox figcaption strong {
+  font-size: 1.1rem;
+}
+
+.lightbox .lb-exposure {
+  justify-self: center;
+  margin-top: 6px;
+  padding: 3px 12px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.lightbox .lb-exposure:empty {
+  display: none;
+}
+
+.lb-links {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 4px;
+}
+
+.lb-links a {
+  font-weight: 600;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 2px;
+}
+
+.lb-btn {
+  position: absolute;
+  width: 46px;
+  height: 46px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+}
+
+.lb-btn:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+
+.lb-close {
+  top: 16px;
+  right: 16px;
+}
+
+.lb-prev,
+.lb-next {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.lb-prev {
+  left: 16px;
+}
+
+.lb-next {
+  right: 16px;
+}
+
+/* ---------- Tablet ---------- */
+@media (max-width: 900px) {
+  
+
+  
+
+  
+
+  /* bubble menempel di layar (di belakang isi halaman) sehingga ikut turun saat di-scroll;
+     posisi awalnya diisi main.js = posisi mockup HP */
+  
+
+  .hero-grid-bg {
+    z-index: -2;
+  }
+
+  /* transform animasi masuk akan mengurung layer bubble yang fixed */
+  
+
+  /* mockup jadi kartu ringkas tanpa bingkai tinggi */
+  
+
+  
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+}
+
+/* ---------- HP: halaman ringkas, tiap bagian jadi tombol daftar ---------- */
+@media (max-width: 600px) {
+  
+
+  
+
+  .brand span {
+    font-size: 0.92rem;
+  }
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  /* ruang bawah agar bubble yang bergerak saat di-scroll tidak terpotong */
+  
+
+  
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  main {
+    padding-bottom: 8px;
+  }
+
+  
+
+  #profil {
+    margin-top: 20px;
+  }
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  /* judul sudah tampil di tombol */
+  
+
+  
+
+  
+
+  .card {
+    padding: 20px;
+  }
+
+  .card-chart {
+    padding: 20px 12px;
+  }
+
+  .filters {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    width: auto;
+    overflow-x: auto;
+    border-radius: 16px;
+    scrollbar-width: none;
+  }
+
+  .chip {
+    flex-shrink: 0;
+  }
+
+  .gallery {
+    columns: 2;
+    column-gap: 10px;
+  }
+
+  .gallery-item {
+    margin-bottom: 10px;
+    border-radius: 14px;
+  }
+
+  .gallery-item figcaption {
+    display: none;
+  }
+
+  .contact li {
+    flex-direction: row;
+    align-items: center;
+    padding: 14px;
+  }
+
+  .field-row {
+    grid-template-columns: 1fr;
+  }
+
+  /* bagan: pasangan tetap berdampingan, divisi jadi dua kolom */
+  .chart-row:not(.chart-pair) {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    padding-top: 12px;
+    border-top: 2px solid var(--chart-line);
+  }
+
+  .chart-row:not(.chart-pair) .chart-cell {
+    padding: 0;
+  }
+
+  .chart-row:not(.chart-pair) .chart-cell::before,
+  .chart-row:not(.chart-pair) .chart-cell::after {
+    display: none;
+  }
+
+  .node strong {
+    font-size: 0.82rem;
+  }
+
+  
+
+  
+
+  .lb-prev,
+  .lb-next {
+    top: auto;
+    bottom: 16px;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .js .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
